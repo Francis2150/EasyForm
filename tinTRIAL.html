@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Handwritten Text Demo</title>
+
+<!-- Google fonts for handwriting -->
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Reenie+Beanie&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --paper: white;           /* paper base color */
+    --ink:blue ;             /* ink color */
+    --ink-bleed: rgba(11,22,32,0.07);
+    --line-color: blue;
+  }
+
+  /* Page / paper look */
+  html,body{
+    height:100%;
+    margin:0;
+    background:
+      radial-gradient(circle at 10% 10%, rgba(0,0,0,0.03), transparent 15%),
+      linear-gradient(90deg, rgba(0,0,0,0.01), transparent 40%, rgba(0,0,0,0.01)),
+      var(--paper);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:40px;
+    box-sizing:border-box;
+  }
+
+  /* Ruled-paper effect behind the note */
+  .paper {
+    width:min(920px, 95%);
+    background: linear-gradient(to bottom, transparent 0 36px, rgba(0,0,0,0.02) 36px),
+                linear-gradient(90deg, rgba(0,0,0,0.02) 0.5px, transparent 0.5px);
+    background-size: 100% 36px, 18px 100%; /* horizontal rule spacing */
+    border-radius: 8px;
+    padding:48px;
+    box-shadow: 0 8px 24px rgba(15,20,25,0.12), inset 0 1px 0 rgba(255,255,255,0.6);
+    border: 1px solid rgba(0,0,0,0.04);
+  }
+
+  /* The handwritten area */
+  .note{
+    font-family: "Patrick Hand", "Reenie Beanie", "Segoe UI", Arial, cursive;
+    font-size: 20px;
+    line-height: 1.52;
+    color: var(--ink);
+    max-width: 860px;
+    margin: 0 auto;
+    white-space: pre-wrap; /* keep newlines */
+    letter-spacing: 0.2px;
+    padding: 12px 18px;
+    position: relative;
+    background: transparent;
+  }
+
+  /* Ink stroke + tiny blur to simulate bleed */
+  .note .line{
+    display:block;
+    position:relative;
+    /* subtle ink shadow gives the feel of a pen line */
+    text-shadow:
+      0.2px 0.6px 0 rgba(0,0,0,0.06),
+      0 0 0.6px var(--ink-bleed);
+  }
+
+  /* Variation: slightly denser weight on some characters */
+  .note .line span.ink-strong{
+    font-weight:200px;
+    transform-origin: center;
+    display:inline-block;
+  }
+
+  /* Small variations for realism (applied by JS or can be set by hand) */
+  .s-tilt{ display:inline-block; transform: rotate(-0.8deg); }
+  .s-tilt-r{ display:inline-block; transform: rotate(0.9deg); }
+  .s-lift{ display:inline-block; transform: translateY(-1px); }
+  .s-drop{ display:inline-block; transform: translateY(0.6px); }
+
+  /* A faint smudge / blot behind some lines (CSS-only fallback) */
+  .note .blot {
+    position:absolute;
+    pointer-events:none;
+    width:12px;
+    height:6px;
+    background: radial-gradient(closest-side, var(--ink-bleed), transparent 70%);
+    transform: rotate(-12deg);
+    left: 14%;
+    top: 22px;
+    opacity:0.7;
+    filter: blur(0.6px);
+  }
+
+  /* Small responsive tweaks */
+  @media (max-width:520px){
+    .paper{ padding:28px; }
+    .note{ font-size:18px; line-height:1.25; }
+  }
+
+  /* 
+
+</style>
+</head>
+<body>
+
+<div class="paper">
+  <div class="note" id="note">
+    Dear friend,
+    I hope you are doing well. This is a sample of text that looks like it was written by hand. Try editing it — it keeps line breaks and spacing.
+
+    Best,
+    Francis
+  </div>
+
+  <!-- optional decorative blot (purely visual) -->
+  <div class="blot" aria-hidden="true"></div>
+</div>
+
+
+
+</body>
+</html>
+
