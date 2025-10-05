@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>LLC Registration Form</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="form.css">
+  <style>
+    body {
+      font-family: "Inter", sans-serif;
+      margin: 20px;
+    }
+    fieldset {
+      margin-bottom: 20px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      padding: 15px;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: 600;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 6px;
+      margin-top: 3px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-family: inherit;
+    }
+    button {
+      margin-top: 10px;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 4px;
+      background: #007bff;
+      color: white;
+      cursor: pointer;
+    }
+    .remove-btn { 
+      background: #dc3545; 
+      color: white; 
+      border: none; 
+      padding: 5px 8px; 
+      border-radius: 4px; 
+      cursor: pointer; 
+      margin-top: 8px; 
+    }
+    .output {
+      background: #f9f9f9;
+      border: 1px solid #ddd;
+      padding: 15px;
+      border-radius: 6px;
+      margin-top: 20px;
+    }
+    .section-title {
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>LIMITED LIABILITY REGISTRATION FORM</h2>
+
+  <form id="infoForm">
+    <fieldset>
+      <legend>Business Information</legend>
+      <label>Name of Company</label>
+      <input type="text" id="companyName">
+
+      <label>Principal Activities</label>
+      <textarea id="activities" rows="3"></textarea>
+
+      <label>Stated Capital</label>
+      <input type="text" id="capital">
+    </fieldset>
+
+    <fieldset>
+      <legend>Office Details</legend>
+      <label>HSE/Building No.</label><input id="officeHse">
+      <label>Landmark</label><input id="officeLandmark">
+      <label>Street Name</label><input id="officeStreet">
+      <label>City</label><input id="officeCity">
+      <label>Town</label><input id="officeTown">
+      <label>District</label><input id="officeDistrict">
+      <label>Region</label><input id="officeRegion">
+      <label>GPS Address</label><input id="officeGps">
+      <label>Postal Address Type</label>
+      <select id="officePostalType">
+        <option value="">Select Type</option>
+        <option>P.O. Box</option>
+        <option>PMB</option>
+        <option>DTD</option>
+      </select>
+
+      <div id="officePostalFields" style="margin-top: 10px;">
+        <label>Box Number</label><input id="officeBoxNumber">
+        <label>Box Region</label><input id="officeBoxRegion">
+        <label>Box Town</label><input id="officeBoxTown">
+      </div>
+
+      <label>Contact 1</label><input id="officeContact1">
+      <label>Contact 2</label><input id="officeContact2">
+      <label>Email Address</label><input type="email" id="officeEmail">
+    </fieldset>
+
+    <!-- Directors Section -->
+    <div id="directorsContainer">
+      <fieldset class="director">
+        <legend>Director 1 Details</legend>
+        <label>Title</label>
+        <select class="title">
+          <option value="">Select Title</option>
+          <option>Mr.</option>
+          <option>Mrs.</option>
+          <option>Miss</option>
+          <option>Ms.</option>
+          <option>Dr.</option>
+        </select>
+
+        <label>Gender</label>
+        <select class="gender">
+          <option value="">Select Gender</option>
+          <option>Male</option>
+          <option>Female</option>
+        </select>
+
+        <label>First Name</label><input class="fname">
+        <label>Middle Name</label><input class="mname">
+        <label>Surname</label><input class="sname">
+        <label>Former Name</label><input class="former">
+        <label>Date of Birth</label><input type="date" class="dob">
+        <label>Place of Birth</label><input class="pob">
+        <label>Nationality</label><input class="nation">
+        <label>Occupation</label><input class="occupation">
+        <label>Contact 1</label><input class="pContact1">
+        <label>Contact 2</label><input class="pContact2">
+        <label>Email Address</label><input type="email" class="pEmail">
+        <label>Ghana Card Number</label><input class="ghanaCard">
+        <label>TIN</label><input class="tin">
+
+        <label>Postal Address Type</label>
+        <select class="personalPostalType">
+          <option value="">Select Type</option>
+          <option>P.O. Box</option>
+          <option>PMB</option>
+          <option>DTD</option>
+        </select>
+
+        <div class="personalPostalFields" style="margin-top: 10px;">
+          <label>Box Number</label><input class="personalBoxNumber">
+          <label>Box Region</label><input class="personalBoxRegion">
+          <label>Box Town</label><input class="personalBoxTown">
+        </div>
+
+        <!-- Residential Address inside Director -->
+        <fieldset class="residential-info">
+          <legend>Residential Address</legend>
+          <label>GPS Address</label><input class="resGps">
+          <label>House Number</label><input class="resHse">
+          <label>Landmark</label><input class="resLandmark">
+          <label>Street Name</label><input class="resStreet">
+          <label>City</label><input class="resCity">
+          <label>Town</label><input class="resTown">
+          <label>District</label><input class="resDistrict">
+          <label>Region</label><input class="resRegion">
+        </fieldset>
+      </fieldset>
+    </div>
+
+    <button type="button" id="addDirectorBtn">+ Add Another Director</button>
+    <button type="submit">Submit Data</button>
+  </form>
+
+  <div class="output" id="output">
+    <div class="section-title">Preview / Data Output</div>
+    <p id="outCompany"></p>
+    <p id="outOffice"></p>
+    <div id="outDirectors"></div>
+  </div>
+
+  <script>
+    function updatePreview() {
+      const companyName = companyNameInput.value;
+      const activities = activitiesInput.value;
+      const capital = capitalInput.value;
+
+      document.getElementById("outCompany").innerHTML =
+        `<b>Company:</b> ${companyName} — Activities: ${activities}, Capital: ${capital}`;
+
+      const office = {
+        hse: officeHse.value,
+        street: officeStreet.value,
+        city: officeCity.value,
+        region: officeRegion.value,
+        gps: officeGps.value,
+        postalType: officePostalType.value,
+        boxNumber: officeBoxNumber.value,
+        boxRegion: officeBoxRegion.value,
+        boxTown: officeBoxTown.value,
+        contact1: officeContact1.value,
+        contact2: officeContact2.value,
+        email: officeEmail.value
+      };
+
+      document.getElementById("outOffice").innerHTML =
+        `<b>Office:</b> ${office.hse}, ${office.street}, ${office.city}, ${office.region}. 
+        GPS: ${office.gps}, Email: ${office.email}, 
+        Contact 1: ${office.contact1}, Contact 2: ${office.contact2}, 
+        Postal: ${office.postalType} ${office.boxNumber}, ${office.boxTown}, ${office.boxRegion}`;
+
+      // Collect all directors
+      const directorEls = document.querySelectorAll('.director');
+      let directorHTML = '';
+      directorEls.forEach((dir, i) => {
+        const d = {
+          title: dir.querySelector('.title').value,
+          gender: dir.querySelector('.gender').value,
+          fname: dir.querySelector('.fname').value,
+          mname: dir.querySelector('.mname').value,
+          sname: dir.querySelector('.sname').value,
+          dob: dir.querySelector('.dob').value,
+          nation: dir.querySelector('.nation').value,
+          contact1: dir.querySelector('.pContact1').value,
+          contact2: dir.querySelector('.pContact2').value,
+          email: dir.querySelector('.pEmail').value,
+          postalType: dir.querySelector('.personalPostalType').value,
+          boxNumber: dir.querySelector('.personalBoxNumber').value,
+          boxRegion: dir.querySelector('.personalBoxRegion').value,
+          boxTown: dir.querySelector('.personalBoxTown').value,
+          resGps: dir.querySelector('.resGps').value,
+          resHse: dir.querySelector('.resHse').value,
+          resStreet: dir.querySelector('.resStreet').value,
+          resCity: dir.querySelector('.resCity').value,
+          resTown: dir.querySelector('.resTown').value,
+          resDistrict: dir.querySelector('.resDistrict').value,
+          resRegion: dir.querySelector('.resRegion').value
+        };
+        directorHTML += `<p><b>Director ${i + 1}:</b> ${d.title} ${d.fname} ${d.mname} ${d.sname}, 
+        Gender: ${d.gender}, DOB: ${d.dob}, 
+        Nationality: ${d.nation}, Contact 1: ${d.contact1}, Contact 2: ${d.contact2}, Email: ${d.email}, 
+        Postal: ${d.postalType} ${d.boxNumber}, ${d.boxTown}, ${d.boxRegion}.
+        <br><b>Residence:</b> ${d.resHse}, ${d.resStreet}, ${d.resCity}, ${d.resTown}, ${d.resDistrict}, ${d.resRegion}. GPS: ${d.resGps}</p>`;
+      });
+      document.getElementById("outDirectors").innerHTML = directorHTML;
+    }
+
+    // Cached selectors
+    const companyNameInput = document.getElementById('companyName');
+    const activitiesInput = document.getElementById('activities');
+    const capitalInput = document.getElementById('capital');
+
+    document.addEventListener('input', updatePreview);
+    document.addEventListener('change', updatePreview);
+
+    document.getElementById('addDirectorBtn').addEventListener('click', () => {
+      const container = document.getElementById('directorsContainer');
+      const count = container.querySelectorAll('.director').length + 1;
+      const clone = container.firstElementChild.cloneNode(true);
+      clone.querySelectorAll('input, select').forEach(el => el.value = '');
+      clone.querySelector('legend').textContent = `Director ${count} Details`;
+
+      if (!clone.querySelector('.remove-btn')) {
+        const removeBtn = document.createElement('button');
+        removeBtn.textContent = 'Remove Director';
+        removeBtn.className = 'remove-btn';
+        removeBtn.type = 'button';
+        removeBtn.addEventListener('click', () => {
+          clone.remove();
+          updatePreview();
+        });
+        clone.appendChild(removeBtn);
+      }
+
+      container.appendChild(clone);
+      updatePreview();
+    });
+
+    document.getElementById('infoForm').addEventListener('submit', e => {
+      e.preventDefault();
+      alert("Form saved! (but not submitted to server)");
+    });
+
+    updatePreview();
+  </script>
+
+</body>
+</html>

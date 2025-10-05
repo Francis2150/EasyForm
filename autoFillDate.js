@@ -66,7 +66,7 @@ function getFullDateNumeric(dateObj) {
 function fillFullDateNumeric(dateObj) {
     const fullDate = getFullDateNumeric(dateObj);
 
-    for (let i = 1; i <= 8; i++) {
+    for (let i = 1; i <= 11; i++) {
         const element = document.getElementById(`date${i}`);
         if (element) {
             element.textContent = fullDate;
