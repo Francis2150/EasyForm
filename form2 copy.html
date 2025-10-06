@@ -3,319 +3,145 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Directors Form</title>
+  <title>Company Officers Form</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-      background: #f1f1f1;
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+    form { max-width: 900px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    h2, h3, h4 { color: #007bff; }
+    .form-group { display: flex; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
+    .form-group label { flex: 0 0 150px; font-weight: bold; }
+    .form-group input { flex: 1 1 250px; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+    .section { border: 1px dashed #ccc; padding: 10px; margin: 10px 0; border-radius: 6px; background: #fafafa; }
+    .collapse-btn, .removeBtn, .addBtn, button[type="submit"] {
+      border: none; border-radius: 4px; padding: 8px 14px; cursor: pointer;
     }
-
-    h2 {
-      text-align: center;
-    }
-
-    form {
-      max-width: 900px;
-      margin: 0 auto;
-    }
-
-    .director {
-      border: 1px solid #ccc;
-      padding: 20px;
-      margin-bottom: 20px;
-      border-radius: 10px;
-      background: #ffffff;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    }
-
-    .section {
-      border: 1px dashed #aaa;
-      padding: 15px;
-      margin-top: 15px;
-      border-radius: 6px;
-      background: #fefefe;
-    }
-
-    h3, h4 {
-      margin: 0 0 15px;
-    }
-
-    .form-group {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      margin-bottom: 15px;
-    }
-
-    .form-group label {
-      flex: 0 0 150px;
-      margin-right: 10px;
-      font-weight: bold;
-    }
-
-    .form-group input {
-      flex: 1 1 250px;
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-
-    .collapse-btn {
-      background: #007bff;
-      color: white;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 4px;
-      cursor: pointer;
-      margin-bottom: 10px;
-    }
-
-    .collapsed {
-      display: none;
-    }
-
-    .removeBtn {
-      background: #dc3545;
-      color: white;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 4px;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-
-    #addDirector, button[type="submit"] {
-      padding: 10px 20px;
-      margin: 10px 5px 0 0;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    #addDirector {
-      background-color: #28a745;
-      color: white;
-    }
-
-    button[type="submit"] {
-      background-color: #007bff;
-      color: white;
-    }
-
-    @media (max-width: 600px) {
-      .form-group {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .form-group label {
-        margin-bottom: 5px;
-      }
-
-      .form-group input {
-        width: 100%;
-      }
-    }
+    .collapse-btn { background: #007bff; color: #fff; }
+    .removeBtn { background: #dc3545; color: #fff; margin-top: 10px; }
+    .addBtn { background: #28a745; color: #fff; margin-bottom: 10px; }
+    button[type="submit"] { background: #007bff; color: #fff; display: block; margin: 10px 0; }
+    .collapsed { display: none; }
   </style>
 </head>
 <body>
 
-  <h2>Directors Information</h2>
+  <h2>Company Officers Information</h2>
 
-  <form id="directorsForm">
-    <div id="directorsContainer">
-      <div class="director" data-index="1">
-        <h3>Director 1</h3>
+  
 
-        <div class="section">
-          <button type="button" class="collapse-btn">Toggle Personal Info</button>
-          <div class="content">
-            <h4>Personal Information</h4>
+  <form id="companyForm">
+  <div id="businessInfoContainer"></div>
 
-            <div class="form-group">
-              <label for="name-1">Full Name:</label>
-              <input type="text" id="name-1" name="name[]" />
-            </div>
+    <div class="role-section" id="directorsSection"></div>
+    <div class="role-section" id="secretariesSection"></div>
+    <div class="role-section" id="shareholdersSection"></div>
 
-            <div class="form-group">
-              <label for="email-1">Email:</label>
-              <input type="email" id="email-1" name="email[]" />
-            </div>
-
-            <div class="form-group">
-              <label for="phone-1">Phone:</label>
-              <input type="text" id="phone-1" name="phone[]" />
-            </div>
-
-            <div class="form-group">
-              <label for="dob-1">Date of Birth:</label>
-              <input type="date" id="dob-1" name="dob[]" />
-            </div>
-          </div>
-        </div>
-
-        <div class="section">
-          <button type="button" class="collapse-btn">Toggle Residential Info</button>
-          <div class="content">
-            <h4>Residential Information</h4>
-
-            <div class="form-group">
-              <label for="address-1">Address:</label>
-              <input type="text" id="address-1" name="address[]" />
-            </div>
-
-            <div class="form-group">
-              <label for="city-1">City:</label>
-              <input type="text" id="city-1" name="city[]" />
-            </div>
-
-            <div class="form-group">
-              <label for="country-1">Country:</label>
-              <input type="text" id="country-1" name="country[]" />
-            </div>
-          </div>
-        </div>
-
-        <button type="button" class="removeBtn">Remove</button>
-      </div>
-    </div>
-
-    <button type="button" id="addDirector">Add Another Director</button>
-    <button type="submit">Submit</button>
+    <button type="submit">Submit This Company</button>
   </form>
 
+  <!-- Placeholder for all companies -->
+  <div id="companiesOutput"></div>
+
   <script>
-    const directorsContainer = document.getElementById('directorsContainer');
-    const addDirectorBtn = document.getElementById('addDirector');
-    let directorCount = 1;
+  document.addEventListener('DOMContentLoaded', () => {
+    function createRoleSection(roleId, roleLabel) {
+      const section = document.getElementById(`${roleId}Section`);
+      section.innerHTML = `
+        <h3>${roleLabel}</h3>
+        <div id="${roleId}Container"></div>
+        <button type="button" class="addBtn" id="add${roleLabel}">Add ${roleLabel}</button>
+        <hr/>
+      `;
+      const container = section.querySelector(`#${roleId}Container`);
+      const addBtn = section.querySelector(`#add${roleLabel}`);
+      let count = 1;
+      container.appendChild(createPersonBlock(roleId, roleLabel, count));
 
-    function createDirectorBlock(index) {
+      addBtn.addEventListener('click', () => {
+        count++;
+        container.appendChild(createPersonBlock(roleId, roleLabel, count));
+      });
+
+      container.addEventListener('click', (e) => {
+        if (e.target.classList.contains('removeBtn')) {
+          e.target.closest('.person').remove();
+          relabel(container, roleLabel);
+        }
+        if (e.target.classList.contains('collapse-btn')) {
+          e.target.nextElementSibling.classList.toggle('collapsed');
+        }
+      });
+    }
+
+    function createPersonBlock(roleId, roleLabel, index) {
       const div = document.createElement('div');
-      div.classList.add('director');
-      div.setAttribute('data-index', index);
+      div.classList.add('person');
+      div.dataset.index = index;
       div.innerHTML = `
-        <h3>Director ${index}</h3>
-
+        <h4>${roleLabel} ${index}</h4>
         <div class="section">
           <button type="button" class="collapse-btn">Toggle Personal Info</button>
           <div class="content">
-            <h4>Personal Information</h4>
-
-            <div class="form-group">
-              <label for="name-${index}">Full Name:</label>
-              <input type="text" id="name-${index}" name="name[]" />
-            </div>
-
-            <div class="form-group">
-              <label for="email-${index}">Email:</label>
-              <input type="email" id="email-${index}" name="email[]" />
-            </div>
-
-            <div class="form-group">
-              <label for="phone-${index}">Phone:</label>
-              <input type="text" id="phone-${index}" name="phone[]" />
-            </div>
-
-            <div class="form-group">
-              <label for="dob-${index}">Date of Birth:</label>
-              <input type="date" id="dob-${index}" name="dob[]" />
-            </div>
+            <div class="form-group"><label>Full Name:</label><input type="text" name="${roleId}_name[]" /></div>
+            <div class="form-group"><label>Email:</label><input type="email" name="${roleId}_email[]" /></div>
+            <div class="form-group"><label>Phone:</label><input type="text" name="${roleId}_phone[]" /></div>
+            <div class="form-group"><label>Date of Birth:</label><input type="date" name="${roleId}_dob[]" /></div>
           </div>
         </div>
-
         <div class="section">
           <button type="button" class="collapse-btn">Toggle Residential Info</button>
           <div class="content">
-            <h4>Residential Information</h4>
-
-            <div class="form-group">
-              <label for="address-${index}">Address:</label>
-              <input type="text" id="address-${index}" name="address[]" />
-            </div>
-
-            <div class="form-group">
-              <label for="city-${index}">City:</label>
-              <input type="text" id="city-${index}" name="city[]" />
-            </div>
-
-            <div class="form-group">
-              <label for="country-${index}">Country:</label>
-              <input type="text" id="country-${index}" name="country[]" />
-            </div>
+            <div class="form-group"><label>Address:</label><input type="text" name="${roleId}_address[]" /></div>
+            <div class="form-group"><label>City:</label><input type="text" name="${roleId}_city[]" /></div>
+            <div class="form-group"><label>Country:</label><input type="text" name="${roleId}_country[]" /></div>
           </div>
         </div>
-
         <button type="button" class="removeBtn">Remove</button>
       `;
       return div;
     }
 
-    addDirectorBtn.addEventListener('click', () => {
-      directorCount++;
-      directorsContainer.appendChild(createDirectorBlock(directorCount));
-    });
-
-    directorsContainer.addEventListener('click', (e) => {
-      if (e.target.classList.contains('removeBtn')) {
-        e.target.closest('.director').remove();
-        relabelDirectors();
-      }
-      if (e.target.classList.contains('collapse-btn')) {
-        const content = e.target.nextElementSibling;
-        content.classList.toggle('collapsed');
-      }
-    });
-
-    function relabelDirectors() {
-      const directors = directorsContainer.querySelectorAll('.director');
-      directorCount = directors.length;
-      directors.forEach((dir, i) => {
-        const index = i + 1;
-        dir.setAttribute('data-index', index);
-        dir.querySelector('h3').textContent = `Director ${index}`;
-        dir.querySelector('[name="name[]"]').id = `name-${index}`;
-        dir.querySelector('[name="email[]"]').id = `email-${index}`;
-        dir.querySelector('[name="phone[]"]').id = `phone-${index}`;
-        dir.querySelector('[name="dob[]"]').id = `dob-${index}`;
-        dir.querySelector('[name="address[]"]').id = `address-${index}`;
-        dir.querySelector('[name="city[]"]').id = `city-${index}`;
-        dir.querySelector('[name="country[]"]').id = `country-${index}`;
-      });
+    function relabel(container, roleLabel) {
+      const blocks = container.querySelectorAll('.person');
+      blocks.forEach((b, i) => b.querySelector('h4').textContent = `${roleLabel} ${i + 1}`);
     }
 
-    document.getElementById('directorsForm').addEventListener('submit', (e) => {
+    // Initialize all role sections
+    createRoleSection('directors', 'Director');
+    createRoleSection('secretaries', 'Secretary');
+    createRoleSection('shareholders', 'Shareholder');
+
+    // Handle submission
+    document.getElementById('companyForm').addEventListener('submit', (e) => {
       e.preventDefault();
       const formData = new FormData(e.target);
-      const names = formData.getAll('name[]');
-      const emails = formData.getAll('email[]');
-      const phones = formData.getAll('phone[]');
-      const dobs = formData.getAll('dob[]');
-      const addresses = formData.getAll('address[]');
-      const cities = formData.getAll('city[]');
-      const countries = formData.getAll('country[]');
+      const companyData = {
+        directors: collectRoleData(formData, 'directors'),
+        secretaries: collectRoleData(formData, 'secretaries'),
+        shareholders: collectRoleData(formData, 'shareholders')
+      };
 
-      const directors = names.map((_, i) => ({
-        id: i + 1,
-        personal: {
-          name: names[i],
-          email: emails[i],
-          phone: phones[i],
-          dob: dobs[i]
-        },
-        residential: {
-          address: addresses[i],
-          city: cities[i],
-          country: countries[i]
-        }
-      }));
-
-      console.log(directors);
-      alert("Check console for submitted data!");
+      // send data to external renderer
+      window.renderCompanyTables(companyData);
+      e.target.reset(); // optional: clears form
     });
+
+    function collectRoleData(formData, roleId) {
+      const names = formData.getAll(`${roleId}_name[]`);
+      const emails = formData.getAll(`${roleId}_email[]`);
+      const phones = formData.getAll(`${roleId}_phone[]`);
+      const dobs = formData.getAll(`${roleId}_dob[]`);
+      const addresses = formData.getAll(`${roleId}_address[]`);
+      const cities = formData.getAll(`${roleId}_city[]`);
+      const countries = formData.getAll(`${roleId}_country[]`);
+      return names.map((_, i) => ({
+        id: i + 1,
+        personal: { name: names[i], email: emails[i], phone: phones[i], dob: dobs[i] },
+        residential: { address: addresses[i], city: cities[i], country: countries[i] }
+      }));
+    }
+  });
   </script>
-
-  <script src="directorsTable-copy.js"></script>
-
+<script src="businessInfo.js"></script>
+  <script src="Table.js"></script>
 </body>
 </html>
