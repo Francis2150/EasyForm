@@ -40,13 +40,13 @@ function createCompanyBlock(index, companyData) {
   // ====== Company Header Info ======
   const header = document.createElement('div');
   header.innerHTML = `
-    <h3 style="color:#007bff;">${companyData.info.companyName || 'Unnamed Company'}</h3>
-    <p><strong>Reg. No:</strong> ${companyData.info.registrationNumber || '-'}<br>
-       <strong>Incorporation Date:</strong> ${companyData.info.incorporationDate || '-'}<br>
-       <strong>Address:</strong> ${companyData.info.businessAddress || '-'}, 
-       ${companyData.info.companyCity || '-'}, ${companyData.info.companyCountry || '-'}<br>
-       <strong>Nature of Business:</strong> ${companyData.info.natureOfBusiness || '-'}<br>
-       <strong>Tax ID:</strong> ${companyData.info.taxId || '-'}</p>
+    <h3 style="color:#007bff;">${escapeHtml(companyData.info.companyName) || 'Unnamed Company'}</h3>
+    <p><strong>Reg. No:</strong> ${escapeHtml(companyData.info.registrationNumber) || '-'}<br>
+       <strong>Incorporation Date:</strong> ${escapeHtml(companyData.info.incorporationDate) || '-'}<br>
+       <strong>Address:</strong> ${escapeHtml(companyData.info.businessAddress) || '-'}, 
+       ${escapeHtml(companyData.info.companyCity) || '-'}, ${escapeHtml(companyData.info.companyCountry) || '-'}<br>
+       <strong>Nature of Business:</strong> ${escapeHtml(companyData.info.natureOfBusiness) || '-'}<br>
+       <strong>Tax ID:</strong> ${escapeHtml(companyData.info.taxId) || '-'}</p>
     <hr>
   `;
   companyDiv.appendChild(header);
@@ -79,13 +79,15 @@ function createCompanyBlock(index, companyData) {
   actionRow.appendChild(deleteBtn);
   companyDiv.appendChild(actionRow);
 
-  // ====== Officer Tables ======
-  Object.entries(companyData.roles).forEach(([role, people]) => {
+  // ====== Officer Tables (Directors, Secretaries, Shareholders, Beneficial Owners) ======
+  // Keep consistent order and show only if array has items
+  const roleOrder = ['directors', 'secretaries', 'shareholders', 'beneficialOwners'];
+  roleOrder.forEach(role => {
+    const people = (companyData.roles && companyData.roles[role]) ? companyData.roles[role] : [];
     if (!people || !people.length) return;
 
     const sectionTitle = document.createElement('h4');
-    // Capitalize first letter (Directors / Secretaries / Shareholders)
-    sectionTitle.textContent = role.charAt(0).toUpperCase() + role.slice(1);
+    sectionTitle.textContent = role === 'beneficialOwners' ? 'Beneficial Owners' : (role.charAt(0).toUpperCase() + role.slice(1));
     companyDiv.appendChild(sectionTitle);
 
     const table = document.createElement('table');
@@ -164,7 +166,7 @@ function populateFormWithCompanyData(companyData) {
   document.getElementById('taxId').value = companyData.info.taxId || '';
 
   // Clear existing containers
-  ['directors', 'secretaries', 'shareholders'].forEach(role => {
+  ['directors', 'secretaries', 'shareholders', 'beneficialOwners'].forEach(role => {
     const container = document.getElementById(`${role}Container`);
     if (container) container.innerHTML = '';
   });
@@ -179,7 +181,8 @@ function populateFormWithCompanyData(companyData) {
         <label><strong>Role Selection:</strong></label><br>
         <label><input type="checkbox" class="role-checkbox director-only" value="Director"> Director only</label><br>
         <label><input type="checkbox" class="role-checkbox also-secretary" value="Secretary"> Also acts as Secretary</label><br>
-        <label><input type="checkbox" class="role-checkbox also-shareholder" value="Shareholder"> Also a Shareholder</label>
+        <label><input type="checkbox" class="role-checkbox also-shareholder" value="Shareholder"> Also a Shareholder</label><br>
+        <label><input type="checkbox" class="role-checkbox also-beneficial" value="BeneficialOwner"> Also a Beneficial Owner</label>
       </div>
       <div class="section">
         <div class="form-group"><label>Full Name:</label><input type="text" name="directors_name[]" value="${escapeHtml((p.personal && p.personal.name) || '')}" /></div>
@@ -199,17 +202,25 @@ function populateFormWithCompanyData(companyData) {
     const directorOnlyCb = block.querySelector('.director-only');
     const alsoSecretaryCb = block.querySelector('.also-secretary');
     const alsoShareholderCb = block.querySelector('.also-shareholder');
+    const alsoBeneficialCb = block.querySelector('.also-beneficial');
 
     if (Array.isArray(p.roles)) {
-      directorOnlyCb.checked = p.roles.includes('Director') && !(p.roles.includes('Secretary') || p.roles.includes('Shareholder'));
-      alsoSecretaryCb.checked = p.roles.includes('Secretary');
-      alsoShareholderCb.checked = p.roles.includes('Shareholder');
-      // If roles includes only Director (and no others), ensure directorOnly is checked
-      if (p.roles.includes('Director') && !p.roles.includes('Secretary') && !p.roles.includes('Shareholder')) {
+      // If roles contains only 'Director' and none of the others, set director-only true.
+      const hasDirector = p.roles.includes('Director');
+      const hasSecretary = p.roles.includes('Secretary');
+      const hasShareholder = p.roles.includes('Shareholder');
+      const hasBeneficial = p.roles.includes('BeneficialOwner');
+
+      directorOnlyCb.checked = hasDirector && !(hasSecretary || hasShareholder || hasBeneficial);
+      alsoSecretaryCb.checked = hasSecretary;
+      alsoShareholderCb.checked = hasShareholder;
+      alsoBeneficialCb.checked = hasBeneficial;
+
+      // If none of the role flags are present, default to director-only
+      if (!hasDirector && !hasSecretary && !hasShareholder && !hasBeneficial) {
         directorOnlyCb.checked = true;
       }
     } else {
-      // default: Director only
       directorOnlyCb.checked = true;
     }
 
@@ -218,21 +229,20 @@ function populateFormWithCompanyData(companyData) {
       if (directorOnlyCb.checked) {
         alsoSecretaryCb.checked = false;
         alsoShareholderCb.checked = false;
+        alsoBeneficialCb.checked = false;
       } else {
-        // If it's unchecked and no other is checked, re-check directorOnly to enforce at least one
-        if (!alsoSecretaryCb.checked && !alsoShareholderCb.checked) {
+        if (!alsoSecretaryCb.checked && !alsoShareholderCb.checked && !alsoBeneficialCb.checked) {
           directorOnlyCb.checked = true;
         }
       }
     });
 
-    [alsoSecretaryCb, alsoShareholderCb].forEach(cb => {
+    [alsoSecretaryCb, alsoShareholderCb, alsoBeneficialCb].forEach(cb => {
       cb.addEventListener('change', () => {
         if (cb.checked) {
           directorOnlyCb.checked = false;
         } else {
-          // if both others are unchecked, ensure at least directorOnly remains checked
-          if (!alsoSecretaryCb.checked && !alsoShareholderCb.checked) {
+          if (!alsoSecretaryCb.checked && !alsoShareholderCb.checked && !alsoBeneficialCb.checked) {
             directorOnlyCb.checked = true;
           }
         }
@@ -243,7 +253,6 @@ function populateFormWithCompanyData(companyData) {
     const removeBtn = block.querySelector('.removeBtn');
     removeBtn.addEventListener('click', () => {
       block.remove();
-      // relabel remaining director blocks
       const container = document.getElementById('directorsContainer');
       relabel(container, 'Director');
     });
@@ -251,11 +260,11 @@ function populateFormWithCompanyData(companyData) {
     return block;
   }
 
-  // Helper to create a plain person block for secretaries/shareholders
+  // Helper to create a plain person block for secretaries/shareholders/beneficialOwners
   function makeSimplePersonBlock(p, idx, role) {
     const block = document.createElement('div');
     block.classList.add('person');
-    const roleSingular = role.slice(0, -1);
+    const roleSingular = role === 'beneficialOwners' ? 'Beneficial Owner' : role.slice(0, -1).charAt(0).toUpperCase() + role.slice(1, -1);
     block.innerHTML = `
       <h4>${roleSingular} ${idx + 1}</h4>
       <div class="section">
@@ -276,7 +285,7 @@ function populateFormWithCompanyData(companyData) {
     removeBtn.addEventListener('click', () => {
       block.remove();
       const container = document.getElementById(`${role}Container`);
-      relabel(container, role.slice(0, -1).charAt(0).toUpperCase() + role.slice(1));
+      relabel(container, role === 'beneficialOwners' ? 'Beneficial Owner' : role.slice(0, -1).charAt(0).toUpperCase() + role.slice(1, -1));
     });
 
     return block;
@@ -310,6 +319,16 @@ function populateFormWithCompanyData(companyData) {
       shareholdersContainer.appendChild(block);
     });
     relabel(shareholdersContainer, 'Shareholder');
+  }
+
+  // Populate beneficial owners
+  const beneficialContainer = document.getElementById('beneficialOwnersContainer');
+  if (companyData.roles && Array.isArray(companyData.roles.beneficialOwners)) {
+    companyData.roles.beneficialOwners.forEach((p, i) => {
+      const block = makeSimplePersonBlock(p, i, 'beneficialOwners');
+      beneficialContainer.appendChild(block);
+    });
+    relabel(beneficialContainer, 'Beneficial Owner');
   }
 }
 

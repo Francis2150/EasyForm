@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const backBtn = document.createElement("button");
       backBtn.type = "button";
       backBtn.textContent = "⬅️ Back";
-      backBtn.classList.add("nav-back");
+      backBtn.classList.add("nav-button", "nav-back");
       backBtn.style.marginRight = "10px";
       backBtn.addEventListener("click", () => {
         if (currentSectionIndex > 0) {
@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const nextBtn = document.createElement("button");
       nextBtn.type = "button";
       nextBtn.textContent = "Next ➡️";
-      nextBtn.classList.add("nav-next");
+     nextBtn.classList.add("nav-button", "nav-next");
       nextBtn.addEventListener("click", () => {
         if (currentSectionIndex < sectionOrder.length - 1) {
           currentSectionIndex++;
