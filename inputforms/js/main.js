@@ -1,74 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Company Officers Form</title>
-  <link rel="stylesheet" href="../css/forminput.css">
-</head>
-<body>
-
-  <h2>Company Officers Information</h2>
-
-  <form id="companyForm">
-   <h2>Company Information</h2>
-
-  <div class="form-section">
-    <div class="form-group">
-      <label>Company Name:</label>
-      <input type="text" id="companyName" name="companyName" required>
-    </div>
-
-    <div class="form-group">
-      <label>Registration Number:</label>
-      <input type="text" id="registrationNumber" name="registrationNumber">
-    </div>
-
-    <div class="form-group">
-      <label>Date of Incorporation:</label>
-      <input type="date" id="incorporationDate" name="incorporationDate">
-    </div>
-
-    <div class="form-group">
-      <label>Business Address:</label>
-      <input type="text" id="businessAddress" name="businessAddress">
-    </div>
-
-    <div class="form-group">
-      <label>City:</label>
-      <input type="text" id="companyCity" name="companyCity">
-    </div>
-
-    <div class="form-group">
-      <label>Country:</label>
-      <input type="text" id="companyCountry" name="companyCountry">
-    </div>
-
-    <div class="form-group">
-      <label>Nature of Business:</label>
-      <input type="text" id="natureOfBusiness" name="natureOfBusiness">
-    </div>
-
-    <div class="form-group">
-      <label>Tax Identification No.:</label>
-      <input type="text" id="taxId" name="taxId">
-    </div>
-  </div>
-
-  <hr>
-
-    <div class="role-section" id="directorsSection"></div>
-    <div class="role-section" id="secretariesSection"></div>
-    <div class="role-section" id="shareholdersSection"></div>
-
-    <button type="submit">Submit This Company</button>
-  </form>
-
-  <div id="companiesOutput"></div>
-  <div id="allCompaniesContainer"></div>
-
-  <script>
-  document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
+    // Create role sections dynamically (keeps markup DRY)
     function createRoleSection(roleId, roleLabel) {
       const section = document.getElementById(`${roleId}Section`);
       section.innerHTML = `
@@ -87,6 +18,7 @@
         container.appendChild(createPersonBlock(roleId, roleLabel, count));
       });
 
+      // Delegate remove and collapse events
       container.addEventListener('click', (e) => {
         if (e.target.classList.contains('removeBtn')) {
           e.target.closest('.person').remove();
@@ -98,12 +30,13 @@
       });
     }
 
+    // Create a person block for a given role
     function createPersonBlock(roleId, roleLabel, index) {
       const div = document.createElement('div');
       div.classList.add('person');
       div.dataset.index = index;
 
-      // --- Director role checkboxes only ---
+      // Role-selection UI: only for directors (top of block)
       let roleSelectionHTML = '';
       if (roleId === 'directors') {
         roleSelectionHTML = `
@@ -111,7 +44,8 @@
             <label><strong>Role Selection:</strong></label><br>
             <label><input type="checkbox" class="role-checkbox director-only" name="director_role_${index}[]" value="Director" checked> Director only</label><br>
             <label><input type="checkbox" class="role-checkbox also-secretary" name="director_role_${index}[]" value="Secretary"> Also acts as Secretary</label><br>
-            <label><input type="checkbox" class="role-checkbox also-shareholder" name="director_role_${index}[]" value="Shareholder"> Also a Shareholder</label>
+            <label><input type="checkbox" class="role-checkbox also-shareholder" name="director_role_${index}[]" value="Shareholder"> Also a Shareholder</label><br>
+            <label><input type="checkbox" class="role-checkbox also-beneficial" name="director_role_${index}[]" value="BeneficialOwner"> Also a Beneficial Owner</label>
           </div>
         `;
       }
@@ -139,20 +73,29 @@
         <button type="button" class="removeBtn">Remove</button>
       `;
 
-      // --- Checkbox mutual exclusivity ---
+      // If director block, wire mutual exclusivity among checkboxes (Director only vs others)
       if (roleId === 'directors') {
         const directorOnly = div.querySelector('.director-only');
-        const others = div.querySelectorAll('.also-secretary, .also-shareholder');
+        const alsoSecretary = div.querySelector('.also-secretary');
+        const alsoShareholder = div.querySelector('.also-shareholder');
+        const alsoBeneficial = div.querySelector('.also-beneficial');
+        const others = [alsoSecretary, alsoShareholder, alsoBeneficial];
 
         directorOnly.addEventListener('change', () => {
           if (directorOnly.checked) {
             others.forEach(cb => cb.checked = false);
           }
         });
+
         others.forEach(cb => {
           cb.addEventListener('change', () => {
             if (cb.checked) {
               directorOnly.checked = false;
+            } else {
+              // If none of the others are checked, ensure at least directorOnly remains checked
+              if (!alsoSecretary.checked && !alsoShareholder.checked && !alsoBeneficial.checked) {
+                directorOnly.checked = true;
+              }
             }
           });
         });
@@ -161,22 +104,24 @@
       return div;
     }
 
+    // Relabel headings in a container after removals
     function relabel(container, roleLabel) {
       const blocks = container.querySelectorAll('.person');
       blocks.forEach((b, i) => b.querySelector('h4').textContent = `${roleLabel} ${i + 1}`);
     }
 
-    // Initialize all role sections
+    // Initialize the four role sections
     createRoleSection('directors', 'Director');
     createRoleSection('secretaries', 'Secretary');
     createRoleSection('shareholders', 'Shareholder');
+    createRoleSection('beneficialOwners', 'Beneficial Owner');
 
-    // Handle submission
+    // Handle form submit
     document.getElementById('companyForm').addEventListener('submit', (e) => {
       e.preventDefault();
       const formData = new FormData(e.target);
 
-      // --- Validate director roles ---
+      // Validate: each director must have at least one role selected
       const directorBlocks = document.querySelectorAll('#directorsContainer .person');
       for (let block of directorBlocks) {
         const checkboxes = block.querySelectorAll('.role-selection input[type="checkbox"]');
@@ -186,6 +131,7 @@
         }
       }
 
+      // Company-level info
       const companyInfo = {
         companyName: formData.get('companyName') || '',
         registrationNumber: formData.get('registrationNumber') || '',
@@ -197,26 +143,60 @@
         taxId: formData.get('taxId') || ''
       };
 
+      // Collect role-specific entries (these collect the form fields for each role)
       const directors = collectRoleData(formData, 'directors');
       const secretaries = collectRoleData(formData, 'secretaries');
       const shareholders = collectRoleData(formData, 'shareholders');
+      const beneficialOwners = collectRoleData(formData, 'beneficialOwners');
 
-      // Merge directors into their additional roles
+      // If directors indicated they also act as other roles, clone them into those arrays
       const directorBlocksList = document.querySelectorAll('#directorsContainer .person');
       directorBlocksList.forEach((block, i) => {
-        const selectedRoles = [...block.querySelectorAll('.role-selection input:checked')].map(cb => cb.value);
-        directors[i].roles = selectedRoles;
-        if (selectedRoles.includes('Secretary')) secretaries.push(directors[i]);
-        if (selectedRoles.includes('Shareholder')) shareholders.push(directors[i]);
+        const checked = [...block.querySelectorAll('.role-selection input:checked')].map(cb => cb.value);
+        // Ensure director record has roles array for later editing/preview
+        directors[i].roles = checked.slice(); // shallow copy
+
+        if (checked.includes('Secretary')) {
+          // push a copy (with same personal/residential) to secretaries
+          secretaries.push(JSON.parse(JSON.stringify(directors[i])));
+        }
+        if (checked.includes('Shareholder')) {
+          shareholders.push(JSON.parse(JSON.stringify(directors[i])));
+        }
+        if (checked.includes('BeneficialOwner')) {
+          beneficialOwners.push(JSON.parse(JSON.stringify(directors[i])));
+        }
       });
 
-      const companyRoles = { directors, secretaries, shareholders };
+      const companyRoles = {
+        directors,
+        secretaries,
+        shareholders,
+        beneficialOwners
+      };
+
       const fullCompanyData = { info: companyInfo, roles: companyRoles };
 
+      // Send to external renderer (companiesTablesGrouped.js)
       window.renderCompanyTables(fullCompanyData);
+
+      // Reset form for next entry
       e.target.reset();
+
+      // Re-initialize role sections (to get initial director block back)
+      // Clear containers
+      ['directors', 'secretaries', 'shareholders', 'beneficialOwners'].forEach(r => {
+        const c = document.getElementById(`${r}Container`);
+        if (c) c.innerHTML = '';
+      });
+      // Recreate starting blocks
+      createRoleSection('directors', 'Director');
+      createRoleSection('secretaries', 'Secretary');
+      createRoleSection('shareholders', 'Shareholder');
+      createRoleSection('beneficialOwners', 'Beneficial Owner');
     });
 
+    // Collects person arrays for a role from FormData
     function collectRoleData(formData, roleId) {
       const names = formData.getAll(`${roleId}_name[]`);
       const emails = formData.getAll(`${roleId}_email[]`);
@@ -227,14 +207,8 @@
       const countries = formData.getAll(`${roleId}_country[]`);
       return names.map((_, i) => ({
         id: i + 1,
-        personal: { name: names[i], email: emails[i], phone: phones[i], dob: dobs[i] },
-        residential: { address: addresses[i], city: cities[i], country: countries[i] }
+        personal: { name: names[i] || '', email: emails[i] || '', phone: phones[i] || '', dob: dobs[i] || '' },
+        residential: { address: addresses[i] || '', city: cities[i] || '', country: countries[i] || '' }
       }));
     }
   });
-  </script>
-
-  <script src="../js/table.js"></script>
-
-</body>
-</html>
