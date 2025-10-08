@@ -1,4 +1,4 @@
-// companiesTablesGrouped.js
+// table.js
 let companiesData = [];
 let editingCompanyIndex = null;
 
@@ -155,6 +155,14 @@ function createCompanyBlock(index, companyData) {
 // Repopulate form when editing
 // ----------------------
 function populateFormWithCompanyData(companyData) {
+  // Make sure the Company Info section is visible when editing (nav.js may be on another tab)
+  ['companyInfoSection','directorsSectionContainer','secretariesSectionContainer','shareholdersSectionContainer','beneficialOwnersSectionContainer']
+    .forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.style.display = (id === 'companyInfoSection') ? 'block' : 'none';
+    });
+
   // Company-level fields
   document.getElementById('companyName').value = companyData.info.companyName || '';
   document.getElementById('registrationNumber').value = companyData.info.registrationNumber || '';
