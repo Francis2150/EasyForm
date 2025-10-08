@@ -1,4 +1,3 @@
-// table.js
 let companiesData = [];
 let editingCompanyIndex = null;
 
@@ -6,11 +5,19 @@ window.renderCompanyTables = function (companyData) {
   const output = document.getElementById('companiesOutput');
 
   if (editingCompanyIndex !== null) {
+    // CRITICAL FIX: Remove the old company data completely before replacing
     companiesData[editingCompanyIndex] = companyData;
+    
+    // Remove the existing company block from DOM
     const existingDiv = output.querySelector(`.company-block[data-index="${editingCompanyIndex}"]`);
     if (existingDiv) {
-      existingDiv.replaceWith(createCompanyBlock(editingCompanyIndex, companyData));
+      existingDiv.remove();
     }
+    
+    // Create and insert the updated company block
+    const updatedCompanyDiv = createCompanyBlock(editingCompanyIndex, companyData);
+    output.appendChild(updatedCompanyDiv);
+    
     alert(`✅ Company ${editingCompanyIndex + 1} updated successfully!`);
     editingCompanyIndex = null;
     return;
@@ -143,6 +150,8 @@ function createCompanyBlock(index, companyData) {
   });
 
   editBtn.addEventListener('click', () => {
+    // CRITICAL FIX: Remove the company block from DOM when editing starts
+    companyDiv.remove();
     populateFormWithCompanyData(companyData);
     editingCompanyIndex = index;
     window.scrollTo({ top: 0, behavior: 'smooth' });
