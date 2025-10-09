@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Gratuity Records</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+    }
+    th {
+      background-color: #eee;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Gratuity Data Form</h1>
+
+  <form id="data-form">
+    <label>Pension ID: <input type="text" id="pensionID" required></label><br>
+    <label>Deceased Name: <input type="text" id="fullName" required></label><br>
+    <label>Amount Awarded: <input type="text" id="amountReceived" required></label><br>
+    <label>Workplace: <input type="text" id="placeOfWork" required></label><br>
+    <label>Receipt Date: <input type="date" id="disburseDate" required></label><br>
+    <label>Period: <input type="text" id="period" required></label><br><br>
+
+    <button type="submit">Add Record</button>
+    <button type="button" id="update-btn">Update</button>
+    <button type="button" id="delete-btn">Delete</button>
+  </form>
+
+  <p id="status"></p>
+
+  <h2>Gratuity Records Table</h2>
+  <table id="data-table">
+    <thead>
+      <tr>
+        <th>Pension ID</th>
+        <th>Name</th>
+        <th>Amount</th>
+        <th>Workplace</th>
+        <th>Date</th>
+        <th>Period</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+   <script src="../js/trial.js"></script>
+</body>
+</html>
