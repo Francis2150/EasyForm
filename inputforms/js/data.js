@@ -2,6 +2,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('companyForm');
   const allCompaniesContainer = document.getElementById('allCompaniesContainer');
 
+  // Add a separate update button next to the submit button
+  const submitBtn = form.querySelector('button[type="submit"]');
+  const updateBtn = document.createElement('button');
+  updateBtn.type = 'button';
+  updateBtn.textContent = 'Update Company';
+  updateBtn.style.display = 'none'; // Hidden by default
+  submitBtn.insertAdjacentElement('afterend', updateBtn);
+
   // --- STORAGE HELPERS ---
   function readData() {
     const raw = localStorage.getItem('companyData');
@@ -12,111 +20,83 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // --- COLLECT FORM DATA ---
- function collectCompanyData() {
-  const companyInfo = {
-    companyName: document.getElementById('companyName').value.trim(),
-    registrationNumber: document.getElementById('registrationNumber').value.trim(),
-    incorporationDate: document.getElementById('incorporationDate').value.trim(),
-    businessAddress: document.getElementById('businessAddress').value.trim(),
-    city: document.getElementById('companyCity').value.trim(),
-    country: document.getElementById('companyCountry').value.trim(),
-    natureOfBusiness: document.getElementById('natureOfBusiness').value.trim(),
-    taxId: document.getElementById('taxId').value.trim()
-  };
+  function collectCompanyData() {
+    const companyInfo = {
+      companyName: document.getElementById('companyName').value.trim(),
+      registrationNumber: document.getElementById('registrationNumber').value.trim(),
+      incorporationDate: document.getElementById('incorporationDate').value.trim(),
+      businessAddress: document.getElementById('businessAddress').value.trim(),
+      city: document.getElementById('companyCity').value.trim(),
+      country: document.getElementById('companyCountry').value.trim(),
+      natureOfBusiness: document.getElementById('natureOfBusiness').value.trim(),
+      taxId: document.getElementById('taxId').value.trim()
+    };
 
-  const roles = ['directors', 'secretaries', 'shareholders', 'beneficialOwners'];
-  const peopleData = {
-    directors: [],
-    secretaries: [],
-    shareholders: [],
-    beneficialOwners: []
-  };
+    const roles = ['directors', 'secretaries', 'shareholders', 'beneficialOwners'];
+    const peopleData = {
+      directors: [],
+      secretaries: [],
+      shareholders: [],
+      beneficialOwners: []
+    };
 
-  roles.forEach(role => {
-    const section = document.getElementById(`${role}Section`);
-    if (!section) return;
-    const persons = section.querySelectorAll('.person');
+    roles.forEach(role => {
+      const section = document.getElementById(`${role}Section`);
+      if (!section) return;
+      const persons = section.querySelectorAll('.person');
 
-    persons.forEach(p => {
-      const personObj = {};
-      const contentBlocks = p.querySelectorAll('.content');
+      persons.forEach(p => {
+        const personObj = {};
+        const contentBlocks = p.querySelectorAll('.content');
 
-      // Personal info
-      if (contentBlocks[0]) {
-        const [fullName, email, phone, dob] = contentBlocks[0].querySelectorAll('input');
-        personObj.fullName = fullName.value.trim();
-        personObj.email = email.value.trim();
-        personObj.phone = phone.value.trim();
-        personObj.dob = dob.value.trim();
-      }
+        if (contentBlocks[0]) {
+          const [fullName, email, phone, dob] = contentBlocks[0].querySelectorAll('input');
+          personObj.fullName = fullName?.value.trim() || '';
+          personObj.email = email?.value.trim() || '';
+          personObj.phone = phone?.value.trim() || '';
+          personObj.dob = dob?.value.trim() || '';
+        }
 
-      // Residential info
-      if (contentBlocks[1]) {
-        const [address, city, country] = contentBlocks[1].querySelectorAll('input');
-        personObj.address = address.value.trim();
-        personObj.city = city.value.trim();
-        personObj.country = country.value.trim();
-      }
+        if (contentBlocks[1]) {
+          const [address, city, country] = contentBlocks[1].querySelectorAll('input');
+          personObj.address = address?.value.trim() || '';
+          personObj.city = city?.value.trim() || '';
+          personObj.country = country?.value.trim() || '';
+        }
 
-      // Role details (directors only)
-      if (role === 'directors') {
-        const directorOnly = p.querySelector('.director-only')?.checked || false;
-        const alsoSecretary = p.querySelector('.also-secretary')?.checked || false;
-        const alsoShareholder = p.querySelector('.also-shareholder')?.checked || false;
-        const alsoBeneficial = p.querySelector('.also-beneficial')?.checked || false;
-        const shareholderPercent = p.querySelector('.shareholder-input')?.value || '';
-        personObj.roles = {
-          directorOnly,
-          alsoSecretary,
-          alsoShareholder,
-          alsoBeneficial,
-          shareholderPercent
-        };
-      }
+        if (role === 'directors') {
+          personObj.roles = {
+            directorOnly: p.querySelector('.director-only')?.checked || false,
+            alsoSecretary: p.querySelector('.also-secretary')?.checked || false,
+            alsoShareholder: p.querySelector('.also-shareholder')?.checked || false,
+            alsoBeneficial: p.querySelector('.also-beneficial')?.checked || false,
+            shareholderPercent: p.querySelector('.shareholder-input')?.value || ''
+          };
+        }
 
-      // ✅ Skip if the person has no relevant data
-      const hasAnyData =
-        personObj.fullName ||
-        personObj.email ||
-        personObj.phone ||
-        personObj.address ||
-        personObj.city ||
-        personObj.country;
-
-      if (!hasAnyData) return; // ← Skip empty person
-
-      peopleData[role].push(personObj);
+        const hasAnyData = Object.values(personObj).some(v => v);
+        if (hasAnyData) peopleData[role].push(personObj);
+      });
     });
-  });
 
-  // --- EXPAND LINKED ROLES ---
-  const expandedData = { ...peopleData };
+    const expandedData = { ...peopleData };
 
-  peopleData.directors.forEach(d => {
-    if (!d.roles) return;
-    if (d.roles.alsoSecretary) {
-      expandedData.secretaries.push({
-        ...d,
-        fromRole: 'Director (Also Secretary)'
-      });
-    }
-    if (d.roles.alsoShareholder) {
-      expandedData.shareholders.push({
-        ...d,
-        sharePercent: d.roles.shareholderPercent || '',
-        fromRole: 'Director (Also Shareholder)'
-      });
-    }
-    if (d.roles.alsoBeneficial) {
-      expandedData.beneficialOwners.push({
-        ...d,
-        fromRole: 'Director (Also Beneficial Owner)'
-      });
-    }
-  });
+    peopleData.directors.forEach(d => {
+      if (!d.roles) return;
+      if (d.roles.alsoSecretary)
+        expandedData.secretaries.push({ ...d, fromRole: 'Director (Also Secretary)' });
+      if (d.roles.alsoShareholder)
+        expandedData.shareholders.push({
+          ...d,
+          sharePercent: d.roles.shareholderPercent || '',
+          fromRole: 'Director (Also Shareholder)'
+        });
+      if (d.roles.alsoBeneficial)
+        expandedData.beneficialOwners.push({ ...d, fromRole: 'Director (Also Beneficial Owner)' });
+    });
 
-  return { companyInfo, ...expandedData };
-}
+    return { companyInfo, ...expandedData };
+  }
 
   // --- RENDER ALL COMPANIES ---
   function renderAllCompanies() {
@@ -149,7 +129,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const tbody = table.querySelector('tbody');
 
     records.forEach((r, index) => {
-      const row = document.createElement('tr');
       const c = r.companyInfo;
 
       const companyDetailsHTML = `
@@ -161,37 +140,21 @@ document.addEventListener('DOMContentLoaded', () => {
         Tax ID: ${c.taxId || '-'}
       `;
 
-      // Consistent formatting with horizontal lines for all roles
       const formatPeople = (arr, showRoles = false) => {
         if (!arr || arr.length === 0) return '<em>None</em>';
         return arr
-          .map((p, i) => {
-            let info = `
-              <div style="margin-bottom:8px;">
-                <strong>${p.fullName || '-'}</strong><br>
-                Email: ${p.email || '-'}<br>
-                Phone: ${p.phone || '-'}<br>
-                DOB: ${p.dob || '-'}<br>
-                Address: ${p.address || '-'}, ${p.city || '-'}, ${p.country || '-'}
-            `;
-            if (p.fromRole) info += `<br><em>${p.fromRole}</em>`;
-            if (showRoles && p.roles) {
-              info += `<br><small>
-                ${p.roles.directorOnly ? 'Director only' : ''}
-                ${p.roles.alsoSecretary ? (p.roles.directorOnly ? '; ' : '') + 'Also Secretary' : ''}
-                ${p.roles.alsoShareholder ? (p.roles.directorOnly || p.roles.alsoSecretary ? '; ' : '') + `Also Shareholder (${p.roles.shareholderPercent || 0}%)` : ''}
-                ${p.roles.alsoBeneficial ? (p.roles.directorOnly || p.roles.alsoSecretary || p.roles.alsoShareholder ? '; ' : '') + 'Also Beneficial Owner' : ''}
-              </small>`;
-            }
-            if (p.sharePercent && !showRoles) info += `<br>Share %: ${p.sharePercent}`;
-            info += '</div>';
-            // Horizontal separator
-            if (i < arr.length - 1) info += '<hr>';
-            return info;
-          })
-          .join('');
+          .map(p => `<div><strong>${p.fullName || '-'}</strong><br>Email: ${p.email || '-'}<br>
+          Phone: ${p.phone || '-'}<br>DOB: ${p.dob || '-'}<br>
+          Address: ${p.address || '-'}, ${p.city || '-'}, ${p.country || '-'}
+          ${p.fromRole ? `<br><em>${p.fromRole}</em>` : ''}
+          ${showRoles && p.roles ? `<br><small>${Object.entries(p.roles)
+            .filter(([k, v]) => v)
+            .map(([k, v]) => (k === 'shareholderPercent' ? `${v}%` : k.replace('also', 'Also')))
+            .join('; ')}</small>` : ''}
+          </div><hr>`).join('');
       };
 
+      const row = document.createElement('tr');
       row.innerHTML = `
         <td>${companyDetailsHTML}</td>
         <td>${formatPeople(r.directors, true)}</td>
@@ -203,7 +166,6 @@ document.addEventListener('DOMContentLoaded', () => {
           <button class="deleteBtn" data-index="${index}">Delete</button>
         </td>
       `;
-
       tbody.appendChild(row);
     });
 
@@ -217,6 +179,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = records[idx];
         populateForm(data);
         form.dataset.editIndex = idx;
+        submitBtn.style.display = 'none';
+        updateBtn.style.display = 'inline-block';
         alert(`✏️ Editing: ${data.companyInfo.companyName}`);
       });
     });
@@ -236,7 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- POPULATE FORM (edit mode) ---
+  // --- POPULATE FORM ---
   function populateForm(data) {
     const c = data.companyInfo;
     document.getElementById('companyName').value = c.companyName;
@@ -249,7 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('taxId').value = c.taxId;
   }
 
-  // --- SUBMIT HANDLER ---
+  // --- SUBMIT HANDLER (Add new company) ---
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const companyData = collectCompanyData();
@@ -259,29 +223,38 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     let records = readData();
-
-    if (form.dataset.editIndex) {
-      const idx = parseInt(form.dataset.editIndex);
-      records[idx] = companyData;
-      writeData(records);
-      renderAllCompanies();
-      alert(`🔄 Updated: ${companyData.companyInfo.companyName}`);
-      form.reset();
-      delete form.dataset.editIndex;
-    } else {
-      const exists = records.find(
-        r => r.companyInfo.companyName.toLowerCase() === companyData.companyInfo.companyName.toLowerCase()
-      );
-      if (exists) {
-        alert('Company already exists. Use update instead.');
-        return;
-      }
-      records.push(companyData);
-      writeData(records);
-      renderAllCompanies();
-      alert(`✅ Added: ${companyData.companyInfo.companyName}`);
-      form.reset();
+    const exists = records.find(
+      r => r.companyInfo.companyName.toLowerCase() === companyData.companyInfo.companyName.toLowerCase()
+    );
+    if (exists) {
+      alert('Company already exists. Use Update instead.');
+      return;
     }
+
+    records.push(companyData);
+    writeData(records);
+    renderAllCompanies();
+    alert(`✅ Added: ${companyData.companyInfo.companyName}`);
+    form.reset();
+  });
+
+  // --- UPDATE HANDLER ---
+  updateBtn.addEventListener('click', () => {
+    const idx = parseInt(form.dataset.editIndex);
+    if (isNaN(idx)) {
+      alert('No record selected for update.');
+      return;
+    }
+    const records = readData();
+    const companyData = collectCompanyData();
+    records[idx] = companyData;
+    writeData(records);
+    renderAllCompanies();
+    alert(`🔄 Updated: ${companyData.companyInfo.companyName}`);
+    form.reset();
+    delete form.dataset.editIndex;
+    submitBtn.style.display = 'inline-block';
+    updateBtn.style.display = 'none';
   });
 
   // --- INITIAL LOAD ---

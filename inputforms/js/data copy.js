@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
     allCompaniesContainer.innerHTML = '';
 
     if (records.length === 0) {
-      allCompaniesContainer.innerHTML = '<p>No companies saved yet.</p>';
+      allCompaniesContainer.innerHTML = '<p>NO COMPANY YET</p>';
       return;
     }
 
