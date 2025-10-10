@@ -211,6 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('companyCountry').value = c.country;
     document.getElementById('natureOfBusiness').value = c.natureOfBusiness;
     document.getElementById('taxId').value = c.taxId;
+    
   }
 
   // --- SUBMIT HANDLER (Add new company) ---
