@@ -1,167 +1,279 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const roleLabels = {
-    directors: 'Director',
-    secretaries: 'Secretary',
-    shareholders: 'Shareholder',
-    beneficialOwners: 'Beneficial Owner'
-  };
+// structurecopy-fixed.js
+// Dynamically manages Directors, Secretary, Subscribers, and Beneficial Owners with automatic
+// renumbering of fieldsets AND their inner element IDs after additions/removals.
 
-  Object.entries(roleLabels).forEach(([roleId, roleLabel]) => {
-    createRoleSection(roleId, roleLabel);
+const titleOptions = `
+  <option value="">-- Select Title --</option>
+  <option value="Mr">Mr</option>
+  <option value="Mrs">Mrs</option>
+  <option value="Miss">Miss</option>
+  <option value="Ms">Ms</option>
+  <option value="Dr">Dr</option>
+`;
+
+const genderOptions = `
+  <option value="">-- Select Gender --</option>
+  <option value="Male">Male</option>
+  <option value="Female">Female</option>
+`;
+
+const nationalityOptions = `
+  <option value="">-- Select Nationality --</option>
+  <option value="Ghanaian">Ghanaian</option>
+  <option value="Nigerian">Nigerian</option>
+  <option value="British">British</option>
+  <option value="American">American</option>
+  <option value="Canadian">Canadian</option>
+  <option value="French">French</option>
+  <option value="German">German</option>
+  <option value="Chinese">Chinese</option>
+  <option value="Indian">Indian</option>
+  <option value="South African">South African</option>
+  <option value="Kenyan">Kenyan</option>
+  <option value="Ivorian">Ivorian</option>
+  <option value="Togolese">Togolese</option>
+  <option value="Other">Other</option>
+`;
+
+// Helper: renumber fieldsets and their inner element IDs
+function renumberFieldsets(containerId, prefixId, baseLabel) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  const fieldsets = Array.from(container.querySelectorAll('fieldset'));
+
+  fieldsets.forEach((fs, idx) => {
+    const newIndex = idx + 1;
+
+    // Extract old index if present
+    const oldMatch = fs.id.match(new RegExp(`^${prefixId}(\\d+)$`));
+    const oldIndex = oldMatch ? oldMatch[1] : null;
+
+    // Update fieldset id and legend text
+    fs.id = `${prefixId}${newIndex}`;
+    const legend = fs.querySelector('legend');
+    if (legend) legend.textContent = `${baseLabel} ${newIndex}`;
+
+    // Update descendant element ids that include the old index prefix
+    // Pattern: prefixId<digits>_rest  -> replace with prefixId<newIndex>_rest
+    fs.querySelectorAll('[id]').forEach(el => {
+      // Replace any occurrence of prefixId + digits + underscore
+      el.id = el.id.replace(new RegExp(`${prefixId}\\d+_`, 'g'), `${prefixId}${newIndex}_`);
+    });
+  });
+}
+
+// Helper: safely create a remove button that renumbers on removal
+function makeRemoveButton(onRemoveText) {
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.textContent = onRemoveText || 'Remove';
+  return btn;
+}
+
+// DOMContentLoaded main
+document.addEventListener('DOMContentLoaded', () => {
+  // ----- DIRECTORS -----
+  const directorsContainer = document.getElementById('idirectorsContainer');
+  const addDirectorBtn = document.getElementById('iaddDirectorBtn');
+
+  function createDirectorBlock(index) {
+    const fieldset = document.createElement('fieldset');
+    fieldset.id = `idirector${index}`;
+    fieldset.innerHTML = `
+      <legend>Director ${index}</legend>
+      <div class="form-group"><label>Title:</label><select id="idirector${index}_title">${titleOptions}</select></div>
+      <div class="form-group"><label>First Name:</label><input id="idirector${index}_fname" type="text"></div>
+      <div class="form-group"><label>Middle Name:</label><input id="idirector${index}_mname" type="text"></div>
+      <div class="form-group"><label>Surname:</label><input id="idirector${index}_sname" type="text"></div>
+      <div class="form-group"><label>Former Name:</label><input id="idirector${index}_former" type="text"></div>
+      <div class="form-group"><label>Gender:</label><select id="idirector${index}_gender">${genderOptions}</select></div>
+      <div class="form-group"><label>Date of Birth:</label><input id="idirector${index}_dob" type="date"></div>
+      <div class="form-group"><label>Place of Birth:</label><input id="idirector${index}_pob" type="text"></div>
+      <div class="form-group"><label>Nationality:</label><select id="idirector${index}_nation">${nationalityOptions}</select></div>
+      <div class="form-group"><label>Occupation:</label><input id="idirector${index}_occupation" type="text"></div>
+      <div class="form-group"><label>Contact 1:</label><input id="idirector${index}_contact1" type="text"></div>
+      <div class="form-group"><label>Contact 2:</label><input id="idirector${index}_contact2" type="text"></div>
+      <div class="form-group"><label>Email:</label><input id="idirector${index}_email" type="email"></div>
+      <div class="form-group"><label>TIN:</label><input id="idirector${index}_tin" type="text"></div>
+      <div class="form-group"><label>Ghana Card:</label><input id="idirector${index}_ghanaCard" type="text"></div>
+
+      <h4>Residential Address</h4>
+      <div class="form-group"><label>GPS:</label><input id="idirector${index}_resGps" type="text"></div>
+      <div class="form-group"><label>House No.:</label><input id="idirector${index}_resHse" type="text"></div>
+      <div class="form-group"><label>Landmark:</label><input id="idirector${index}_resLandmark" type="text"></div>
+      <div class="form-group"><label>Street:</label><input id="idirector${index}_resStreet" type="text"></div>
+      <div class="form-group"><label>City:</label><input id="idirector${index}_resCity" type="text"></div>
+      <div class="form-group"><label>Town:</label><input id="idirector${index}_resTown" type="text"></div>
+      <div class="form-group"><label>District:</label><input id="idirector${index}_resDistrict" type="text"></div>
+      <div class="form-group"><label>Region:</label><input id="idirector${index}_resRegion" type="text"></div>
+    `;
+
+    const removeBtn = makeRemoveButton('Remove Director');
+    removeBtn.addEventListener('click', () => {
+      fieldset.remove();
+      renumberFieldsets('idirectorsContainer', 'idirector', 'Director');
+    });
+    fieldset.appendChild(removeBtn);
+    return fieldset;
+  }
+
+  addDirectorBtn.addEventListener('click', () => {
+    const next = directorsContainer.querySelectorAll('fieldset').length + 1;
+    directorsContainer.appendChild(createDirectorBlock(next));
+    renumberFieldsets('idirectorsContainer', 'idirector', 'Director');
   });
 
-  function createRoleSection(roleId, roleLabel) {
-    const section = document.getElementById(`${roleId}Section`);
-    if (!section) return;
+  // Ensure at least one director exists
+  if (!directorsContainer.querySelector('fieldset')) {
+    directorsContainer.appendChild(createDirectorBlock(1));
+  }
 
-    const isSingleRole = roleId === 'secretaries';
-    section.innerHTML = `
-      <h3>${roleLabel}${isSingleRole ? '' : 's'}</h3>
-      <div id="${roleId}Container"></div>
-      ${isSingleRole ? '' : `<button type="button" class="addBtn">Add ${roleLabel}</button>`}
-      <hr/>
+  // ----- SECRETARY (single static set of fields) -----
+  const secretaryFields = document.getElementById('isecretaryFormFields');
+  if (secretaryFields) {
+    secretaryFields.innerHTML = `
+      <div class="form-group"><label>Title:</label><select id="isecTitle">${titleOptions}</select></div>
+      <div class="form-group"><label>First Name:</label><input id="isecFname" type="text"></div>
+      <div class="form-group"><label>Middle Name:</label><input id="isecMname" type="text"></div>
+      <div class="form-group"><label>Surname:</label><input id="isecSname" type="text"></div>
+      <div class="form-group"><label>Former Name:</label><input id="isecFormer" type="text"></div>
+      <div class="form-group"><label>Gender:</label><select id="isecGender">${genderOptions}</select></div>
+      <div class="form-group"><label>Date of Birth:</label><input id="isecDob" type="date"></div>
+      <div class="form-group"><label>Place of Birth:</label><input id="isecPob" type="text"></div>
+      <div class="form-group"><label>Nationality:</label><select id="isecNation">${nationalityOptions}</select></div>
+      <div class="form-group"><label>Occupation:</label><input id="isecOccupation" type="text"></div>
+      <div class="form-group"><label>Contact 1:</label><input id="isecContact1" type="text"></div>
+      <div class="form-group"><label>Contact 2:</label><input id="isecContact2" type="text"></div>
+      <div class="form-group"><label>Email:</label><input id="isecEmail" type="email"></div>
+      <div class="form-group"><label>TIN:</label><input id="isecTin" type="text"></div>
+      <div class="form-group"><label>Ghana Card:</label><input id="isecGhanaCard" type="text"></div>
+
+      <h4>Residential Address</h4>
+      <div class="form-group"><label>GPS:</label><input id="isecResGps" type="text"></div>
+      <div class="form-group"><label>House No.:</label><input id="isecResHse" type="text"></div>
+      <div class="form-group"><label>Landmark:</label><input id="isecResLandmark" type="text"></div>
+      <div class="form-group"><label>Street:</label><input id="isecResStreet" type="text"></div>
+      <div class="form-group"><label>City:</label><input id="isecResCity" type="text"></div>
+      <div class="form-group"><label>Town:</label><input id="isecResTown" type="text"></div>
+      <div class="form-group"><label>District:</label><input id="isecResDistrict" type="text"></div>
+      <div class="form-group"><label>Region:</label><input id="isecResRegion" type="text"></div>
+    `;
+  }
+
+  // ----- SUBSCRIBERS -----
+  const subscribersContainer = document.getElementById('isubscribersContainer');
+  const addSubscriberBtn = document.getElementById('iaddSubscriberBtn');
+
+  function createSubscriberBlock(index) {
+    const fieldset = document.createElement('fieldset');
+    fieldset.id = `isubscriber${index}`;
+    fieldset.innerHTML = `
+      <legend>Subscriber ${index}</legend>
+      <div class="form-group"><label>Title:</label><select id="isubscriber${index}_title">${titleOptions}</select></div>
+      <div class="form-group"><label>First Name:</label><input id="isubscriber${index}_fname" type="text"></div>
+      <div class="form-group"><label>Middle Name:</label><input id="isubscriber${index}_mname" type="text"></div>
+      <div class="form-group"><label>Surname:</label><input id="isubscriber${index}_sname" type="text"></div>
+      <div class="form-group"><label>Former Name:</label><input id="isubscriber${index}_former" type="text"></div>
+      <div class="form-group"><label>Gender:</label><select id="isubscriber${index}_gender">${genderOptions}</select></div>
+      <div class="form-group"><label>Date of Birth:</label><input id="isubscriber${index}_dob" type="date"></div>
+      <div class="form-group"><label>Place of Birth:</label><input id="isubscriber${index}_pob" type="text"></div>
+      <div class="form-group"><label>Nationality:</label><select id="isubscriber${index}_nation">${nationalityOptions}</select></div>
+      <div class="form-group"><label>Occupation:</label><input id="isubscriber${index}_occupation" type="text"></div>
+      <div class="form-group"><label>Contact 1:</label><input id="isubscriber${index}_contact1" type="text"></div>
+      <div class="form-group"><label>Contact 2:</label><input id="isubscriber${index}_contact2" type="text"></div>
+      <div class="form-group"><label>Email:</label><input id="isubscriber${index}_email" type="email"></div>
+      <div class="form-group"><label>TIN:</label><input id="isubscriber${index}_tin" type="text"></div>
+      <div class="form-group"><label>Ghana Card:</label><input id="isubscriber${index}_ghanaCard" type="text"></div>
+
+      <h4>Residential Address</h4>
+      <div class="form-group"><label>GPS:</label><input id="isubscriber${index}_resGps" type="text"></div>
+      <div class="form-group"><label>House No.:</label><input id="isubscriber${index}_resHse" type="text"></div>
+      <div class="form-group"><label>Landmark:</label><input id="isubscriber${index}_resLandmark" type="text"></div>
+      <div class="form-group"><label>Street:</label><input id="isubscriber${index}_resStreet" type="text"></div>
+      <div class="form-group"><label>City:</label><input id="isubscriber${index}_resCity" type="text"></div>
+      <div class="form-group"><label>Town:</label><input id="isubscriber${index}_resTown" type="text"></div>
+      <div class="form-group"><label>District:</label><input id="isubscriber${index}_resDistrict" type="text"></div>
+      <div class="form-group"><label>Region:</label><input id="isubscriber${index}_resRegion" type="text"></div>
+      <div class="form-group"><label>Share Percent:</label><input id="isubscriber${index}_sharePercent" type="number" min="0" max="100"></div>
     `;
 
-    const container = section.querySelector(`#${roleId}Container`);
-    const addBtn = section.querySelector('.addBtn');
-    container.appendChild(createPersonBlock(roleId, roleLabel, 1));
-
-    if (addBtn) {
-      addBtn.addEventListener('click', () => {
-        const nextIndex = container.querySelectorAll('.person').length + 1;
-        container.appendChild(createPersonBlock(roleId, roleLabel, nextIndex));
-        relabel(container, roleLabel);
-      });
-    }
-
-    container.addEventListener('click', (e) => {
-      if (e.target.classList.contains('removeBtn')) {
-        const person = e.target.closest('.person');
-        if (person) {
-          person.remove();
-          relabel(container, roleLabel);
-        }
-      }
-      if (e.target.classList.contains('collapse-btn')) {
-        const next = e.target.nextElementSibling;
-        if (next) next.classList.toggle('collapsed');
-      }
+    const removeBtn = makeRemoveButton('Remove Subscriber');
+    removeBtn.addEventListener('click', () => {
+      fieldset.remove();
+      renumberFieldsets('isubscribersContainer', 'isubscriber', 'Subscriber');
     });
+    fieldset.appendChild(removeBtn);
+    return fieldset;
   }
 
-  function createPersonBlock(roleId, roleLabel, index) {
-    const div = document.createElement('div');
-    div.classList.add('person');
-    div.dataset.index = index;
+  addSubscriberBtn.addEventListener('click', () => {
+    const next = subscribersContainer.querySelectorAll('fieldset').length + 1;
+    subscribersContainer.appendChild(createSubscriberBlock(next));
+    renumberFieldsets('isubscribersContainer', 'isubscriber', 'Subscriber');
+  });
 
-    let roleSelectionHTML = '';
-    if (roleId === 'directors') {
-      roleSelectionHTML = `
-        <div class="role-selection">
-          <label><strong>Role Selection:</strong></label><br>
-          <label><input type="checkbox" class="role-checkbox director-only" checked> Director only</label><br>
-          <label><input type="checkbox" class="role-checkbox also-secretary"> Also acts as Secretary</label><br>
-          <label>
-            <input type="checkbox" class="role-checkbox also-shareholder"> Also a Shareholder
-            <span class="shareholder-percentage" style="display:none;">
-              &nbsp;Share %: <input type="number" class="shareholder-input" min="0" max="100" placeholder="0">
-            </span>
-          </label><br>
-          <label><input type="checkbox" class="role-checkbox also-beneficial"> Also a Beneficial Owner</label>
-        </div>
-      `;
-    }
+  if (!subscribersContainer.querySelector('fieldset')) {
+    subscribersContainer.appendChild(createSubscriberBlock(1));
+  }
 
-    div.innerHTML = `
-      <h4>${roleLabel} ${index}</h4>
-      ${roleSelectionHTML}
-      <div class="section">
-        <button type="button" class="collapse-btn">Toggle Personal Info</button>
-        <div class="content">
-          <div class="form-group"><label>Full Name:</label><input type="text" /></div>
-          <div class="form-group"><label>Email:</label><input type="email" /></div>
-          <div class="form-group"><label>Phone:</label><input type="text" /></div>
-          <div class="form-group"><label>Date of Birth:</label><input type="date" /></div>
-        </div>
-      </div>
+  // ----- BENEFICIAL OWNERS -----
+  const ownersContainer = document.getElementById('iownersContainer');
+  const addOwnerBtn = document.getElementById('iaddOwnerBtn');
 
-      <div class="section">
-        <button type="button" class="collapse-btn">Toggle Residential Info</button>
-        <div class="content">
-          <div class="form-group"><label>Address:</label><input type="text" /></div>
-          <div class="form-group"><label>City:</label><input type="text" /></div>
-          <div class="form-group"><label>Country:</label><input type="text" /></div>
-        </div>
-      </div>
+  function createOwnerBlock(index) {
+    const fieldset = document.createElement('fieldset');
+    fieldset.id = `iowner${index}`;
+    fieldset.innerHTML = `
+      <legend>Beneficial Owner ${index}</legend>
+      <div class="form-group"><label>Title:</label><select id="iowner${index}_title">${titleOptions}</select></div>
+      <div class="form-group"><label>First Name:</label><input id="iowner${index}_fname" type="text"></div>
+      <div class="form-group"><label>Middle Name:</label><input id="iowner${index}_mname" type="text"></div>
+      <div class="form-group"><label>Surname:</label><input id="iowner${index}_sname" type="text"></div>
+      <div class="form-group"><label>Former Name:</label><input id="iowner${index}_former" type="text"></div>
+      <div class="form-group"><label>Gender:</label><select id="iowner${index}_gender">${genderOptions}</select></div>
+      <div class="form-group"><label>Date of Birth:</label><input id="iowner${index}_dob" type="date"></div>
+      <div class="form-group"><label>Place of Birth:</label><input id="iowner${index}_pob" type="text"></div>
+      <div class="form-group"><label>Nationality:</label><select id="iowner${index}_nation">${nationalityOptions}</select></div>
+      <div class="form-group"><label>Occupation:</label><input id="iowner${index}_occupation" type="text"></div>
+      <div class="form-group"><label>Contact 1:</label><input id="iowner${index}_contact1" type="text"></div>
+      <div class="form-group"><label>Contact 2:</label><input id="iowner${index}_contact2" type="text"></div>
+      <div class="form-group"><label>Email:</label><input id="iowner${index}_email" type="email"></div>
+      <div class="form-group"><label>TIN:</label><input id="iowner${index}_tin" type="text"></div>
+      <div class="form-group"><label>Ghana Card:</label><input id="iowner${index}_ghanaCard" type="text"></div>
 
-      ${roleId === 'secretaries' ? '' : '<button type="button" class="removeBtn">Remove</button>'}
+      <h4>Residential Address</h4>
+      <div class="form-group"><label>GPS:</label><input id="iowner${index}_resGps" type="text"></div>
+      <div class="form-group"><label>House No.:</label><input id="iowner${index}_resHse" type="text"></div>
+      <div class="form-group"><label>Landmark:</label><input id="iowner${index}_resLandmark" type="text"></div>
+      <div class="form-group"><label>Street:</label><input id="iowner${index}_resStreet" type="text"></div>
+      <div class="form-group"><label>City:</label><input id="iowner${index}_resCity" type="text"></div>
+      <div class="form-group"><label>Town:</label><input id="iowner${index}_resTown" type="text"></div>
+      <div class="form-group"><label>District:</label><input id="iowner${index}_resDistrict" type="text"></div>
+      <div class="form-group"><label>Region:</label><input id="iowner${index}_resRegion" type="text"></div>
+      <div class="form-group"><label>Share Percent:</label><input id="iowner${index}_sharePercent" type="number" min="0" max="100"></div>
     `;
 
-    if (roleId === 'directors') {
-      const directorOnly = div.querySelector('.director-only');
-      const alsoSecretary = div.querySelector('.also-secretary');
-      const alsoShareholder = div.querySelector('.also-shareholder');
-      const alsoBeneficial = div.querySelector('.also-beneficial');
-      const shareholderPercentBox = div.querySelector('.shareholder-percentage');
-      const secretaryContainer = document.getElementById('secretariesSectionContainer');
-
-      // Limit to only one director acting as secretary
-      alsoSecretary.addEventListener('change', () => {
-        if (alsoSecretary.checked) {
-          // Uncheck others
-          document.querySelectorAll('.also-secretary').forEach(cb => {
-            if (cb !== alsoSecretary) {
-              cb.checked = false;
-              cb.disabled = true;
-            }
-          });
-          secretaryContainer.style.display = 'none';
-          directorOnly.checked = false;
-        } else {
-          // Re-enable all checkboxes if none selected
-          const anyChecked = document.querySelectorAll('.also-secretary:checked').length > 0;
-          document.querySelectorAll('.also-secretary').forEach(cb => cb.disabled = false);
-          secretaryContainer.style.display = anyChecked ? 'none' : 'block';
-          if (!anyChecked && !alsoShareholder.checked && !alsoBeneficial.checked) {
-            directorOnly.checked = true;
-          }
-        }
-      });
-
-      directorOnly.addEventListener('change', () => {
-        if (directorOnly.checked) {
-          alsoSecretary.checked = false;
-          alsoShareholder.checked = false;
-          alsoBeneficial.checked = false;
-          shareholderPercentBox.style.display = 'none';
-          const anyChecked = document.querySelectorAll('.also-secretary:checked').length > 0;
-          secretaryContainer.style.display = anyChecked ? 'none' : 'block';
-          document.querySelectorAll('.also-secretary').forEach(cb => cb.disabled = anyChecked);
-        }
-      });
-
-      [alsoShareholder, alsoBeneficial].forEach(cb => {
-        cb.addEventListener('change', () => {
-          if (cb.checked) {
-            directorOnly.checked = false;
-          } else if (!alsoSecretary.checked && !alsoShareholder.checked && !alsoBeneficial.checked) {
-            directorOnly.checked = true;
-          }
-          if (cb.classList.contains('also-shareholder')) {
-            shareholderPercentBox.style.display = cb.checked ? 'inline-block' : 'none';
-          }
-        });
-      });
-    }
-
-    return div;
-  }
-
-  function relabel(container, roleLabel) {
-    const blocks = container.querySelectorAll('.person');
-    blocks.forEach((block, i) => {
-      const h4 = block.querySelector('h4');
-      if (h4) h4.textContent = `${roleLabel} ${i + 1}`;
+    const removeBtn = makeRemoveButton('Remove Owner');
+    removeBtn.addEventListener('click', () => {
+      fieldset.remove();
+      renumberFieldsets('iownersContainer', 'iowner', 'Beneficial Owner');
     });
+    fieldset.appendChild(removeBtn);
+    return fieldset;
   }
+
+  addOwnerBtn.addEventListener('click', () => {
+    const next = ownersContainer.querySelectorAll('fieldset').length + 1;
+    ownersContainer.appendChild(createOwnerBlock(next));
+    renumberFieldsets('iownersContainer', 'iowner', 'Beneficial Owner');
+  });
+
+  if (!ownersContainer.querySelector('fieldset')) {
+    ownersContainer.appendChild(createOwnerBlock(1));
+  }
+
+  // Final: ensure all sections are correctly numbered on load
+  renumberFieldsets('idirectorsContainer', 'idirector', 'Director');
+  renumberFieldsets('isubscribersContainer', 'isubscriber', 'Subscriber');
+  renumberFieldsets('iownersContainer', 'iowner', 'Beneficial Owner');
 });
