@@ -578,5 +578,30 @@
 
    
     <script src="../llc-js/editable.js"></script>
+
+    <script>
+(function() {
+  // Create a broadcaster channel to sync data between pages
+  const channel = new BroadcastChannel("formSync");
+
+  // Function to collect form data
+  function collectFormData() {
+    const data = {};
+    document.querySelectorAll("#icompanyForm input, #icompanyForm select, #icompanyForm textarea").forEach(el => {
+      if (el.id) data[el.id] = el.value;
+    });
+    return data;
+  }
+
+  // Watch for input changes and broadcast them
+  document.addEventListener("input", () => {
+    const formData = collectFormData();
+    channel.postMessage(formData);
+  });
+
+  console.log("📡 Live preview broadcasting active");
+})();
+</script>
+
 </body>
 </html>
