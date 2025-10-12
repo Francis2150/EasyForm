@@ -24,7 +24,7 @@
         <img src="../llc-images/LLC1.jpg" alt="Page 1">
         <p class="overlay-text" id="registeredCon" style="top:173px;left:314.5px;width:14px;height:14px;border:1px solid rgb(124,117,117);"></p>
         <p class="overlay-text" id="standardCon" style="top:173px;left:529.5px;width:14px;height:14px;border:1px solid rgb(124,117,117);">&#10004;</p>
-        <p class="overlay-text companyName" id="companyNameOne" style="top:245.5px;left:169px;width:380px;border-top:1px solid rgb(124,117,117);border-bottom:1px solid rgb(124,117,117);"></p>
+        <p class="overlay-text companyName" id="companyName" style="top:245.5px;left:169px;width:380px;border-top:1px solid rgb(124,117,117);border-bottom:1px solid rgb(124,117,117);"></p>
         <p class="overlay-text" id="endWithLTD" style="top:380px;left:361.5px;width:14px;height:14px;border:1px solid rgb(124,117,117);"></p>
         <p class="overlay-text" id="endWithLIMITED" style="top:380px;left:194.5px;width:14px;height:14px;border:1px solid rgb(124,117,117);"></p>
         <p class="overlay-text" id="companyPresentedBy" style="top:397.4px;left:169px;width:380px;border-bottom:1px solid rgb(124,117,117);"></p>
@@ -574,34 +574,42 @@
 </div>
 
 
-    <script src="../llc-js/Date.js"></script>
+
 
    
+  
+ <script src="../llc-js/Date.js"></script>
+
+    <script src="../llc-js/signatures.js"></script>
     <script src="../llc-js/editable.js"></script>
 
     <script>
 (function() {
-  // Create a broadcaster channel to sync data between pages
   const channel = new BroadcastChannel("formSync");
 
-  // Function to collect form data
-  function collectFormData() {
-    const data = {};
-    document.querySelectorAll("#icompanyForm input, #icompanyForm select, #icompanyForm textarea").forEach(el => {
-      if (el.id) data[el.id] = el.value;
-    });
-    return data;
-  }
+  // Optional: mapping between form field IDs → preview element IDs
+  const idMap = {
+    icompanyName: "companyName",
+    iendWith: "Officeemail",
+    officeEmail: "Officeemail",
+    director1FirstName: "D1FirstName",
+    director1LastName: "D1LastName",
+    // add as many as needed...
+  };
 
-  // Watch for input changes and broadcast them
-  document.addEventListener("input", () => {
-    const formData = collectFormData();
-    channel.postMessage(formData);
-  });
+  channel.onmessage = (event) => {
+    const data = event.data;
+    for (const key in data) {
+      const targetId = idMap[key] || key; // fallback to same name
+      const el = document.getElementById(targetId);
+      if (el) el.textContent = data[key];
+    }
+  };
 
-  console.log("📡 Live preview broadcasting active");
+  console.log("👀 Live preview listening for updates...");
 })();
 </script>
+
 
 </body>
 </html>

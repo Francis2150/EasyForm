@@ -1,0 +1,170 @@
+#sameasabov {
+    top: 80px;
+    left: 292px;
+    width: 200px;
+    transform: rotate(-25deg);
+    font-size: 23px;
+    position: absolute;
+}
+
+#D2Signature {
+    top: 219px;
+    left: 290px;
+    width: 157px;
+    height: 39px;
+    padding-top: 15px;
+    position: absolute;
+}
+
+/* Checkboxes (unlabeled ones in a vertical list) */
+#chk5_1 { top: 293px; left: 505px; width: 13px; height: 12px; position: absolute; }
+#chk5_2 { top: 313px; left: 505px; width: 13px; height: 12px; position: absolute; }
+#chk5_3 { top: 332px; left: 505px; width: 13px; height: 12px; position: absolute; }
+#chk5_4 { top: 352px; left: 505px; width: 13px; height: 12px; position: absolute; }
+#chk5_5 { top: 370px; left: 505px; width: 13px; height: 12px; position: absolute; }
+#chk5_6 { top: 389px; left: 505px; width: 13px; height: 12px; position: absolute; }
+#chk5_7 { top: 407px; left: 505px; width: 13px; height: 12px; position: absolute; }
+
+#secTittleMR { top: 482px; left: 242px; width: 14px; height: 14px; position: absolute; }
+#secTittleMRS { top: 482px; left: 337.5px; width: 14px; height: 14px; position: absolute; }
+#secTittleMISS { top: 482px; left: 435px; width: 14px; height: 14px; position: absolute; }
+#secTittleMS { top: 482px; left: 505px; width: 14px; height: 14px; position: absolute; }
+#secTittleDR { top: 482px; left: 578px; width: 14px; height: 14px; position: absolute; }
+
+#SecFirstName {
+    top: 499px; left: 193px; width: 383px;
+    border-top: 1px solid rgb(124,117,117);
+    position: absolute;
+}
+
+#secMiddleName {
+    top: 516.5px; left: 193px; width: 383px;
+    border-top: 1px solid rgb(124,117,117);
+    position: absolute;
+}
+
+#secLastName {
+    top: 536px; left: 193px; width: 383px;
+    border-top: 1px solid rgb(124,117,117);
+    position: absolute;
+}
+
+#secFormerName {
+    top: 556px; left: 193px; width: 383px;
+    border-top: 1px solid rgb(124,117,117);
+    position: absolute;
+}
+
+#secTIN {
+    top: 573.5px; left: 193px; width: 383px;
+    border-top: 1px solid rgb(124,117,117);
+    border-bottom: 1px solid rgb(124,117,117);
+    position: absolute;
+}
+
+#secGhanaCard {
+    top: 594px; left: 330px; width: 238px;
+    border-top: 1px solid rgb(124,117,117);
+    border-bottom: 1px solid rgb(124,117,117);
+    position: absolute;
+}
+
+#secgenderMale {
+    top: 632.5px; left: 242px; width: 15px; height: 13px;
+    position: absolute;
+}
+
+#secgenderFemale {
+    top: 632.5px; left: 338px; width: 15px; height: 13px;
+    position: absolute;
+}
+
+#secDOB {
+    top: 648.3px; left: 193px; width: 383px;
+    border-top: 1px solid rgb(124,117,117);
+    position: absolute;
+}
+
+#secPOB {
+    top: 668.2px; left: 193px; width: 383px;
+    border-top: 1px solid rgb(124,117,117);
+    position: absolute;
+}
+
+#secNationality {
+    top: 686px; left: 193px; width: 383px;
+    border-top: 1px solid rgb(124,117,117);
+    position: absolute;
+}
+
+#secOccupation {
+    top: 707px; left: 193px; width: 383px;
+    border-top: 1px solid rgb(124,117,117);
+    position: absolute;
+}
+
+#secPhoneNO1 {
+    top: 725px; left: 193px; width: 383px;
+    border-top: 1px solid rgb(124,117,117);
+    position: absolute;
+}
+
+#secPhoneNO2 {
+    top: 744px; left: 193px; width: 383px;
+    border-top: 1px solid rgb(124,117,117);
+    border-bottom: 1px solid rgb(124,117,117);
+    position: absolute;
+}
+
+#secEmail {
+    top: 780px; left: 193px; width: 383px;
+    border-top: 1px solid rgb(124,117,117);
+    position: absolute;
+}
+
+#secDigitalAddress {
+    top: 837.5px; left: 193px; width: 383px;
+    border-top: 1px solid rgb(124,117,117);
+    position: absolute;
+}
+
+#secLandmark {
+    top: 856px; left: 193px; width: 383px;
+    border-top: 1px solid rgb(124,117,117);
+    position: absolute;
+}
+
+#sechousenumber {
+    top: 876px; left: 193px; width: 123px;
+    position: absolute;
+}
+
+#secTown {
+    top: 876px; left: 352px; width: 223px;
+    position: absolute;
+}
+
+#secStreetNane {
+    top: 894px; left: 193px; width: 383px;
+    border-top: 1px solid rgb(124,117,117);
+    position: absolute;
+}
+
+#secCity {
+    top: 914px; left: 193px; width: 383px;
+    border-top: 1px solid rgb(124,117,117);
+    position: absolute;
+}
+
+#secDistrict {
+    top: 932px; left: 193px; width: 383px;
+    border-top: 1px solid rgb(124,117,117);
+    position: absolute;
+}
+
+#secRegion {
+    top: 951px; left: 193px; width: 383px;
+    border-top: 1px solid rgb(124,117,117);
+    border-bottom: 1px solid rgb(124,117,117);
+    position: absolute;
+}

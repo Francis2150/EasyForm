@@ -1,0 +1,242 @@
+.page {
+    position: relative;
+}
+
+.overlay-text {
+    position: absolute;
+}
+
+/* Page 19 */
+.checkmark-8 {
+    top: 103px;
+    left: 360px;
+    width: 14px;
+    height: 12px;
+}
+
+.companyName4 {
+    top: 215px;
+    left: 35px;
+    width: 355px;
+}
+
+.static-6 {
+    top: 255px;
+    left: 465px;
+    width: 145px;
+}
+
+.Sbo2FirstName {
+    top: 330px;
+    left: 65px;
+    width: 245px;
+}
+
+.Sbo2Surname {
+    top: 330px;
+    left: 465px;
+    width: 245px;
+}
+
+.Sbo2Previousname {
+    top: 380px;
+    left: 65px;
+    width: 245px;
+}
+
+.Sbo2DOB {
+    top: 380px;
+    left: 465px;
+    width: 245px;
+}
+
+.Sbo2Nationality {
+    top: 410px;
+    left: 520px;
+    width: 215px;
+}
+
+.Sbo2POB {
+    top: 409px;
+    left: 175px;
+    width: 210px;
+}
+
+.Sbo2Address1 {
+    top: 470px;
+    left: 65px;
+    width: 285px;
+}
+
+.Sbo2Address2 {
+    top: 470px;
+    left: 465px;
+    width: 285px;
+}
+
+.Sbo2GPS {
+    top: 555px;
+    left: 140px;
+    width: 145px;
+}
+
+.Sbo2Tin {
+    top: 555px;
+    left: 465px;
+    width: 245px;
+}
+
+.Sbo2PhoneNumber {
+    top: 599px;
+    left: 140px;
+    width: 145px;
+}
+
+.Sb02Email {
+    top: 599px;
+    left: 450px;
+    width: 300px;
+}
+
+.static-7 {
+    top: 640px;
+    left: 140px;
+    width: 145px;
+}
+
+.Sb02GhNumber {
+    top: 640px;
+    left: 475px;
+    width: 200px;
+}
+
+.Sbo2PlaceOfWork {
+    top: 690px;
+    left: 475px;
+    width: 280px;
+}
+
+.static-8 {
+    top: 690px;
+    left: 140px;
+    width: 145px;
+}
+
+.date6 {
+    top: 716px;
+    left: 230px;
+    width: 260px;
+    font-size: 22px;
+}
+
+.checkmark-9 {
+    top: 836px;
+    left: 460px;
+    width: 14px;
+    height: 15px;
+}
+
+/* Page 20 */
+
+.checkmark-10 {
+    top: 160px;
+    left: 473px;
+    width: 23px;
+}
+
+.Sbo2Directpercent {
+    top: 211px;
+    left: 448px;
+    width: 100px;
+    font-size: 16px;
+}
+
+.Sbo2votinRight {
+    top: 326px;
+    left: 408px;
+    width: 100px;
+    font-size: 16px;
+}
+
+.Sbo2Indirectpercent {
+    top: 249px;
+    left: 448px;
+    width: 100px;
+    font-size: 16px;
+}
+
+.checkmark-11 {
+    top: 290px;
+    left: 481px;
+    width: 9px;
+}
+
+.checkmark-12 {
+    top: 361px;
+    left: 531px;
+    width: 9px;
+}
+
+.checkmark-13 {
+    top: 410px;
+    left: 331px;
+    width: 9px;
+}
+
+.checkmark-14 {
+    top: 510px;
+    left: 331px;
+    width: 9px;
+}
+
+.Sb02directorName {
+    top: 688px;
+    left: 195px;
+    width: 235px;
+}
+
+.dir1-signature-3 {
+    top: 666px;
+    left: 520px;
+    width: 157px;
+    height: 39px;
+    padding-top: 15px;
+}
+
+.static-9 {
+    top: 730px;
+    left: 195px;
+    width: 235px;
+}
+
+.date7 {
+    top: 729px;
+    left: 500px;
+    width: 240px;
+}
+
+.Sbo2secretaryName {
+    top: 819px;
+    left: 125px;
+    width: 295px;
+}
+
+.dir1-signature-4 {
+    top: 805px;
+    left: 510px;
+    width: 157px;
+    height: 39px;
+    padding-top: 15px;
+}
+
+.static-10 {
+    top: 879px;
+    left: 195px;
+    width: 200px;
+}
+
+.date8 {
+    top: 881px;
+    left: 500px;
+    width: 230px;
+}
