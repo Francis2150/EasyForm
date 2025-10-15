@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+      
+  <link rel="stylesheet" href="../llc-css/forminputNav.css">
+   <link rel="stylesheet" href="../llc-css/roleselector.css">
     <link rel="stylesheet" href="../llc-css/mainllc.css">
     <link rel="stylesheet" href="../llc-css/signatures.css">
     <link rel="stylesheet" href="../llc-css/pages.css">
@@ -23,6 +26,187 @@
   <button onclick="location.href='index.html'" class="home" id="home">index</button>
 </div>
 
+<main>
+<section class="sect1">
+  <h2 class="header">Company Registration Requirement</h2>
+
+  <form id="icompanyForm">
+
+    <!-- ✅ COMPANY BASIC INFO -->
+    <fieldset id="icompanyInfo">
+      <legend>Company Information</legend>
+      <div class="form-group">
+        <label for="icompanyName">Company Name:</label>
+        <input type="text" id="icompanyName" required>
+      </div>
+      <div class="form-group">
+        <label for="iendWith">Company Name End With:</label>
+        <select id="iendWith" required>
+          <option value="">-- Select --</option>
+          <option value="Limited">Limited</option>
+          <option value="Ltd">Ltd</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="iconstitutionType">Constitution Type:</label>
+        <select id="iconstitutionType" required>
+          <option value="">-- Select --</option>
+          <option value="Registered">Registered</option>
+          <option value="Standard">Standard</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="ipresentedBy">Presented By:</label>
+        <input type="text" id="ipresentedBy">
+      </div>
+
+      <div class="form-group">
+        <label for="ipresenterTin">Presenter Tin:</label>
+        <input type="text" id="ipresenterTin">
+      </div>
+
+      <div class="form-group">
+        <label for="iactivities">Activities:</label>
+        <input type="text" id="iactivities">
+      </div>
+
+      <div class="form-group">
+        <label for="icapital">Stated Capital:</label>
+        <input type="number" id="icapital">
+      </div>
+    </fieldset>
+
+    <!-- ✅ OFFICE DETAILS -->
+    <fieldset id="iofficeDetails">
+      <legend>Office Details</legend>
+      <div class="form-group">
+        <label for="iofficeGps">GPS Address:</label>
+        <input type="text" id="iofficeGps">
+      </div>
+      <div class="form-group">
+        <label for="iofficeLandmark">Landmark:</label>
+        <input type="text" id="iofficeLandmark">
+      </div>
+      <div class="form-group">
+        <label for="iofficeHse">Building No.:</label>
+        <input type="text" id="iofficeHse">
+      </div>
+      <div class="form-group">
+        <label for="iofficeTown">Town:</label>
+        <input type="text" id="iofficeTown">
+      </div>
+      <div class="form-group">
+        <label for="iofficeStreetName">Street Name:</label>
+        <input type="text" id="iofficeStreetName">
+      </div>
+      <div class="form-group">
+        <label for="iofficeCity">City:</label>
+        <input type="text" id="iofficeCity">
+      </div>
+      <div class="form-group">
+        <label for="iofficeDistrict">District:</label>
+        <input type="text" id="iofficeDistrict">
+      </div>
+      <div class="form-group">
+        <label for="iofficeRegion">Region:</label>
+        <input type="text" id="iofficeRegion">
+      </div>
+     
+      
+      <div class="form-group">
+        <label for="iofficePostalType">Postal Type:</label>
+        <select id="iofficePostalType" required>
+          <option value="">-- Select --</option>
+          <option value="pobox">P.O.BOX</option>
+          <option value="pmb">PMB</option>
+           <option value="dtd">DTD</option>
+        </select>
+      </div>
+
+      <div id="iofficePostalFields">
+        <div class="form-group">
+          <label for="iofficeBoxNumber">postal Number:</label>
+          <input type="text" id="iofficeBoxNumber">
+        </div>
+        <div class="form-group">
+          <label for="iofficeBoxTown">postal Town:</label>
+          <input type="text" id="iofficeBoxTown">
+        </div>
+        <div class="form-group">
+          <label for="iofficeBoxRegion">postal Region:</label>
+          <input type="text" id="iofficeBoxRegion">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="iofficeContact1">Contact 1:</label>
+        <input type="text" id="iofficeContact1">
+      </div>
+      <div class="form-group">
+        <label for="iofficeContact2">Contact 2:</label>
+        <input type="text" id="iofficeContact2">
+      </div>
+      <div class="form-group">
+        <label for="iofficeEmail">Email:</label>
+        <input type="email" id="iofficeEmail">
+      </div>
+    </fieldset>
+
+    <!-- ✅ DIRECTORS -->
+    <fieldset id="idirectorsSection">
+      <legend>Directors</legend>
+      <div id="idirectorsContainer"></div>
+      <button type="button" id="iaddDirectorBtn">Add Director</button>
+    </fieldset>
+
+    <!-- ✅ SECRETARY -->
+    <fieldset id="isecretarySetting">
+      <legend>Secretary Setting</legend>
+      <div class="form-group">
+        <label for="isecQualification">Qualification:</label>
+        <input type="text" id="isecQualification">
+      </div>
+    </fieldset>
+
+    <fieldset id="isecretarySection">
+      <legend>Secretary Details</legend>
+      <div id="isecretaryFormFields"></div>
+    </fieldset>
+
+    <!-- ✅ SUBSCRIBERS -->
+    <fieldset id="isubscriberSetting">
+      <legend>Subscribers Setting</legend>
+      <div class="form-group">
+        <label for="isubscriberShares">Stated Capital:</label>
+        <input type="number" id="isubscriberShares">
+      </div>
+    </fieldset>
+
+    <fieldset id="isubscribersSection">
+      <legend>Subscribers</legend>
+      <div id="isubscribersContainer"></div>
+      <button type="button" id="iaddSubscriberBtn">Add Subscriber</button>
+    </fieldset>
+
+    <fieldset id="iownersSection">
+  <legend>Beneficial Owners</legend>
+  <div id="iownersContainer"></div>
+  <button type="button" id="iaddOwnerBtn">Add Beneficial Owner</button>
+</fieldset>
+
+
+    <button type="submit">Submit Company</button>
+  </form>
+
+  
+</section>
+
+
+<!--output section-->
+
+<section class="sect2">
 <div class="page">
   <img src="../llc-images/LLC1.jpg" alt="Page 1">
 
@@ -53,7 +237,7 @@
   <p class="overlay-text emptyBox1" id="emptyBox1"></p>
   <p class="overlay-text emptyBox2" id="emptyBox2"></p>
   <p class="overlay-text emptyBox3" id="emptyBox3"></p>
-  <p class="overlay-text OfficeBoxNumber" id="OfficeBoxNumber">number</p>
+  <p class="overlay-text OfficeBoxNumber" id="OfficeBoxNumber"></p>
   <p class="overlay-text PMB" id="PMB"></p>
   <p class="overlay-text DTD" id="DTD"></p>
   <p class="overlay-text OfficeBoxNumberTown" id="OfficeBoxNumberTown">office postal code town</p>
@@ -468,10 +652,15 @@
   <p class="overlay-text signature LSdirectorSignature" id="LSdirectorSignature"></p>
   <p class="overlay-text date11" id="date11"></p>
 </div>
+</section>
+</main>
+<script src="../llc-js/global.js"></script>
+  <script src="../llc-js/structurecopy.js"></script>
+  
+ <script src="../llc-js/roleselectorcopy.js"></script>
+    
+<script src="../llc-js/signatures.js"></script>
 
-    <script src="../llc-js/Date.js"></script>
-    <script src="../llc-js/signatures.js"></script>
-    <script src="../llc-js/editable.js"></script>
-    <script src="../llc-js/bridge.js"></script>
+<script src="../llc-js/handler.js"></script>
   </body>
 </html>

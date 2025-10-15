@@ -36,8 +36,8 @@
 
     // end with: show the correct overlay
     const endWith = val("iendWith").toLowerCase();
-    setText("endWithLTD", endWith === "ltd" ? "\u2714" : "");
-    setText("endWithLIMITED", endWith === "limited" ? "\u2714" : "");
+    setText("endWithLTD", endWith === "limited" ? "\u2714" : "");
+    setText("endWithLIMITED", endWith === "ltd" ? "\u2714" : "");
 
     const constitution = val("iconstitutionType");
     // show a tick for registered vs standard: overlay IDs used earlier
@@ -63,11 +63,37 @@
     setText("officeDistrict", val("iofficeDistrict"));
     setText("officeRegion", val("iofficeRegion"));
 
+   
     // Postal type fields:
-    const postalType = val("iofficePostalType").toLowerCase();
-    setText("PMB", postalType === "p.m.b" || postalType === "p.m.b." || postalType.includes("p") ? val("iofficeBoxNumber") : "");
-    // The HTML options used "P.O.BOX", "PMB", "DTD" strings; adjust defensively:
-    setText("OfficeBoxNumber", val("iofficeBoxNumber"));
+   const postalType = val("iofficePostalType").toLowerCase();
+const boxNumber = val("iofficeBoxNumber");
+
+// Set checkmarks
+setText("emptyBox1", postalType === "pobox" ? "\u2714" : "");
+setText("emptyBox2", postalType === "pmb" ? "\u2714" : "");
+setText("emptyBox3", postalType === "dtd" ? "\u2714" : "");
+
+// Clear all number fields first
+setText("OfficeBoxNumber", "");
+setText("PMB", "");
+setText("DTD", "");
+
+// Place box number under the correct postal type
+if (postalType === "pobox") {
+  setText("OfficeBoxNumber", boxNumber);
+} else if (postalType === "pmb") {
+  setText("PMB", boxNumber);
+} else if (postalType === "dtd") {
+  setText("DTD", boxNumber);
+}
+
+// Set other office info
+setText("OfficeBoxNumberTown", val("iofficeBoxTown"));
+setText("OfficeBoxNumberRegion", val("iofficeBoxRegion"));
+setText("OfficeContactOne", val("iofficeContact1"));
+setText("OfficeContactTwo", val("iofficeContact2"));
+setText("Officeemail", val("iofficeEmail"));
+
     setText("OfficeBoxNumberTown", val("iofficeBoxTown"));
     setText("OfficeBoxNumberRegion", val("iofficeBoxRegion"));
     setText("OfficeContactOne", val("iofficeContact1"));

@@ -48,4 +48,8 @@
   .signature-box .resize-handle {
     display: none; /* hide resize handle in print */
   }
+
+  .sect1 {
+    display:none; /* prevent page breaks inside sections */
+  }
 }
