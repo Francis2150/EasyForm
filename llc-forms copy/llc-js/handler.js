@@ -27,32 +27,33 @@
     return `${dd}/${mm}/${yyyy}`;
   }
 
-  // Map the company-level fields
+  // Map the company-level fields ✅
   function fillCompany() {
     setText("companyName", val("icompanyName"));
     setText("companyName2", val("icompanyName"));
     setText("companyName3", val("icompanyName"));
     setText("companyName4", val("icompanyName"));
 
-    // end with: show the correct overlay
+    // end with: show the correct overlay✅
     const endWith = val("iendWith").toLowerCase();
     setText("endWithLTD", endWith === "limited" ? "\u2714" : "");
     setText("endWithLIMITED", endWith === "ltd" ? "\u2714" : "");
 
+  // show a tick for registered vs standard: overlay IDs used earlier✅
     const constitution = val("iconstitutionType");
-    // show a tick for registered vs standard: overlay IDs used earlier
     setText("registeredCon", constitution === "Registered" ? "\u2714" : "");
     setText("standardCon", constitution === "Standard" ? "\u2714" : "");
 
+    // the  one presntin the compny✅
     setText("presentedBy", val("ipresentedBy"));
     setText("presenterTIN", val("ipresenterTin"));
     setText("principalActivities", val("iactivities"));
 
-    // Stated capital -> StatedCapital on page 7
+    // Stated capital -> StatedCapital on page 7✅
     setText("StatedCapital", val("icapital") || setText("StatedCapital", "0"));
   }
 
-  // Office mapping
+  // Office mapping✅
   function fillOffice() {
     setText("officedigital-address", val("iofficeGps"));
     setText("officeLandmark", val("iofficeLandmark"));
@@ -64,21 +65,21 @@
     setText("officeRegion", val("iofficeRegion"));
 
    
-    // Postal type fields:
+    // Postal type fields:✅
    const postalType = val("iofficePostalType").toLowerCase();
 const boxNumber = val("iofficeBoxNumber");
 
-// Set checkmarks
+// Set checkmarks✅
 setText("emptyBox1", postalType === "pobox" ? "\u2714" : "");
 setText("emptyBox2", postalType === "pmb" ? "\u2714" : "");
 setText("emptyBox3", postalType === "dtd" ? "\u2714" : "");
 
-// Clear all number fields first
+// Clear all number fields first✅
 setText("OfficeBoxNumber", "");
 setText("PMB", "");
 setText("DTD", "");
 
-// Place box number under the correct postal type
+// Place box number under the correct postal type✅
 if (postalType === "pobox") {
   setText("OfficeBoxNumber", boxNumber);
 } else if (postalType === "pmb") {
@@ -87,21 +88,16 @@ if (postalType === "pobox") {
   setText("DTD", boxNumber);
 }
 
-// Set other office info
+// Set other office info✅
 setText("OfficeBoxNumberTown", val("iofficeBoxTown"));
 setText("OfficeBoxNumberRegion", val("iofficeBoxRegion"));
 setText("OfficeContactOne", val("iofficeContact1"));
 setText("OfficeContactTwo", val("iofficeContact2"));
 setText("Officeemail", val("iofficeEmail"));
 
-    setText("OfficeBoxNumberTown", val("iofficeBoxTown"));
-    setText("OfficeBoxNumberRegion", val("iofficeBoxRegion"));
-    setText("OfficeContactOne", val("iofficeContact1"));
-    setText("OfficeContactTwo", val("iofficeContact2"));
-    setText("Officeemail", val("iofficeEmail"));
   }
 
-  // Title helper: for a specific overlay prefix, set the radio-like title marks
+
   // titlesMap is like {MR: 'D1tittleMR', MRS: 'D1tittleMRS', ...}
   function applyTitleOverlay(prefix, titleValue) {
     const titles = ["MR", "MRS", "MISS", "MS", "DR"];
