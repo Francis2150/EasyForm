@@ -115,6 +115,7 @@
         <div class="form-group"><label>Town:</label><input id="idirector${index}_resTown" type="text"></div>
         <div class="form-group"><label>District:</label><input id="idirector${index}_resDistrict" type="text"></div>
         <div class="form-group"><label>Region:</label><input id="idirector${index}_resRegion" type="text"></div>
+        <div class="form-group"><label>Country:</label><input id="idirector${index}_resCountry" type="text"></div>
       `;
 
       const removeBtn = makeRemoveButton('Remove Director');
@@ -166,6 +167,7 @@
         <div class="form-group"><label>Town:</label><input id="isecResTown" type="text"></div>
         <div class="form-group"><label>District:</label><input id="isecResDistrict" type="text"></div>
         <div class="form-group"><label>Region:</label><input id="isecResRegion" type="text"></div>
+        <div class="form-group"><label>Country:</label><input id="isecResCountry" type="text"></div>
       `;
     }
 

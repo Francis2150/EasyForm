@@ -33,6 +33,9 @@
     setText("companyName2", val("icompanyName"));
     setText("companyName3", val("icompanyName"));
     setText("companyName4", val("icompanyName"));
+    setText("SecompanyName", val("icompanyName"));
+    setText("FdirectorCompanyName", val("icompanyName"));
+    setText("SdirectorCompanyName", val("icompanyName"));
 
     // end with: show the correct overlay✅
     const endWith = val("iendWith").toLowerCase();
@@ -193,6 +196,7 @@ setText("Officeemail", val("iofficeEmail"));
     setText(`${overlayPrefix}town`, resTown);
     setText(`${overlayPrefix}District`, resDistrict);
     setText(`${overlayPrefix}Region`, resRegion);
+    setText(`${overlayPrefix}Country`, resCountry);
 
     // A few shared IDs in your template: D1FullName etc
     if (index === 1) {
@@ -244,6 +248,7 @@ setText("Officeemail", val("iofficeEmail"));
     setText("secCity", val(prefix + "ResCity"));
     setText("secDistrict", val(prefix + "ResDistrict"));
     setText("secRegion", val(prefix + "ResRegion"));
+    setText("secCountry", val(prefix + "ResCountry"));
     setText("SecSignature", fullName ? `Signed: ${fullName}` : "");
     setText("SecfullName", fullName);
   }
@@ -278,6 +283,7 @@ setText("Officeemail", val("iofficeEmail"));
       setText(`SH${i+1}FirstName`, fname);
       setText(`SH${i+1}MiddleName`, mname);
       setText(`SH${i+1}LastName`, sname);
+      setText(`SH${i+1}FormerName`, val(prefix + "former"));
       setText(`SH${i+1}TIN`, tin);
       setText(`SH${i+1}GhanaCard`, gh);
       setText(`SH${i+1}NoOfShare`, shares);
@@ -358,7 +364,8 @@ setText("Officeemail", val("iofficeEmail"));
           ResCity: prefix + "resCity",
           ResTown: prefix + "resTown",
           ResDistrict: prefix + "resDistrict",
-          ResRegion: prefix + "resRegion"
+          ResRegion: prefix + "resRegion",
+          ResCountry: prefix + "resCountry",
         };
         // write directly to isec* inputs if they exist
         for (const [isecKey, directorIdRef] of Object.entries(mapping)) {
