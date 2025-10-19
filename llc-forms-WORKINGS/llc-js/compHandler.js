@@ -1,3 +1,5 @@
+//compHandler.js
+
 (function () {
   function val(id) {
     const el = document.getElementById(id);

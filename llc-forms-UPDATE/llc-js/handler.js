@@ -1,3 +1,4 @@
+// handler.js - Fixed version
 (function() {
   // Safe helper: get element value (returns empty string if not found)
   function val(id) {
@@ -28,34 +29,37 @@
   }
 
   // Map the company-level fields ✅
-  function fillCompany() {
-    setText("companyName", val("icompanyName"));
-    setText("companyName2", val("icompanyName"));
-    setText("companyName3", val("icompanyName"));
-    setText("companyName4", val("icompanyName"));
-    setText("SecompanyName", val("icompanyName"));
-    setText("FdirectorCompanyName", val("icompanyName"));
-    setText("SdirectorCompanyName", val("icompanyName"));
+ function fillCompany() {
+  setText("companyName", val("icompanyName"));
+  setText("companyName2", val("icompanyName"));
+  setText("companyName3", val("icompanyName"));
+  setText("companyName4", val("icompanyName"));
+  setText("SecompanyName", val("icompanyName"));
+  setText("FdirectorCompanyName", val("icompanyName"));
+  setText("SdirectorCompanyName", val("icompanyName"));
 
-    // end with: show the correct overlay✅
-    const endWith = val("iendWith").toLowerCase();
-    setText("endWithLTD", endWith === "limited" ? "\u2714" : "");
-    setText("endWithLIMITED", endWith === "ltd" ? "\u2714" : "");
+  // end with: show the correct overlay✅
+  const endWith = val("iendWith").toLowerCase();
+  setText("endWithLTD", endWith === "ltd" ? "\u2714" : "");
+  setText("endWithLIMITED", endWith === "limited" ? "\u2714" : "");
 
   // show a tick for registered vs standard: overlay IDs used earlier✅
-    const constitution = val("iconstitutionType");
-    setText("registeredCon", constitution === "Registered" ? "\u2714" : "");
-    setText("standardCon", constitution === "Standard" ? "\u2714" : "");
+  const constitution = val("iconstitutionType");
+  setText("registeredCon", constitution === "Registered" ? "\u2714" : "");
+  setText("standardCon", constitution === "Standard" ? "\u2714" : "");
 
-    // the  one presntin the compny✅
-    setText("presentedBy", val("ipresentedBy"));
-    setText("presenterTIN", val("ipresenterTin"));
-    setText("principalActivities", val("iactivities"));
+  // the one presenting the company✅
+  setText("presentedBy", val("ipresentedBy"));
+  setText("presenterTIN", val("ipresenterTin"));
+  setText("principalActivities", val("iactivities"));
 
-    // Stated capital -> StatedCapital on page 7✅
-    setText("StatedCapital", val("icapital") || setText("StatedCapital", "0"));
-  }
-
+  // Stated capital -> StatedCapital on page 7✅
+  setText("StatedCapital", val("icapital") || "0");
+  
+  // ADD THESE LINES:
+  setText("estimatedRevenue", val("iestimatedRevenue"));
+  setText("numOfEmp", val("inumOfEmployees"));
+}
   // Office mapping✅
   function fillOffice() {
     setText("officedigital-address", val("iofficeGps"));
@@ -67,39 +71,36 @@
     setText("officeDistrict", val("iofficeDistrict"));
     setText("officeRegion", val("iofficeRegion"));
 
-   
     // Postal type fields:✅
-   const postalType = val("iofficePostalType").toLowerCase();
-const boxNumber = val("iofficeBoxNumber");
+    const postalType = val("iofficePostalType").toLowerCase();
+    const boxNumber = val("iofficeBoxNumber");
 
-// Set checkmarks✅
-setText("emptyBox1", postalType === "pobox" ? "\u2714" : "");
-setText("emptyBox2", postalType === "pmb" ? "\u2714" : "");
-setText("emptyBox3", postalType === "dtd" ? "\u2714" : "");
+    // Set checkmarks✅
+    setText("emptyBox1", postalType === "pobox" ? "\u2714" : "");
+    setText("emptyBox2", postalType === "pmb" ? "\u2714" : "");
+    setText("emptyBox3", postalType === "dtd" ? "\u2714" : "");
 
-// Clear all number fields first✅
-setText("OfficeBoxNumber", "");
-setText("PMB", "");
-setText("DTD", "");
+    // Clear all number fields first✅
+    setText("OfficeBoxNumber", "");
+    setText("PMB", "");
+    setText("DTD", "");
 
-// Place box number under the correct postal type✅
-if (postalType === "pobox") {
-  setText("OfficeBoxNumber", boxNumber);
-} else if (postalType === "pmb") {
-  setText("PMB", boxNumber);
-} else if (postalType === "dtd") {
-  setText("DTD", boxNumber);
-}
+    // Place box number under the correct postal type✅
+    if (postalType === "pobox") {
+      setText("OfficeBoxNumber", boxNumber);
+    } else if (postalType === "pmb") {
+      setText("PMB", boxNumber);
+    } else if (postalType === "dtd") {
+      setText("DTD", boxNumber);
+    }
 
-// Set other office info✅
-setText("OfficeBoxNumberTown", val("iofficeBoxTown"));
-setText("OfficeBoxNumberRegion", val("iofficeBoxRegion"));
-setText("OfficeContactOne", val("iofficeContact1"));
-setText("OfficeContactTwo", val("iofficeContact2"));
-setText("Officeemail", val("iofficeEmail"));
-
+    // Set other office info✅
+    setText("OfficeBoxNumberTown", val("iofficeBoxTown"));
+    setText("OfficeBoxNumberRegion", val("iofficeBoxRegion"));
+    setText("OfficeContactOne", val("iofficeContact1"));
+    setText("OfficeContactTwo", val("iofficeContact2"));
+    setText("Officeemail", val("iofficeEmail"));
   }
-
 
   // titlesMap is like {MR: 'D1tittleMR', MRS: 'D1tittleMRS', ...}
   function applyTitleOverlay(prefix, titleValue) {
@@ -168,6 +169,7 @@ setText("Officeemail", val("iofficeEmail"));
     const resTown = val(formPrefix + "resTown");
     const resDistrict = val(formPrefix + "resDistrict");
     const resRegion = val(formPrefix + "resRegion");
+    const resCountry = val(formPrefix + "resCountry");
     const fullName = [fname, mname, sname].filter(Boolean).join(" ");
 
     // Apply to overlay elements
@@ -254,47 +256,64 @@ setText("Officeemail", val("iofficeEmail"));
   }
 
   // Fill first N subscribers into SH1/SH2 overlays (maps up to 2)
-  function fillSubscribers() {
-    const container = document.getElementById("isubscribersContainer");
-    if (!container) return;
-    const fieldsets = Array.from(container.querySelectorAll("fieldset"));
+function fillSubscribers() {
+  const container = document.getElementById("isubscribersContainer");
+  if (!container) return;
+  const fieldsets = Array.from(container.querySelectorAll("fieldset"));
 
-    for (let i = 0; i < 2; i++) {
-      const fs = fieldsets[i];
-      if (!fs) {
-        // clear overlays if no subscriber
-        setText(`SH${i+1}FirstName`, "");
-        setText(`SH${i+1}NoOfShare`, "");
-        setText(`SH${i+1}ShareAmount`, "");
-        continue;
-      }
-      // derive index from fs.id (isubscriberX)
-      const idx = fs.id.match(/\d+$/)?.[0];
-      const prefix = `isubscriber${idx}_`;
-      const fname = val(prefix + "fname");
-      const mname = val(prefix + "mname");
-      const sname = val(prefix + "sname");
-      const full = [fname, mname, sname].filter(Boolean).join(" ");
-      const tin = val(prefix + "tin");
-      const gh = val(prefix + "ghanaCard");
-      const shares = val(prefix + "sharePercent") || val("isubscriberShares") || "";
-      const address = val(prefix + "resStreet") + " " + val(prefix + "resTown");
-
-      setText(`SH${i+1}FirstName`, fname);
-      setText(`SH${i+1}MiddleName`, mname);
-      setText(`SH${i+1}LastName`, sname);
-      setText(`SH${i+1}FormerName`, val(prefix + "former"));
-      setText(`SH${i+1}TIN`, tin);
-      setText(`SH${i+1}GhanaCard`, gh);
-      setText(`SH${i+1}NoOfShare`, shares);
-      setText(`SH${i+1}ShareAmount`, shares); // if you have numeric share amount you can compute
-      setText(`SH${i+1}DigitalAddress`, val(prefix + "resGps"));
-      setText(`SH${i+1}Town`, val(prefix + "resTown"));
-      setText(`SH${i+1}housenumber`, val(prefix + "resHse"));
-      setText(`SH${i+1}Town`, val(prefix + "resTown"));
-      setText(`SH${i+1}Signature`, full ? `Signed: ${full}` : "");
+  for (let i = 0; i < 2; i++) {
+    const fs = fieldsets[i];
+    if (!fs) {
+      setText(`SH${i+1}FirstName`, "");   
+      setText(`SH${i+1}NoOfShare`, "");
+      setText(`SH${i+1}ShareAmount`, "");
+      continue;
     }
+
+    const idx = fs.id.match(/\d+$/)?.[0];
+    const prefix = `isubscriber${idx}_`;
+
+    const fname = val(prefix + "fname");
+    const mname = val(prefix + "mname");
+    const sname = val(prefix + "sname");
+    const former = val(prefix + "former");
+    const title = val(prefix + "title"); // 🆕
+    const gender = val(prefix + "gender");
+    const dob = val(prefix + "dob");
+    const pob = val(prefix + "pob");
+    const nation = val(prefix + "nation");
+    const occupation = val(prefix + "occupation");
+    const full = [fname, mname, sname].filter(Boolean).join(" ");
+    const tin = val(prefix + "tin");
+    const gh = val(prefix + "ghanaCard");
+    const shares = val(prefix + "sharePercent") || val("isubscriberShares") || "";
+    const address = val(prefix + "resStreet") + " " + val(prefix + "resTown");
+
+    // Map everything
+    setText(`SH${i+1}FirstName`, fname);
+    setText(`SH${i+1}MiddleName`, mname);
+    setText(`SH${i+1}LastName`, sname);
+    setText(`SH${i+1}FormerName`, former);
+    applyTitleOverlay(`SH${i+1}`, title); // 🆕 added
+    applyGenderOverlay(`SH${i+1}`, gender);
+    setText(`SH${i+1}DOB`, dob);
+    setText(`SH${i+1}POB`, pob);
+    setText(`SH${i+1}Nationality`, nation);
+    setText(`SH${i+1}Occupation`, occupation);
+    setText(`SH${i+1}TIN`, tin);
+    setText(`SH${i+1}GhanaCard`, gh);
+    setText(`SH${i+1}Address`, address);
+    setText(`SH${i+1}NoOfShare`, shares);
+    setText(`SH${i+1}ShareAmount`, shares);
+    setText(`SH${i+1}DigitalAddress`, val(prefix + "resGps"));
+    setText(`SH${i+1}Landmark`, val(prefix + "resLandmark")); // 🆕 added
+    setText(`SH${i+1}StreetName`, val(prefix + "resStreet")); // 🆕 added
+    setText(`SH${i+1}Town`, val(prefix + "resTown"));
+    setText(`SH${i+1}housenumber`, val(prefix + "resHse"));
+    setText(`SH${i+1}Signature`, full ? `Signed: ${full}` : "");
   }
+}
+
 
   // Fill beneficial owners into BO1..BO4 (map up to 4)
   function fillBeneficialOwners() {
@@ -323,8 +342,6 @@ setText("Officeemail", val("iofficeEmail"));
   }
 
   // Hook to copy director role-linked subscriber/owner/secretary content to overlay
-  // Roles module creates data-link attributes for linked subscribers/owners which are
-  // named "linkedFromDirector-idirectorX". We'll look for those and keep overlays updated.
   function fillRoleLinkedEntries() {
     // subscribers and owners are handled above in fillSubscribers/fillBeneficialOwners
     // but this function will also ensure that if a director is secretary it populates sec fields

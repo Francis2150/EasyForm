@@ -591,7 +591,7 @@
     position: absolute;
 }
 
-#D2TittleMR {
+.D2TittleMR {
     top: 446px;
     left: 243px;
     width: 14px;
@@ -599,7 +599,7 @@
     position: absolute;
 }
 
-#D2TittleMRS {
+.D2TittleMRS {
     top: 446px;
     left: 337.5px;
     width: 14px;
@@ -607,7 +607,7 @@
     position: absolute;
 }
 
-#D2TittleMISS {
+.D2TittleMISS {
     top: 446px;
     left: 435px;
     width: 14px;
@@ -615,7 +615,7 @@
     position: absolute;
 }
 
-#D2TittleMS {
+.D2TittleMS {
     top: 446px;
     left: 506px;
     width: 14px;
@@ -623,7 +623,7 @@
     position: absolute;
 }
 
-#D2TittleDR {
+.D2TittleDR {
     top: 446px;
     left: 578px;
     width: 14px;
@@ -704,7 +704,7 @@
     position: absolute;
 }
 
-#D2Occupation {
+.D2Occupation {
     top: 611px;
     left: 193px;
     width: 383px;
@@ -855,11 +855,11 @@
 #chk5_6 { top: 389px; left: 505px; width: 13px; height: 12px; position: absolute; }
 #chk5_7 { top: 407px; left: 505px; width: 13px; height: 12px; position: absolute; }
 
-#secTittleMR { top: 482px; left: 242px; width: 14px; height: 14px; position: absolute; }
-#secTittleMRS { top: 482px; left: 337.5px; width: 14px; height: 14px; position: absolute; }
-#secTittleMISS { top: 482px; left: 435px; width: 14px; height: 14px; position: absolute; }
-#secTittleMS { top: 482px; left: 505px; width: 14px; height: 14px; position: absolute; }
-#secTittleDR { top: 482px; left: 578px; width: 14px; height: 14px; position: absolute; }
+.secTittleMR { top: 482px; left: 242px; width: 14px; height: 14px; position: absolute; }
+.secTittleMRS { top: 482px; left: 337.5px; width: 14px; height: 14px; position: absolute; }
+.secTittleMISS { top: 482px; left: 435px; width: 14px; height: 14px; position: absolute; }
+.secTittleMS { top: 482px; left: 505px; width: 14px; height: 14px; position: absolute; }
+.secTittleDR { top: 482px; left: 578px; width: 14px; height: 14px; position: absolute; }
 
 #SecFirstName {
     top: 499px; left: 193px; width: 383px;
@@ -1276,7 +1276,7 @@
     position: absolute;
 }
 
-#SH1Landmark {
+.SH1Landmark {
     top: 406px;
     left: 193px;
     width: 383px;
@@ -1418,7 +1418,7 @@
     position: absolute;
 }
 
-#SHgenderMale {
+#SH2genderMale {
     top: 727px;
     left: 242px;
     width: 14px;
