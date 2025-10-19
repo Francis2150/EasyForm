@@ -316,30 +316,35 @@ function fillSubscribers() {
 
 
   // Fill beneficial owners into BO1..BO4 (map up to 4)
-  function fillBeneficialOwners() {
-    const container = document.getElementById("iownersContainer");
-    if (!container) return;
-    const fieldsets = Array.from(container.querySelectorAll("fieldset"));
+// Fill beneficial owners into BO1..BO4 (map up to 4)
+function fillBeneficialOwners() {
+  const container = document.getElementById("iownersContainer");
+  if (!container) return;
+  const fieldsets = Array.from(container.querySelectorAll("fieldset"));
 
-    for (let i = 0; i < 4; i++) {
-      const fs = fieldsets[i];
-      const num = i + 1;
-      if (!fs) {
-        setText(`BO${num}`, "");
-        setText(`BO${num}M`, "");
-        continue;
-      }
-      const idx = fs.id.match(/\d+$/)?.[0];
-      const prefix = `iowner${idx}_`;
-      const fname = val(prefix + "fname");
-      const mname = val(prefix + "mname");
-      const sname = val(prefix + "sname");
-      const full = [fname, mname, sname].filter(Boolean).join(" ");
-      const share = val(prefix + "sharePercent");
-      setText(`BO${num}`, full);
-      setText(`BO${num}M`, share || "");
+  for (let i = 0; i < 4; i++) {
+    const fs = fieldsets[i];
+    const num = i + 1;
+    if (!fs) {
+      setText(`owner${num}fullName`, "");
+      setText(`owner${num}status`, "");
+      continue;
     }
+    const idx = fs.id.match(/\d+$/)?.[0];
+    const prefix = `iowner${idx}_`;
+    const fname = val(prefix + "fname");
+    const mname = val(prefix + "mname");
+    const sname = val(prefix + "sname");
+    const former = val(prefix + "former");
+    const full = [fname, mname, sname, former].filter(Boolean).join(" ");
+    
+    // Set the owner's full name
+    setText(`owner${num}fullName`, full);
+    
+    // Set status to checkmark if owner exists, otherwise empty
+    setText(`owner${num}status`, full ? "\u2714" : "");
   }
+}
 
   // Hook to copy director role-linked subscriber/owner/secretary content to overlay
   function fillRoleLinkedEntries() {

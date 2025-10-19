@@ -1,4 +1,4 @@
-// handler.js - Fixed version
+// handler.js - Fixed version with proper handling of secretary and director names
 (function() {
   // Safe helper: get element value (returns empty string if not found)
   function val(id) {
@@ -28,38 +28,42 @@
     return `${dd}/${mm}/${yyyy}`;
   }
 
+  // Track which director is assigned as secretary
+  let secretaryDirectorIndex = null;
+
   // Map the company-level fields ✅
- function fillCompany() {
-  setText("companyName", val("icompanyName"));
-  setText("companyName2", val("icompanyName"));
-  setText("companyName3", val("icompanyName"));
-  setText("companyName4", val("icompanyName"));
-  setText("SecompanyName", val("icompanyName"));
-  setText("FdirectorCompanyName", val("icompanyName"));
-  setText("SdirectorCompanyName", val("icompanyName"));
+  function fillCompany() {
+    setText("companyName", val("icompanyName"));
+    setText("companyName2", val("icompanyName"));
+    setText("companyName3", val("icompanyName"));
+    setText("companyName4", val("icompanyName"));
+    setText("SecompanyName", val("icompanyName"));
+    setText("FdirectorCompanyName", val("icompanyName"));
+    setText("SdirectorCompanyName", val("icompanyName"));
 
-  // end with: show the correct overlay✅
-  const endWith = val("iendWith").toLowerCase();
-  setText("endWithLTD", endWith === "ltd" ? "\u2714" : "");
-  setText("endWithLIMITED", endWith === "limited" ? "\u2714" : "");
+    // end with: show the correct overlay✅
+    const endWith = val("iendWith").toLowerCase();
+    setText("endWithLTD", endWith === "ltd" ? "\u2714" : "");
+    setText("endWithLIMITED", endWith === "limited" ? "\u2714" : "");
 
-  // show a tick for registered vs standard: overlay IDs used earlier✅
-  const constitution = val("iconstitutionType");
-  setText("registeredCon", constitution === "Registered" ? "\u2714" : "");
-  setText("standardCon", constitution === "Standard" ? "\u2714" : "");
+    // show a tick for registered vs standard: overlay IDs used earlier✅
+    const constitution = val("iconstitutionType");
+    setText("registeredCon", constitution === "Registered" ? "\u2714" : "");
+    setText("standardCon", constitution === "Standard" ? "\u2714" : "");
 
-  // the one presenting the company✅
-  setText("presentedBy", val("ipresentedBy"));
-  setText("presenterTIN", val("ipresenterTin"));
-  setText("principalActivities", val("iactivities"));
+    // the one presenting the company✅
+    setText("presentedBy", val("ipresentedBy"));
+    setText("presenterTIN", val("ipresenterTin"));
+    setText("principalActivities", val("iactivities"));
 
-  // Stated capital -> StatedCapital on page 7✅
-  setText("StatedCapital", val("icapital") || "0");
-  
-  // ADD THESE LINES:
-  setText("estimatedRevenue", val("iestimatedRevenue"));
-  setText("numOfEmp", val("inumOfEmployees"));
-}
+    // Stated capital -> StatedCapital on page 7✅
+    setText("StatedCapital", val("icapital") || "0");
+    
+    // ADD THESE LINES:
+    setText("estimatedRevenue", val("iestimatedRevenue"));
+    setText("numOfEmp", val("inumOfEmployees"));
+  }
+
   // Office mapping✅
   function fillOffice() {
     setText("officedigital-address", val("iofficeGps"));
@@ -253,67 +257,69 @@
     setText("secCountry", val(prefix + "ResCountry"));
     setText("SecSignature", fullName ? `Signed: ${fullName}` : "");
     setText("SecfullName", fullName);
+    
+    // Fix: Set secretaryFullName overlay
+    setText("secretaryFullName", fullName);
   }
 
   // Fill first N subscribers into SH1/SH2 overlays (maps up to 2)
-function fillSubscribers() {
-  const container = document.getElementById("isubscribersContainer");
-  if (!container) return;
-  const fieldsets = Array.from(container.querySelectorAll("fieldset"));
+  function fillSubscribers() {
+    const container = document.getElementById("isubscribersContainer");
+    if (!container) return;
+    const fieldsets = Array.from(container.querySelectorAll("fieldset"));
 
-  for (let i = 0; i < 2; i++) {
-    const fs = fieldsets[i];
-    if (!fs) {
-      setText(`SH${i+1}FirstName`, "");   
-      setText(`SH${i+1}NoOfShare`, "");
-      setText(`SH${i+1}ShareAmount`, "");
-      continue;
+    for (let i = 0; i < 2; i++) {
+      const fs = fieldsets[i];
+      if (!fs) {
+        setText(`SH${i+1}FirstName`, "");   
+        setText(`SH${i+1}NoOfShare`, "");
+        setText(`SH${i+1}ShareAmount`, "");
+        continue;
+      }
+
+      const idx = fs.id.match(/\d+$/)?.[0];
+      const prefix = `isubscriber${idx}_`;
+
+      const fname = val(prefix + "fname");
+      const mname = val(prefix + "mname");
+      const sname = val(prefix + "sname");
+      const former = val(prefix + "former");
+      const title = val(prefix + "title"); // 🆕
+      const gender = val(prefix + "gender");
+      const dob = val(prefix + "dob");
+      const pob = val(prefix + "pob");
+      const nation = val(prefix + "nation");
+      const occupation = val(prefix + "occupation");
+      const full = [fname, mname, sname].filter(Boolean).join(" ");
+      const tin = val(prefix + "tin");
+      const gh = val(prefix + "ghanaCard");
+      const shares = val(prefix + "sharePercent") || val("isubscriberShares") || "";
+      const address = val(prefix + "resStreet") + " " + val(prefix + "resTown");
+
+      // Map everything
+      setText(`SH${i+1}FirstName`, fname);
+      setText(`SH${i+1}MiddleName`, mname);
+      setText(`SH${i+1}LastName`, sname);
+      setText(`SH${i+1}FormerName`, former);
+      applyTitleOverlay(`SH${i+1}`, title); // 🆕 added
+      applyGenderOverlay(`SH${i+1}`, gender);
+      setText(`SH${i+1}DOB`, dob);
+      setText(`SH${i+1}POB`, pob);
+      setText(`SH${i+1}Nationality`, nation);
+      setText(`SH${i+1}Occupation`, occupation);
+      setText(`SH${i+1}TIN`, tin);
+      setText(`SH${i+1}GhanaCard`, gh);
+      setText(`SH${i+1}Address`, address);
+      setText(`SH${i+1}NoOfShare`, shares);
+      setText(`SH${i+1}ShareAmount`, shares);
+      setText(`SH${i+1}DigitalAddress`, val(prefix + "resGps"));
+      setText(`SH${i+1}Landmark`, val(prefix + "resLandmark")); // 🆕 added
+      setText(`SH${i+1}StreetName`, val(prefix + "resStreet")); // 🆕 added
+      setText(`SH${i+1}Town`, val(prefix + "resTown"));
+      setText(`SH${i+1}housenumber`, val(prefix + "resHse"));
+      setText(`SH${i+1}Signature`, full ? `Signed: ${full}` : "");
     }
-
-    const idx = fs.id.match(/\d+$/)?.[0];
-    const prefix = `isubscriber${idx}_`;
-
-    const fname = val(prefix + "fname");
-    const mname = val(prefix + "mname");
-    const sname = val(prefix + "sname");
-    const former = val(prefix + "former");
-    const title = val(prefix + "title"); // 🆕
-    const gender = val(prefix + "gender");
-    const dob = val(prefix + "dob");
-    const pob = val(prefix + "pob");
-    const nation = val(prefix + "nation");
-    const occupation = val(prefix + "occupation");
-    const full = [fname, mname, sname].filter(Boolean).join(" ");
-    const tin = val(prefix + "tin");
-    const gh = val(prefix + "ghanaCard");
-    const shares = val(prefix + "sharePercent") || val("isubscriberShares") || "";
-    const address = val(prefix + "resStreet") + " " + val(prefix + "resTown");
-
-    // Map everything
-    setText(`SH${i+1}FirstName`, fname);
-    setText(`SH${i+1}MiddleName`, mname);
-    setText(`SH${i+1}LastName`, sname);
-    setText(`SH${i+1}FormerName`, former);
-    applyTitleOverlay(`SH${i+1}`, title); // 🆕 added
-    applyGenderOverlay(`SH${i+1}`, gender);
-    setText(`SH${i+1}DOB`, dob);
-    setText(`SH${i+1}POB`, pob);
-    setText(`SH${i+1}Nationality`, nation);
-    setText(`SH${i+1}Occupation`, occupation);
-    setText(`SH${i+1}TIN`, tin);
-    setText(`SH${i+1}GhanaCard`, gh);
-    setText(`SH${i+1}Address`, address);
-    setText(`SH${i+1}NoOfShare`, shares);
-    setText(`SH${i+1}ShareAmount`, shares);
-    setText(`SH${i+1}DigitalAddress`, val(prefix + "resGps"));
-    setText(`SH${i+1}Landmark`, val(prefix + "resLandmark")); // 🆕 added
-    setText(`SH${i+1}StreetName`, val(prefix + "resStreet")); // 🆕 added
-    setText(`SH${i+1}Town`, val(prefix + "resTown"));
-    setText(`SH${i+1}housenumber`, val(prefix + "resHse"));
-    setText(`SH${i+1}Signature`, full ? `Signed: ${full}` : "");
   }
-}
-
 
   // Fill beneficial owners into BO1..BO4 (map up to 4)
   function fillBeneficialOwners() {
@@ -325,8 +331,8 @@ function fillSubscribers() {
       const fs = fieldsets[i];
       const num = i + 1;
       if (!fs) {
-        setText(`BO${num}`, "");
-        setText(`BO${num}M`, "");
+        setText(`owner${num}fullName`, "");
+        setText(`owner${num}status`, "");
         continue;
       }
       const idx = fs.id.match(/\d+$/)?.[0];
@@ -334,15 +340,69 @@ function fillSubscribers() {
       const fname = val(prefix + "fname");
       const mname = val(prefix + "mname");
       const sname = val(prefix + "sname");
-      const full = [fname, mname, sname].filter(Boolean).join(" ");
-      const share = val(prefix + "sharePercent");
-      setText(`BO${num}`, full);
-      setText(`BO${num}M`, share || "");
+      const former = val(prefix + "former");
+      const full = [fname, mname, sname, former].filter(Boolean).join(" ");
+      
+      // Set the owner's full name
+      setText(`owner${num}fullName`, full);
+      
+      // Set status to checkmark if owner exists, otherwise empty
+      setText(`owner${num}status`, full ? "\u2714" : "");
     }
+  }
+
+  // Function to get director full name by index
+  function getDirectorFullName(index) {
+    const prefix = `idirector${index}_`;
+    const fname = val(prefix + "fname");
+    const mname = val(prefix + "mname");
+    const sname = val(prefix + "sname");
+    return [fname, mname, sname].filter(Boolean).join(" ");
+  }
+
+  // Function to set directorFullName with the rule that it shouldn't match secretaryFullName
+  function setDirectorFullName() {
+    const directorsContainer = document.getElementById("idirectorsContainer");
+    if (!directorsContainer) return;
+    
+    const directors = Array.from(directorsContainer.querySelectorAll("fieldset"));
+    if (directors.length === 0) return;
+    
+    // Get secretary full name
+    const secretaryFname = val("isecFname");
+    const secretaryMname = val("isecMname");
+    const secretarySname = val("isecSname");
+    const secretaryFullName = [secretaryFname, secretaryMname, secretarySname].filter(Boolean).join(" ");
+    
+    // If no secretary is set, use the first director
+    if (!secretaryFullName) {
+      setText("directorFullName", getDirectorFullName(1));
+      return;
+    }
+    
+    // Find a director who is not the secretary
+    let selectedDirector = null;
+    for (let i = 1; i <= directors.length; i++) {
+      const directorFullName = getDirectorFullName(i);
+      if (directorFullName && directorFullName !== secretaryFullName) {
+        selectedDirector = directorFullName;
+        break;
+      }
+    }
+    
+    // If all directors are also secretaries (unlikely), use the first one
+    if (!selectedDirector && directors.length > 0) {
+      selectedDirector = getDirectorFullName(1);
+    }
+    
+    setText("directorFullName", selectedDirector || "");
   }
 
   // Hook to copy director role-linked subscriber/owner/secretary content to overlay
   function fillRoleLinkedEntries() {
+    // Reset secretary director index
+    secretaryDirectorIndex = null;
+    
     // subscribers and owners are handled above in fillSubscribers/fillBeneficialOwners
     // but this function will also ensure that if a director is secretary it populates sec fields
     // check for any director role boxes (the role-checkboxes exist inside directors)
@@ -354,8 +414,11 @@ function fillSubscribers() {
       // if secretary checked, copy to secretary form (isec*)
       const secCheckbox = roleWrapper.querySelector('[data-role="secretary"]');
       if (secCheckbox && secCheckbox.checked) {
-        // build data object similarly to Roles.copyDirectorDataToRole and directly set isec* fields
+        // Track which director is assigned as secretary
         const idx = directorId.match(/\d+$/)?.[0] || "1";
+        secretaryDirectorIndex = parseInt(idx);
+        
+        // build data object similarly to Roles.copyDirectorDataToRole and directly set isec* fields
         const prefix = `idirector${idx}_`;
         // Transfer values to isec fields
         const mapping = {
@@ -396,6 +459,9 @@ function fillSubscribers() {
 
     // After copying secretary values (if any), call fillSecretary to map them to overlays
     fillSecretary();
+    
+    // Set directorFullName with the rule that it shouldn't match secretaryFullName
+    setDirectorFullName();
   }
 
   // General updates: called on input/change/mutation

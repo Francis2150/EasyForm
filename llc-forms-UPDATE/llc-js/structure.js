@@ -263,6 +263,7 @@
       <div class="form-group"><label>Town:</label><input id="iowner${index}_resTown" type="text"></div>
       <div class="form-group"><label>District:</label><input id="iowner${index}_resDistrict" type="text"></div>
       <div class="form-group"><label>Region:</label><input id="iowner${index}_resRegion" type="text"></div>
+      <div class="form-group"><label>Country:</label><input id="iowner${index}_resCountry" type="text"></div>
       <div class="form-group"><label>Share Percent:</label><input id="iowner${index}_sharePercent" type="number" min="0" max="100"></div>
     `;
 

@@ -132,7 +132,7 @@
 }
 
 /* Page 15 */
-#secretaryName {
+.secFullName{
     top: 1px;
     left: 90px;
     width: 289px;

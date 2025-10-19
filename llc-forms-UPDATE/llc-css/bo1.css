@@ -29,7 +29,7 @@
     position: absolute;
 }
 
-#BO1 {
+ .benOner1{
     top: 491px;
     left: 35px;
     width: 345px;
@@ -38,7 +38,7 @@
     position: absolute;
 }
 
-#BO2 {
+.benOner2{
     top: 530px;
     left: 35px;
     width: 345px;
@@ -47,7 +47,7 @@
     position: absolute;
 }
 
-#BO3 {
+.benOner3{
     top: 602px;
     left: 35px;
     width: 345px;
@@ -56,7 +56,7 @@
     position: absolute;
 }
 
-#BO4 {
+.benOner4{
     top: 567px;
     left: 35px;
     width: 345px;
@@ -65,7 +65,7 @@
     position: absolute;
 }
 
-#BO1M {
+.BO1M {
     top: 494px;
     left: 439px;
     width: 14px;
@@ -73,7 +73,7 @@
     position: absolute;
 }
 
-#BO2M {
+.BO2M {
     top: 532px;
     left: 439px;
     width: 14px;
@@ -81,7 +81,7 @@
     position: absolute;
 }
 
-#BO3M {
+.BO3M {
     top: 570px;
     left: 439px;
     width: 14px;
@@ -89,7 +89,7 @@
     position: absolute;
 }
 
-#BO4M {
+.BO4M {
     top: 607px;
     left: 439px;
     width: 14px;
@@ -97,30 +97,32 @@
     position: absolute;
 }
 
-#directorName {
+.dir1-signature {
+    top: 120px;
+    left: 485px;
+    width: 157px;
+   
+    height: 39px;
+    padding-top: 15px;
+    position: absolute;
+}
+.directorName {
+   
     top: 970px;
     left: 186px;
     width: 209px;
     font-size: 10px;
     position: absolute;
 }
-
-#directorSignature {
-    top: 1004px;
+.DP {
+    top: 1002px;
     left: 185px;
-    width: 109px;
+    width: 157px;
     font-size: 12px;
     position: absolute;
 }
 
-.dir\.1-signature {
-    top: 950px;
-    left: 485px;
-    width: 157px;
-    height: 39px;
-    padding-top: 15px;
-    position: absolute;
-}
+
 
 #date1 {
     top: 1006px;

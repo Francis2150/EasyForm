@@ -87,3 +87,12 @@
   border-top: 1px solid #ddd;
   margin-top: 10px;
 }
+
+
+input[disabled] {
+  cursor: not-allowed;
+  opacity: 0.1;
+  pointer-events: auto; /* ensures tooltip still shows */
+}
+
+
