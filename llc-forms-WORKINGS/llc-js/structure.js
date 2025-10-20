@@ -96,7 +96,7 @@
         <div class="form-group"><label>Surname:</label><input id="idirector${index}_sname" type="text"></div>
         <div class="form-group"><label>Former Name:</label><input id="idirector${index}_former" type="text"></div>
         <div class="form-group"><label>Gender:</label><select id="idirector${index}_gender">${genderOptions}</select></div>
-        <div class="form-group"><label>Date of Birth:</label><input id="idirector${index}_dob" type="date"></div>
+        <div class="form-group"><label>Date of Birth:</label><input id="idirector${index}_dob" type="text"></div>
         <div class="form-group"><label>Place of Birth:</label><input id="idirector${index}_pob" type="text"></div>
         <div class="form-group"><label>Nationality:</label><select id="idirector${index}_nation">${nationalityOptions}</select></div>
         <div class="form-group"><label>Occupation:</label><input id="idirector${index}_occupation" type="text"></div>
@@ -149,7 +149,7 @@
         <div class="form-group"><label>Surname:</label><input id="isecSname" type="text"></div>
         <div class="form-group"><label>Former Name:</label><input id="isecFormer" type="text"></div>
         <div class="form-group"><label>Gender:</label><select id="isecGender">${genderOptions}</select></div>
-        <div class="form-group"><label>Date of Birth:</label><input id="isecDob" type="date"></div>
+        <div class="form-group"><label>Date of Birth:</label><input id="isecDob" type="text"></div>
         <div class="form-group"><label>Place of Birth:</label><input id="isecPob" type="text"></div>
         <div class="form-group"><label>Nationality:</label><select id="isecNation">${nationalityOptions}</select></div>
         <div class="form-group"><label>Occupation:</label><input id="isecOccupation" type="text"></div>
@@ -188,7 +188,7 @@
       <div class="form-group"><label>Surname:</label><input id="isubscriber${index}_sname" type="text"></div>
       <div class="form-group"><label>Former Name:</label><input id="isubscriber${index}_former" type="text"></div>
       <div class="form-group"><label>Gender:</label><select id="isubscriber${index}_gender">${genderOptions}</select></div>
-      <div class="form-group"><label>Date of Birth:</label><input id="isubscriber${index}_dob" type="date"></div>
+      <div class="form-group"><label>Date of Birth:</label><input id="isubscriber${index}_dob" type="text"></div>
       <div class="form-group"><label>Place of Birth:</label><input id="isubscriber${index}_pob" type="text"></div>
       <div class="form-group"><label>Nationality:</label><select id="isubscriber${index}_nation">${nationalityOptions}</select></div>
       <div class="form-group"><label>Occupation:</label><input id="isubscriber${index}_occupation" type="text"></div>
@@ -244,7 +244,7 @@
       <div class="form-group"><label>Surname:</label><input id="iowner${index}_sname" type="text"></div>
       <div class="form-group"><label>Former Name:</label><input id="iowner${index}_former" type="text"></div>
       <div class="form-group"><label>Gender:</label><select id="iowner${index}_gender">${genderOptions}</select></div>
-      <div class="form-group"><label>Date of Birth:</label><input id="iowner${index}_dob" type="date"></div>
+      <div class="form-group"><label>Date of Birth:</label><input id="iowner${index}_dob" type="text"></div>
       <div class="form-group"><label>Place of Birth:</label><input id="iowner${index}_pob" type="text"></div>
       <div class="form-group"><label>Nationality:</label><select id="iowner${index}_nation">${nationalityOptions}</select></div>
       <div class="form-group"><label>Occupation:</label><input id="iowner${index}_occupation" type="text"></div>

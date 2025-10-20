@@ -324,6 +324,7 @@
 
 
 // Fill beneficial owners into BO1..BO4 (map up to 4) and detailed views
+// Fill beneficial owners into BO1..BO4 (map up to 4) and detailed views
 function fillBeneficialOwners() {
   const container = document.getElementById("iownersContainer");
   if (!container) return;
@@ -393,14 +394,50 @@ function fillBeneficialOwners() {
     const dob = val(formPrefix + "dob");
     const pob = val(formPrefix + "pob");
     const nationality = val(formPrefix + "nation");
-    const address1 = val(formPrefix + "resHse") + " " + val(formPrefix + "resStreet");
-    const address2 = val(formPrefix + "resTown") + ", " + val(formPrefix + "resDistrict");
+    const address1 = val(formPrefix + "resHse") + ", " + val(formPrefix + "resStreet")+ ", " + val(formPrefix + "resCity")+ ", " + val(formPrefix + "resCountry");
+    const address2 = val("iofficeHse") + ", " + val("iofficeStreetName") + ", " + val("iofficeCity") + ", " + val(formPrefix + "resCountry");
     const gps = val(formPrefix + "resGps");
     const tin = val(formPrefix + "tin");
     const phone = val(formPrefix + "contact1");
     const email = val(formPrefix + "email");
     const ghanaCard = val(formPrefix + "ghanaCard");
-    const placeOfWork = val(formPrefix + "occupation");
+    
+    // ===== START: CHANGE IS HERE =====
+    // Determine the role of this person (director, secretary, or both)
+    const ownerFullName = [fname, mname, sname].filter(Boolean).join(" ");
+    let role = "";
+    
+    // Check if this owner is also a director
+    const directorsContainer = document.getElementById("idirectorsContainer");
+    if (directorsContainer) {
+      const directors = Array.from(directorsContainer.querySelectorAll("fieldset"));
+      for (let j = 0; j < directors.length; j++) {
+        const directorIdx = directors[j].id.match(/\d+$/)?.[0] || "1";
+        const directorPrefix = `idirector${directorIdx}_`;
+        const directorFullName = [val(directorPrefix + "fname"), val(directorPrefix + "mname"), val(directorPrefix + "sname")].filter(Boolean).join(" ");
+        
+        if (directorFullName === ownerFullName) {
+          role = "Director";
+          break;
+        }
+      }
+    }
+    
+    // Check if this owner is also the secretary
+    const secretaryFullName = [val("isecFname"), val("isecMname"), val("isecSname")].filter(Boolean).join(" ");
+    if (secretaryFullName === ownerFullName) {
+      role = role ? role + " & Secretary" : "Secretary";
+    }
+    
+    // If no role found, use the occupation
+    if (!role) {
+      role = val(formPrefix + "occupation");
+    }
+    
+    // Use the role instead of occupation in placeOfWork
+    const placeOfWork = val(formPrefix + "resCity") + ", " + role;
+    // ===== END: CHANGE IS HERE =====
+    
     const directPercent = val(formPrefix + "directPercent");
     const votingRights = val(formPrefix + "votingRights");
     const indirectPercent = val(formPrefix + "indirectPercent");
@@ -408,14 +445,12 @@ function fillBeneficialOwners() {
     // Map to overlay elements
     setText(`${prefix}FirstName`, fname);
     setText(`${prefix}Surname`, sname);
-
-     
-      // ===== START: CHANGE IS HERE =====
-      // Combine middle name and former name into a single string
-      const nameParts = [mname, former].filter(Boolean); // Get non-empty parts
-      const combinedMiddleAndFormer = nameParts.join(' '); // Join with a space
-      setText(`${prefix}MiddleName`, combinedMiddleAndFormer);
-      // ===== END: CHANGE IS HERE ====
+    
+    // Combine middle name and former name into a single string
+    const nameParts = [mname, former].filter(Boolean); // Get non-empty parts
+    const combinedMiddleAndFormer = nameParts.join(' '); // Join with a space
+    setText(`${prefix}MiddleName`, combinedMiddleAndFormer);
+    
     setText(`${prefix}DOB`, dob);
     setText(`${prefix}Nationality`, nationality);
     setText(`${prefix}POB`, pob);
