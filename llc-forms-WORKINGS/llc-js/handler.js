@@ -464,6 +464,7 @@ function fillBeneficialOwners() {
     setText(`${prefix}PlaceOfWork`, placeOfWork);
     setText(`${prefix}Directpercent`, directPercent);
     setText(`${prefix}votinRight`, votingRights);
+    setText(`${prefix}votinRight2`, votingRights);
     setText(`${prefix}Indirectpercent`, indirectPercent);
     
     // For director and secretary names in the declaration sections
