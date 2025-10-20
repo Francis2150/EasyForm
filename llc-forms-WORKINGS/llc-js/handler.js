@@ -408,7 +408,14 @@ function fillBeneficialOwners() {
     // Map to overlay elements
     setText(`${prefix}FirstName`, fname);
     setText(`${prefix}Surname`, sname);
-    setText(`${prefix}Previousname`, mname);
+
+     
+      // ===== START: CHANGE IS HERE =====
+      // Combine middle name and former name into a single string
+      const nameParts = [mname, former].filter(Boolean); // Get non-empty parts
+      const combinedMiddleAndFormer = nameParts.join(' '); // Join with a space
+      setText(`${prefix}MiddleName`, combinedMiddleAndFormer);
+      // ===== END: CHANGE IS HERE ====
     setText(`${prefix}DOB`, dob);
     setText(`${prefix}Nationality`, nationality);
     setText(`${prefix}POB`, pob);
