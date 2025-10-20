@@ -71,6 +71,12 @@
             <input type="number" class="shareInput" min="0" max="100" placeholder="Enter share percentage">
           </div>
 
+          <!-- Simplified section for voting rights when "Owner" is checked -->
+          <div class="votingRightsBox hidden">
+            <label>Voting Rights (%):</label>
+            <input type="number" class="votingRightsInput" min="0" max="100" placeholder="Enter voting rights percentage">
+          </div>
+
           <hr class="role-divider">
         `;
 
@@ -88,6 +94,10 @@
           el.addEventListener("input", () => Roles.syncLinkedRoles(fs));
           el.addEventListener("change", () => Roles.syncLinkedRoles(fs));
         });
+
+        // Add event listener for voting rights input
+        wrapper.querySelector(".votingRightsInput").addEventListener("input", () => Roles.syncLinkedRoles(fs));
+        wrapper.querySelector(".votingRightsInput").addEventListener("change", () => Roles.syncLinkedRoles(fs));
 
         // Add input listeners on the director's own fields so edits immediately sync to linked role entries
         Roles.ensureDirectorInputListeners(fs);
@@ -108,44 +118,47 @@
     },
 
     // When checkboxes change
-    handleRoleChange(directorFs, checkbox) {
-      const role = checkbox.dataset.role;
-      const checked = checkbox.checked;
-      const wrapper = checkbox.closest(".role-checkboxes");
-      const shareBox = wrapper.querySelector(".sharePercentBox");
-      const qualBox = wrapper.querySelector(".qualificationBox");
-      const onlyBox = wrapper.querySelector('[data-role="only"]');
+   handleRoleChange(directorFs, checkbox) {
+  const role = checkbox.dataset.role;
+  const checked = checkbox.checked;
+  const wrapper = checkbox.closest(".role-checkboxes");
+  const shareBox = wrapper.querySelector(".sharePercentBox");
+  const qualBox = wrapper.querySelector(".qualificationBox");
+  const votingBox = wrapper.querySelector(".votingRightsBox");
+  const onlyBox = wrapper.querySelector('[data-role="only"]');
 
-      // If "Director Only" is checked, uncheck others and hide extra inputs
-      if (role === "only" && checked) {
-        wrapper.querySelectorAll(".roleCheck").forEach(cb => {
-          if (cb.dataset.role !== "only") cb.checked = false;
-        });
-        shareBox.classList.add("hidden");
-        qualBox.classList.add("hidden");
-        // Remove linked entries
-        Roles.removeLinkedRoleEntry(directorFs, "subscriber");
-        Roles.removeLinkedRoleEntry(directorFs, "owner");
-        Roles.removeLinkedRoleEntry(directorFs, "secretary");
-        return;
-      }
+  // If "Director Only" is checked, uncheck others and hide extra inputs
+  if (role === "only" && checked) {
+    wrapper.querySelectorAll(".roleCheck").forEach(cb => {
+      if (cb.dataset.role !== "only") cb.checked = false;
+    });
+    shareBox.classList.add("hidden");
+    qualBox.classList.add("hidden");
+    votingBox.classList.add("hidden"); // This line was missing
+    // Remove linked entries
+    Roles.removeLinkedRoleEntry(directorFs, "subscriber");
+    Roles.removeLinkedRoleEntry(directorFs, "owner");
+    Roles.removeLinkedRoleEntry(directorFs, "secretary");
+    return;
+  }
 
-      // Uncheck "Director Only" if another role is selected
-      if (role !== "only" && checked) {
-        onlyBox.checked = false;
-      }
+  // Uncheck "Director Only" if another role is selected
+  if (role !== "only" && checked) {
+    onlyBox.checked = false;
+  }
 
-      // Show/hide extra input fields based on selected role
-      if (role === "subscriber") wrapper.querySelector(".sharePercentBox").classList.toggle("hidden", !checked);
-      if (role === "secretary") wrapper.querySelector(".qualificationBox").classList.toggle("hidden", !checked);
+  // Show/hide extra input fields based on selected role
+  if (role === "subscriber") wrapper.querySelector(".sharePercentBox").classList.toggle("hidden", !checked);
+  if (role === "secretary") wrapper.querySelector(".qualificationBox").classList.toggle("hidden", !checked);
+  if (role === "owner") wrapper.querySelector(".votingRightsBox").classList.toggle("hidden", !checked);
 
-      // Copy data to corresponding forms if checked; otherwise remove
-      if (checked) {
-        Roles.copyDirectorDataToRole(directorFs, role, wrapper);
-      } else {
-        Roles.removeLinkedRoleEntry(directorFs, role);
-      }
-    },
+  // Copy data to corresponding forms if checked; otherwise remove
+  if (checked) {
+    Roles.copyDirectorDataToRole(directorFs, role, wrapper);
+  } else {
+    Roles.removeLinkedRoleEntry(directorFs, role);
+  }
+},
 
     // Returns an object of normalized director data (key -> value)
     getDirectorData(directorFs) {
@@ -185,6 +198,10 @@
         const qual = wrapper.querySelector(".secQualification")?.value || "";
         dirData["qualification"] = qual;
         dirData["secqualification"] = qual;
+      }
+      if (role === "owner") {
+        const votingRights = wrapper.querySelector(".votingRightsInput")?.value || "";
+        dirData["votingrights"] = votingRights;
       }
 
       // Fill the appropriate form based on the role
@@ -345,6 +362,12 @@
           }
         }
       });
+      
+      // Special handling for voting rights field to ensure it's properly mapped
+      if (data.votingrights !== undefined) {
+        const votingRightsEl = targetFs.querySelector(`[id$="_votingRights"]`);
+        if (votingRightsEl) votingRightsEl.value = data.votingrights;
+      }
     },
 
     // Called when director inputs change — sync any linked Subscriber/Owner/Secretary entries
@@ -367,6 +390,10 @@
       // owner
       const ownerChecked = wrapper.querySelector('.roleCheck[data-role="owner"]')?.checked;
       if (ownerChecked) {
+        // attach voting rights data if present
+        const votingRights = wrapper.querySelector(".votingRightsInput")?.value;
+        if (votingRights !== undefined) dirData["votingrights"] = votingRights;
+        
         Roles.addOrFillOwner(dirData, directorFs);
       }
 
@@ -401,7 +428,10 @@
       const ownerLinked = document.querySelector(`#iownersContainer fieldset[data-link="${tag}"]`);
       if (ownerLinked) {
         const cb = wrapper.querySelector('.roleCheck[data-role="owner"]');
-        if (cb) cb.checked = true;
+        if (cb) {
+          cb.checked = true;
+          wrapper.querySelector(".votingRightsBox")?.classList.remove("hidden");
+        }
       }
 
       // secretary: if secretary fields match (single or multiple), mark checkbox (best-effort)

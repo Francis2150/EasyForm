@@ -232,51 +232,53 @@
   // ----- BENEFICIAL OWNERS -----
   const ownersContainer = document.getElementById('iownersContainer');
   const addOwnerBtn = document.getElementById('iaddOwnerBtn');
+// In structure.js, update the createOwnerBlock function
+// In structure.js, update the createOwnerBlock function
+function createOwnerBlock(index) {
+  const fieldset = document.createElement('fieldset');
+  fieldset.id = `iowner${index}`;
+  fieldset.innerHTML = `
+    <legend>Beneficial Owner ${index}</legend>
+    <div class="form-group"><label>Title:</label><select id="iowner${index}_title">${titleOptions}</select></div>
+    <div class="form-group"><label>First Name:</label><input id="iowner${index}_fname" type="text"></div>
+    <div class="form-group"><label>Middle Name:</label><input id="iowner${index}_mname" type="text"></div>
+    <div class="form-group"><label>Surname:</label><input id="iowner${index}_sname" type="text"></div>
+    <div class="form-group"><label>Former Name:</label><input id="iowner${index}_former" type="text"></div>
+    <div class="form-group"><label>Gender:</label><select id="iowner${index}_gender">${genderOptions}</select></div>
+    <div class="form-group"><label>Date of Birth:</label><input id="iowner${index}_dob" type="text"></div>
+    <div class="form-group"><label>Place of Birth:</label><input id="iowner${index}_pob" type="text"></div>
+    <div class="form-group"><label>Nationality:</label><select id="iowner${index}_nation">${nationalityOptions}</select></div>
+    <div class="form-group"><label>Occupation:</label><input id="iowner${index}_occupation" type="text"></div>
+    <div class="form-group"><label>Contact 1:</label><input id="iowner${index}_contact1" type="text"></div>
+    <div class="form-group"><label>Contact 2:</label><input id="iowner${index}_contact2" type="text"></div>
+    <div class="form-group"><label>Email:</label><input id="iowner${index}_email" type="email"></div>
+    <div class="form-group"><label>TIN:</label><input id="iowner${index}_tin" type="text"></div>
+    <div class="form-group"><label>Ghana Card:</label><input id="iowner${index}_ghanaCard" type="text"></div>
 
-  function createOwnerBlock(index) {
-    const fieldset = document.createElement('fieldset');
-    fieldset.id = `iowner${index}`;
-    fieldset.innerHTML = `
-      <legend>Beneficial Owner ${index}</legend>
-      <div class="form-group"><label>Title:</label><select id="iowner${index}_title">${titleOptions}</select></div>
-      <div class="form-group"><label>First Name:</label><input id="iowner${index}_fname" type="text"></div>
-      <div class="form-group"><label>Middle Name:</label><input id="iowner${index}_mname" type="text"></div>
-      <div class="form-group"><label>Surname:</label><input id="iowner${index}_sname" type="text"></div>
-      <div class="form-group"><label>Former Name:</label><input id="iowner${index}_former" type="text"></div>
-      <div class="form-group"><label>Gender:</label><select id="iowner${index}_gender">${genderOptions}</select></div>
-      <div class="form-group"><label>Date of Birth:</label><input id="iowner${index}_dob" type="text"></div>
-      <div class="form-group"><label>Place of Birth:</label><input id="iowner${index}_pob" type="text"></div>
-      <div class="form-group"><label>Nationality:</label><select id="iowner${index}_nation">${nationalityOptions}</select></div>
-      <div class="form-group"><label>Occupation:</label><input id="iowner${index}_occupation" type="text"></div>
-      <div class="form-group"><label>Contact 1:</label><input id="iowner${index}_contact1" type="text"></div>
-      <div class="form-group"><label>Contact 2:</label><input id="iowner${index}_contact2" type="text"></div>
-      <div class="form-group"><label>Email:</label><input id="iowner${index}_email" type="email"></div>
-      <div class="form-group"><label>TIN:</label><input id="iowner${index}_tin" type="text"></div>
-      <div class="form-group"><label>Ghana Card:</label><input id="iowner${index}_ghanaCard" type="text"></div>
+    <h4>Residential Address</h4>
+    <div class="form-group"><label>GPS:</label><input id="iowner${index}_resGps" type="text"></div>
+    <div class="form-group"><label>House No.:</label><input id="iowner${index}_resHse" type="text"></div>
+    <div class="form-group"><label>Landmark:</label><input id="iowner${index}_resLandmark" type="text"></div>
+    <div class="form-group"><label>Street:</label><input id="iowner${index}_resStreet" type="text"></div>
+    <div class="form-group"><label>City:</label><input id="iowner${index}_resCity" type="text"></div>
+    <div class="form-group"><label>Town:</label><input id="iowner${index}_resTown" type="text"></div>
+    <div class="form-group"><label>District:</label><input id="iowner${index}_resDistrict" type="text"></div>
+    <div class="form-group"><label>Region:</label><input id="iowner${index}_resRegion" type="text"></div>
+    <div class="form-group"><label>Country:</label><input id="iowner${index}_resCountry" type="text"></div>
+    
+    <!-- Simplified voting rights field -->
+    <h4>Voting Rights</h4>
+    <div class="form-group"><label>Voting Rights (%):</label><input id="iowner${index}_votingRights" type="number" min="0" max="100"></div>
+  `;
 
-      <h4>Residential Address</h4>
-      <div class="form-group"><label>GPS:</label><input id="iowner${index}_resGps" type="text"></div>
-      <div class="form-group"><label>House No.:</label><input id="iowner${index}_resHse" type="text"></div>
-      <div class="form-group"><label>Landmark:</label><input id="iowner${index}_resLandmark" type="text"></div>
-      <div class="form-group"><label>Street:</label><input id="iowner${index}_resStreet" type="text"></div>
-      <div class="form-group"><label>City:</label><input id="iowner${index}_resCity" type="text"></div>
-      <div class="form-group"><label>Town:</label><input id="iowner${index}_resTown" type="text"></div>
-      <div class="form-group"><label>District:</label><input id="iowner${index}_resDistrict" type="text"></div>
-      <div class="form-group"><label>Region:</label><input id="iowner${index}_resRegion" type="text"></div>
-      <div class="form-group"><label>Country:</label><input id="iowner${index}_resCountry" type="text"></div>
-      <div class="form-group"><label>Share Percent:</label><input id="iowner${index}_sharePercent" type="number" min="0" max="100"></div>
-    `;
-
-    const removeBtn = makeRemoveButton('Remove Owner');
-    removeBtn.addEventListener('click', () => {
-      fieldset.remove();
-      renumberFieldsets('iownersContainer', 'iowner', 'Beneficial Owner');
-    });
-    fieldset.appendChild(removeBtn);
-    return fieldset;
-  }
-
-  addOwnerBtn.addEventListener('click', () => {
+  const removeBtn = makeRemoveButton('Remove Owner');
+  removeBtn.addEventListener('click', () => {
+    fieldset.remove();
+    renumberFieldsets('iownersContainer', 'iowner', 'Beneficial Owner');
+  });
+  fieldset.appendChild(removeBtn);
+  return fieldset;
+}  addOwnerBtn.addEventListener('click', () => {
     const next = ownersContainer.querySelectorAll('fieldset').length + 1;
     ownersContainer.appendChild(createOwnerBlock(next));
     renumberFieldsets('iownersContainer', 'iowner', 'Beneficial Owner');

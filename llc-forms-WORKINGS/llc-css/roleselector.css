@@ -94,5 +94,11 @@ input[disabled] {
   opacity: 0.1;
   pointer-events: auto; /* ensures tooltip still shows */
 }
+.votingRightsBox {
+ 
+  margin-top: 8px;
+  font-size: 0.9rem;
+  color: #444;
+}
 
 
