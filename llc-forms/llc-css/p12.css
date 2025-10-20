@@ -1,0 +1,25 @@
+#estimatedRevenue {
+    top: 140px;
+    left: 193px;
+    width: 209px;
+    border-top: 1px solid rgb(124,117,117);
+    border-bottom: 1px solid rgb(124,117,117);
+    position: absolute;
+}
+
+#numOfEmp {
+    top: 160px;
+    left: 193px;
+    width: 209px;
+    border-top: 1px solid rgb(124,117,117);
+    border-bottom: 1px solid rgb(124,117,117);
+    position: absolute;
+}
+
+#checkmark {
+    top: 199px;
+    left: 364px;
+    width: 14px;
+    height: 12px;
+    position: absolute;
+}

@@ -4,9 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Company Registration Form</title>
-  <link rel="stylesheet" href="../css/forminput.css">
-  <link rel="stylesheet" href="../css/forminputNav.css">
-   <link rel="stylesheet" href="../css/roleselector.css">
+  
+  <link rel="stylesheet" href="../llc-css/forminputNav.css">
+   <link rel="stylesheet" href="../llc-css/roleselector.css">
 </head>
 <body>
 
@@ -182,18 +182,39 @@
     <button type="submit">Submit Company</button>
   </form>
 
-  <!-- Placeholder for all companies -->
-  <div id="companiesOutput"></div>
-  <div id="allCompaniesContainer"></div>
-
- 
- <script src="../js/structure.js"></script>
-<script src="../js/data.js"></script>
-<script src="../js/editFunctions.js"></script> <!-- ✅ new file -->
-<script src="../js/nav.js"></script>
-
-
+  <div id="icompaniesOutput"></div>
+  <div id="iallCompaniesContainer"></div>
 
   
+  
+<script src="../llc-js/global.js"></script>
+
+  <script src="../llc-js/structurecopy.js"></script>
+  
+ <script src="../llc-js/roleselectorcopy.js"></script>
+ <script>
+(function() {
+  // Create a broadcaster channel to sync data between pages
+  const channel = new BroadcastChannel("formSync");
+
+  // Function to collect form data
+  function collectFormData() {
+    const data = {};
+    document.querySelectorAll("#icompanyForm input, #icompanyForm select, #icompanyForm textarea").forEach(el => {
+      if (el.id) data[el.id] = el.value;
+    });
+    return data;
+  }
+
+  // Watch for input changes and broadcast them
+  document.addEventListener("input", () => {
+    const formData = collectFormData();
+    channel.postMessage(formData);
+  });
+
+  console.log("📡 Live preview broadcasting active");
+})();
+</script>
+
 </body>
 </html>
