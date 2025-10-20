@@ -1,4 +1,4 @@
-// handler.js - Fixed version with proper handling of secretary and director names
+// handler.js 
 (function() {
   // Safe helper: get element value (returns empty string if not found)
   function val(id) {
@@ -321,36 +321,119 @@
     }
   }
 
-  // Fill beneficial owners into BO1..BO4 (map up to 4)
-  function fillBeneficialOwners() {
-    const container = document.getElementById("iownersContainer");
-    if (!container) return;
-    const fieldsets = Array.from(container.querySelectorAll("fieldset"));
 
-    for (let i = 0; i < 4; i++) {
-      const fs = fieldsets[i];
-      const num = i + 1;
-      if (!fs) {
-        setText(`owner${num}fullName`, "");
-        setText(`owner${num}status`, "");
-        continue;
-      }
-      const idx = fs.id.match(/\d+$/)?.[0];
-      const prefix = `iowner${idx}_`;
-      const fname = val(prefix + "fname");
-      const mname = val(prefix + "mname");
-      const sname = val(prefix + "sname");
-      const former = val(prefix + "former");
-      const full = [fname, mname, sname, former].filter(Boolean).join(" ");
-      
-      // Set the owner's full name
-      setText(`owner${num}fullName`, full);
-      
-      // Set status to checkmark if owner exists, otherwise empty
-      setText(`owner${num}status`, full ? "\u2714" : "");
+
+// Fill beneficial owners into BO1..BO4 (map up to 4) and detailed views
+function fillBeneficialOwners() {
+  const container = document.getElementById("iownersContainer");
+  if (!container) return;
+  const fieldsets = Array.from(container.querySelectorAll("fieldset"));
+
+  // First, fill the list view on page 14 (LLC14.jpg)
+  for (let i = 0; i < 4; i++) {
+    const fs = fieldsets[i];
+    const num = i + 1;
+    if (!fs) {
+      setText(`owner${num}fullName`, "");
+      setText(`owner${num}status`, "");
+      continue;
     }
+    const idx = fs.id.match(/\d+$/)?.[0];
+    const prefix = `iowner${idx}_`;
+    const fname = val(prefix + "fname");
+    const mname = val(prefix + "mname");
+    const sname = val(prefix + "sname");
+    const former = val(prefix + "former");
+    const full = [fname, mname, sname, former].filter(Boolean).join(" ");
+    
+    // Set the owner's full name
+    setText(`owner${num}fullName`, full);
+    
+    // Set status to checkmark if owner exists, otherwise empty
+    setText(`owner${num}status`, full ? "\u2714" : "");
   }
 
+  // Now fill detailed views for the first two owners
+  for (let i = 0; i < 2; i++) {
+    const fs = fieldsets[i];
+    const num = i + 1;
+    // FIX: Changed prefix to match HTML IDs (without underscore)
+    const prefix = num === 1 ? "owner1" : "owner2"; // Prefix for overlay elements
+    
+    if (!fs) {
+      // Clear all fields for this owner if not present
+      setText(`${prefix}FirstName`, "");
+      setText(`${prefix}Surname`, "");
+      setText(`${prefix}MiddleName`, "");
+      setText(`${prefix}DOB`, "");
+      setText(`${prefix}Nationality`, "");
+      setText(`${prefix}POB`, "");
+      setText(`${prefix}Address1`, "");
+      setText(`${prefix}Address2`, "");
+      setText(`${prefix}GPS`, "");
+      setText(`${prefix}Tin`, "");
+      setText(`${prefix}PhoneNumber`, "");
+      setText(`${prefix}Email`, "");
+      setText(`${prefix}GhNumber`, "");
+      setText(`${prefix}PlaceOfWork`, "");
+      setText(`${prefix}Directpercent`, "");
+      setText(`${prefix}votinRight`, "");
+      setText(`${prefix}Indirectpercent`, "");
+      continue;
+    }
+    
+    const idx = fs.id.match(/\d+$/)?.[0];
+    const formPrefix = `iowner${idx}_`;
+    
+    // Get all the form values
+    const fname = val(formPrefix + "fname");
+    const mname = val(formPrefix + "mname");
+    const sname = val(formPrefix + "sname");
+    const former = val(formPrefix + "former");
+    const dob = val(formPrefix + "dob");
+    const pob = val(formPrefix + "pob");
+    const nationality = val(formPrefix + "nation");
+    const address1 = val(formPrefix + "resHse") + " " + val(formPrefix + "resStreet");
+    const address2 = val(formPrefix + "resTown") + ", " + val(formPrefix + "resDistrict");
+    const gps = val(formPrefix + "resGps");
+    const tin = val(formPrefix + "tin");
+    const phone = val(formPrefix + "contact1");
+    const email = val(formPrefix + "email");
+    const ghanaCard = val(formPrefix + "ghanaCard");
+    const placeOfWork = val(formPrefix + "occupation");
+    const directPercent = val(formPrefix + "directPercent");
+    const votingRights = val(formPrefix + "votingRights");
+    const indirectPercent = val(formPrefix + "indirectPercent");
+    
+    // Map to overlay elements
+    setText(`${prefix}FirstName`, fname);
+    setText(`${prefix}Surname`, sname);
+    setText(`${prefix}Previousname`, mname);
+    setText(`${prefix}DOB`, dob);
+    setText(`${prefix}Nationality`, nationality);
+    setText(`${prefix}POB`, pob);
+    setText(`${prefix}Address1`, address1);
+    setText(`${prefix}Address2`, address2);
+    setText(`${prefix}GPS`, gps);
+    setText(`${prefix}Tin`, tin);
+    setText(`${prefix}PhoneNumber`, phone);
+    setText(`${prefix}Email`, email);
+    setText(`${prefix}GhNumber`, ghanaCard);
+    setText(`${prefix}PlaceOfWork`, placeOfWork);
+    setText(`${prefix}Directpercent`, directPercent);
+    setText(`${prefix}votinRight`, votingRights);
+    setText(`${prefix}Indirectpercent`, indirectPercent);
+    
+    // For director and secretary names in the declaration sections
+    if (num === 1) {
+      setText("Fbo2directorName", getDirectorFullName(1));
+      setText("Fbo2secretaryName", val("isecFname") + " " + val("isecSname"));
+    } else {
+      setText("Sbo2directorName", getDirectorFullName(2) || getDirectorFullName(1));
+      setText("Sbo2secretaryName", val("isecFname") + " " + val("isecSname"));
+    }
+  }
+}
   // Function to get director full name by index
   function getDirectorFullName(index) {
     const prefix = `idirector${index}_`;
