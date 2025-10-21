@@ -218,7 +218,8 @@
 
     // Also update a generic 'directorFullName' field sometimes used
     setText("FdirectorFullName", fullName);
-    setText("SdirectorFullName", fullName);
+    setText("directorFullName2", fullName);
+    setText("directorFullName3", fullName);
   }
 
   // Fill secretary overlay from secretary form
@@ -260,6 +261,8 @@
     
     // Fix: Set secretaryFullName overlay
     setText("secretaryFullName", fullName);
+    setText("secretaryFullName2", fullName);
+     setText("secretaryFullName3", fullName);
   }
 
   // Fill first N subscribers into SH1/SH2 overlays (maps up to 2)
@@ -323,7 +326,7 @@
 
 
 
-// Fill beneficial owners into BO1..BO4 (map up to 4) and detailed views
+
 // Fill beneficial owners into BO1..BO4 (map up to 4) and detailed views
 function fillBeneficialOwners() {
   const container = document.getElementById("iownersContainer");
