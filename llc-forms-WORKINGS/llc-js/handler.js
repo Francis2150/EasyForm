@@ -28,6 +28,33 @@
     return `${dd}/${mm}/${yyyy}`;
   }
 
+  // Parse date from various formats
+  function parseDate(dateString) {
+    if (!dateString) return { day: "", month: "", year: "" };
+    
+    let day, month, year;
+    
+    if (dateString.includes('-')) {
+      // YYYY-MM-DD format
+      const parts = dateString.split('-');
+      if (parts.length === 3) {
+        year = parts[0];
+        month = parts[1];
+        day = parts[2];
+      }
+    } else if (dateString.includes('/')) {
+      // DD/MM/YYYY format
+      const parts = dateString.split('/');
+      if (parts.length === 3) {
+        day = parts[0];
+        month = parts[1];
+        year = parts[2];
+      }
+    }
+    
+    return { day, month, year };
+  }
+
   // Track which director is assigned as secretary
   let secretaryDirectorIndex = null;
 
@@ -37,10 +64,10 @@
     setText("companyName2", val("icompanyName"));
     setText("companyName3", val("icompanyName"));
     setText("companyName4", val("icompanyName"));
-    setText("SecompanyName", val("icompanyName"));
-    setText("FdirectorCompanyName", val("icompanyName"));
-    setText("SdirectorCompanyName", val("icompanyName"));
-
+    setText("companyName5", val("icompanyName"));
+    setText("companyName6", val("icompanyName"));
+    setText("companyName7", val("icompanyName"));
+    setText("companyName8", val("icompanyName"));
     // end with: show the correct overlay✅
     const endWith = val("iendWith").toLowerCase();
     setText("endWithLTD", endWith === "ltd" ? "\u2714" : "");
@@ -222,6 +249,123 @@
     setText("directorFullName3", fullName);
   }
 
+  // Fill director declarations
+  function fillDirectorDeclarations() {
+    const directorsContainer = document.getElementById("idirectorsContainer");
+    if (!directorsContainer) return;
+    
+    const directors = Array.from(directorsContainer.querySelectorAll("fieldset"));
+    
+    // Handle first director declaration (page 22)
+    if (directors.length >= 1) {
+      const prefix = `idirector1_`;
+      const fname = val(prefix + "fname");
+      const mname = val(prefix + "mname");
+      const sname = val(prefix + "sname");
+      const fullName = [fname, mname, sname].filter(Boolean).join(" ");
+      
+      // Full name fields
+      setText("Ddirector1FullName1", fullName);
+      setText("Ddirector1FullName2", fullName);
+      setText("Ddirector1FullName3", fullName);
+      
+      // Address components
+      setText("Ddirector1HouseNumber", val(prefix + "resHse"));
+      setText("Ddirector1Landmark", val(prefix + "resLandmark"));
+      setText("Ddirector1StreetName", val(prefix + "resStreet"));
+      
+      // Combine city and town
+      const city = val(prefix + "resCity");
+      const town = val(prefix + "resTown");
+      setText("Ddirector1Town&City", city && town ? `${city}, ${town}` : city || town);
+      
+      // Date components - handle both YYYY-MM-DD and DD/MM/YYYY formats
+      const dob = val(prefix + "dob");
+      if (dob) {
+        const { day, month, year } = parseDate(dob);
+        setText("DayOfdeclaration", day);
+        setText("MonthOfdeclaration", month);
+        setText("YearOfdeclaration", year);
+      }
+    }
+    
+    // Handle second director declaration (page 23)
+    if (directors.length >= 2) {
+      const prefix = `idirector2_`;
+      const fname = val(prefix + "fname");
+      const mname = val(prefix + "mname");
+      const sname = val(prefix + "sname");
+      const fullName = [fname, mname, sname].filter(Boolean).join(" ");
+      
+      // Full name fields
+      setText("Ddirector2FullName1", fullName);
+      setText("Ddirector2FullName2", fullName);
+      setText("Ddirector2FullName3", fullName);
+      
+      // Address components
+      setText("Ddirector2HouseNumber", val(prefix + "resHse"));
+      setText("Ddirector2Landmark", val(prefix + "resLandmark"));
+      setText("Ddirector2StreetName", val(prefix + "resStreet"));
+      
+      // Combine city and town
+      const city = val(prefix + "resCity");
+      const town = val(prefix + "resTown");
+      setText("Ddirector2Town&City", city && town ? `${city}, ${town}` : city || town);
+      
+      // Date components - handle both YYYY-MM-DD and DD/MM/YYYY formats
+      const dob = val(prefix + "dob");
+      if (dob) {
+        const { day, month, year } = parseDate(dob);
+        setText("DayOfdeclaration2", day);
+        setText("MonthOfdeclaration2", month);
+        setText("YearOfdeclaration2", year);
+      }
+    }
+  }
+
+  // Fill consent letters
+  function fillConsentLetters() {
+    // First director consent letter (page 25)
+    const director1FullName = getDirectorFullName(1);
+    if (director1FullName) {
+      setText("LFdirectorFullName", director1FullName);
+      setText("FdirectorResidentialAddress", 
+        val("idirector1_resHse") + ", " + 
+        val("idirector1_resStreet") + ", " + 
+        val("idirector1_resCity")
+      );
+      setText("FdirectorBoxNumber", val("idirector1_resHse"));
+      setText("FdirectorPhoneNumber", val("idirector1_contact1"));
+    }
+    
+    // Second director consent letter (page 26)
+    const director2FullName = getDirectorFullName(2);
+    if (director2FullName) {
+      setText("LSdirectorFullName", director2FullName);
+      setText("SdirectorResidentialAddress", 
+        val("idirector2_resHse") + ", " + 
+        val("idirector2_resStreet") + ", " + 
+        val("idirector2_resCity")
+      );
+      setText("SdirectorBoxNumber", val("idirector2_resHse"));
+      setText("SdirectorPhoneNumber", val("idirector2_contact1"));
+    }
+    
+    // Secretary consent letter (page 24)
+    const secretaryFullName = [val("isecFname"), val("isecMname"), val("isecSname")].filter(Boolean).join(" ");
+    if (secretaryFullName) {
+      setText("SecfullName", secretaryFullName);
+      setText("SecResidentialAddress", 
+        val("isecResHse") + ", " + 
+        val("isecResStreet") + ", " + 
+        val("isecResCity")
+      );
+      setText("SecBoxNumber", val("isecResHse"));
+      setText("SecPhoneNumber", val("isecContact1"));
+      setText("SecQualification", val("isecQualification"));
+    }
+  }
+
   // Fill secretary overlay from secretary form
   function fillSecretary() {
     // If there is a secretary linked from director (Roles.fillSecretaryForm), the isec* ids will be filled automatically.
@@ -324,162 +468,160 @@
     }
   }
 
+  // Fill beneficial owners into BO1..BO4 (map up to 4) and detailed views
+  function fillBeneficialOwners() {
+    const container = document.getElementById("iownersContainer");
+    if (!container) return;
+    const fieldsets = Array.from(container.querySelectorAll("fieldset"));
 
-
-
-// Fill beneficial owners into BO1..BO4 (map up to 4) and detailed views
-function fillBeneficialOwners() {
-  const container = document.getElementById("iownersContainer");
-  if (!container) return;
-  const fieldsets = Array.from(container.querySelectorAll("fieldset"));
-
-  // First, fill the list view on page 14 (LLC14.jpg)
-  for (let i = 0; i < 4; i++) {
-    const fs = fieldsets[i];
-    const num = i + 1;
-    if (!fs) {
-      setText(`owner${num}fullName`, "");
-      setText(`owner${num}status`, "");
-      continue;
+    // First, fill the list view on page 14 (LLC14.jpg)
+    for (let i = 0; i < 4; i++) {
+      const fs = fieldsets[i];
+      const num = i + 1;
+      if (!fs) {
+        setText(`owner${num}fullName`, "");
+        setText(`owner${num}status`, "");
+        continue;
+      }
+      const idx = fs.id.match(/\d+$/)?.[0];
+      const prefix = `iowner${idx}_`;
+      const fname = val(prefix + "fname");
+      const mname = val(prefix + "mname");
+      const sname = val(prefix + "sname");
+      const former = val(prefix + "former");
+      const full = [fname, mname, sname, former].filter(Boolean).join(" ");
+      
+      // Set the owner's full name
+      setText(`owner${num}fullName`, full);
+      
+      // Set status to checkmark if owner exists, otherwise empty
+      setText(`owner${num}status`, full ? "\u2714" : "");
     }
-    const idx = fs.id.match(/\d+$/)?.[0];
-    const prefix = `iowner${idx}_`;
-    const fname = val(prefix + "fname");
-    const mname = val(prefix + "mname");
-    const sname = val(prefix + "sname");
-    const former = val(prefix + "former");
-    const full = [fname, mname, sname, former].filter(Boolean).join(" ");
-    
-    // Set the owner's full name
-    setText(`owner${num}fullName`, full);
-    
-    // Set status to checkmark if owner exists, otherwise empty
-    setText(`owner${num}status`, full ? "\u2714" : "");
-  }
 
-  // Now fill detailed views for the first two owners
-  for (let i = 0; i < 2; i++) {
-    const fs = fieldsets[i];
-    const num = i + 1;
-    // FIX: Changed prefix to match HTML IDs (without underscore)
-    const prefix = num === 1 ? "owner1" : "owner2"; // Prefix for overlay elements
+    // Now fill detailed views for the first two owners
+    for (let i = 0; i < 2; i++) {
+      const fs = fieldsets[i];
+      const num = i + 1;
+      // FIX: Changed prefix to match HTML IDs (without underscore)
+      const prefix = num === 1 ? "owner1" : "owner2"; // Prefix for overlay elements
+      
+      if (!fs) {
+        // Clear all fields for this owner if not present
+        setText(`${prefix}FirstName`, "");
+        setText(`${prefix}Surname`, "");
+        setText(`${prefix}MiddleName`, "");
+        setText(`${prefix}DOB`, "");
+        setText(`${prefix}Nationality`, "");
+        setText(`${prefix}POB`, "");
+        setText(`${prefix}Address1`, "");
+        setText(`${prefix}Address2`, "");
+        setText(`${prefix}GPS`, "");
+        setText(`${prefix}Tin`, "");
+        setText(`${prefix}PhoneNumber`, "");
+        setText(`${prefix}Email`, "");
+        setText(`${prefix}GhNumber`, "");
+        setText(`${prefix}PlaceOfWork`, "");
+        setText(`${prefix}Directpercent`, "");
+        setText(`${prefix}votinRight`, "");
+        setText(`${prefix}Indirectpercent`, "");
+        continue;
+      }
+      
+      const idx = fs.id.match(/\d+$/)?.[0];
+      const formPrefix = `iowner${idx}_`;
+      
+      // Get all the form values
+      const fname = val(formPrefix + "fname");
+      const mname = val(formPrefix + "mname");
+      const sname = val(formPrefix + "sname");
+      const former = val(formPrefix + "former");
+      const dob = val(formPrefix + "dob");
+      const pob = val(formPrefix + "pob");
+      const nationality = val(formPrefix + "nation");
+      const address1 = val(formPrefix + "resHse") + ", " + val(formPrefix + "resStreet")+ ", " + val(formPrefix + "resCity")+ ", " + val(formPrefix + "resCountry");
+      const address2 = val("iofficeHse") + ", " + val("iofficeStreetName") + ", " + val("iofficeCity") + ", " + val(formPrefix + "resCountry");
+      const gps = val(formPrefix + "resGps");
+      const tin = val(formPrefix + "tin");
+      const phone = val(formPrefix + "contact1");
+      const email = val(formPrefix + "email");
+      const ghanaCard = val(formPrefix + "ghanaCard");
+      
     
-    if (!fs) {
-      // Clear all fields for this owner if not present
-      setText(`${prefix}FirstName`, "");
-      setText(`${prefix}Surname`, "");
-      setText(`${prefix}MiddleName`, "");
-      setText(`${prefix}DOB`, "");
-      setText(`${prefix}Nationality`, "");
-      setText(`${prefix}POB`, "");
-      setText(`${prefix}Address1`, "");
-      setText(`${prefix}Address2`, "");
-      setText(`${prefix}GPS`, "");
-      setText(`${prefix}Tin`, "");
-      setText(`${prefix}PhoneNumber`, "");
-      setText(`${prefix}Email`, "");
-      setText(`${prefix}GhNumber`, "");
-      setText(`${prefix}PlaceOfWork`, "");
-      setText(`${prefix}Directpercent`, "");
-      setText(`${prefix}votinRight`, "");
-      setText(`${prefix}Indirectpercent`, "");
-      continue;
-    }
-    
-    const idx = fs.id.match(/\d+$/)?.[0];
-    const formPrefix = `iowner${idx}_`;
-    
-    // Get all the form values
-    const fname = val(formPrefix + "fname");
-    const mname = val(formPrefix + "mname");
-    const sname = val(formPrefix + "sname");
-    const former = val(formPrefix + "former");
-    const dob = val(formPrefix + "dob");
-    const pob = val(formPrefix + "pob");
-    const nationality = val(formPrefix + "nation");
-    const address1 = val(formPrefix + "resHse") + ", " + val(formPrefix + "resStreet")+ ", " + val(formPrefix + "resCity")+ ", " + val(formPrefix + "resCountry");
-    const address2 = val("iofficeHse") + ", " + val("iofficeStreetName") + ", " + val("iofficeCity") + ", " + val(formPrefix + "resCountry");
-    const gps = val(formPrefix + "resGps");
-    const tin = val(formPrefix + "tin");
-    const phone = val(formPrefix + "contact1");
-    const email = val(formPrefix + "email");
-    const ghanaCard = val(formPrefix + "ghanaCard");
-    
-    // ===== START: CHANGE IS HERE =====
-    // Determine the role of this person (director, secretary, or both)
-    const ownerFullName = [fname, mname, sname].filter(Boolean).join(" ");
-    let role = "";
-    
-    // Check if this owner is also a director
-    const directorsContainer = document.getElementById("idirectorsContainer");
-    if (directorsContainer) {
-      const directors = Array.from(directorsContainer.querySelectorAll("fieldset"));
-      for (let j = 0; j < directors.length; j++) {
-        const directorIdx = directors[j].id.match(/\d+$/)?.[0] || "1";
-        const directorPrefix = `idirector${directorIdx}_`;
-        const directorFullName = [val(directorPrefix + "fname"), val(directorPrefix + "mname"), val(directorPrefix + "sname")].filter(Boolean).join(" ");
-        
-        if (directorFullName === ownerFullName) {
-          role = "Director";
-          break;
+      // Determine the role of this person (director, secretary, or both)
+      const ownerFullName = [fname, mname, sname].filter(Boolean).join(" ");
+      let role = "";
+      
+      // Check if this owner is also a director
+      const directorsContainer = document.getElementById("idirectorsContainer");
+      if (directorsContainer) {
+        const directors = Array.from(directorsContainer.querySelectorAll("fieldset"));
+        for (let j = 0; j < directors.length; j++) {
+          const directorIdx = directors[j].id.match(/\d+$/)?.[0] || "1";
+          const directorPrefix = `idirector${directorIdx}_`;
+          const directorFullName = [val(directorPrefix + "fname"), val(directorPrefix + "mname"), val(directorPrefix + "sname")].filter(Boolean).join(" ");
+          
+          if (directorFullName === ownerFullName) {
+            role = "Director";
+            break;
+          }
         }
       }
-    }
-    
-    // Check if this owner is also the secretary
-    const secretaryFullName = [val("isecFname"), val("isecMname"), val("isecSname")].filter(Boolean).join(" ");
-    if (secretaryFullName === ownerFullName) {
-      role = role ? role + " & Secretary" : "Secretary";
-    }
-    
-    // If no role found, use the occupation
-    if (!role) {
-      role = val(formPrefix + "occupation");
-    }
-    
-    // Use the role instead of occupation in placeOfWork
-    const placeOfWork = val(formPrefix + "resCity") + ", " + role;
-    // ===== END: CHANGE IS HERE =====
-    
-    const directPercent = val(formPrefix + "directPercent");
-    const votingRights = val(formPrefix + "votingRights");
-    const indirectPercent = val(formPrefix + "indirectPercent");
-    
-    // Map to overlay elements
-    setText(`${prefix}FirstName`, fname);
-    setText(`${prefix}Surname`, sname);
-    
-    // Combine middle name and former name into a single string
-    const nameParts = [mname, former].filter(Boolean); // Get non-empty parts
-    const combinedMiddleAndFormer = nameParts.join(' '); // Join with a space
-    setText(`${prefix}MiddleName`, combinedMiddleAndFormer);
-    
-    setText(`${prefix}DOB`, dob);
-    setText(`${prefix}Nationality`, nationality);
-    setText(`${prefix}POB`, pob);
-    setText(`${prefix}Address1`, address1);
-    setText(`${prefix}Address2`, address2);
-    setText(`${prefix}GPS`, gps);
-    setText(`${prefix}Tin`, tin);
-    setText(`${prefix}PhoneNumber`, phone);
-    setText(`${prefix}Email`, email);
-    setText(`${prefix}GhNumber`, ghanaCard);
-    setText(`${prefix}PlaceOfWork`, placeOfWork);
-    setText(`${prefix}Directpercent`, directPercent);
-    setText(`${prefix}votinRight`, votingRights);
-    setText(`${prefix}votinRight2`, votingRights);
-    setText(`${prefix}Indirectpercent`, indirectPercent);
-    
-    // For director and secretary names in the declaration sections
-    if (num === 1) {
-      setText("Fbo2directorName", getDirectorFullName(1));
-      setText("Fbo2secretaryName", val("isecFname") + " " + val("isecSname"));
-    } else {
-      setText("Sbo2directorName", getDirectorFullName(2) || getDirectorFullName(1));
-      setText("Sbo2secretaryName", val("isecFname") + " " + val("isecSname"));
+      
+      // Check if this owner is also the secretary
+      const secretaryFullName = [val("isecFname"), val("isecMname"), val("isecSname")].filter(Boolean).join(" ");
+      if (secretaryFullName === ownerFullName) {
+        role = role ? role + " & Secretary" : "Secretary";
+      }
+      
+      // If no role found, use the occupation
+      if (!role) {
+        role = val(formPrefix + "occupation");
+      }
+      
+      // Use the role instead of occupation in placeOfWork
+      const placeOfWork = val(formPrefix + "resCity") + ", " + role;
+      // ===== END: CHANGE IS HERE =====
+      
+      const directPercent = val(formPrefix + "directPercent");
+      const votingRights = val(formPrefix + "votingRights");
+      const indirectPercent = val(formPrefix + "indirectPercent");
+      
+      // Map to overlay elements
+      setText(`${prefix}FirstName`, fname);
+      setText(`${prefix}Surname`, sname);
+      
+      // Combine middle name and former name into a single string
+      const nameParts = [mname, former].filter(Boolean); // Get non-empty parts
+      const combinedMiddleAndFormer = nameParts.join(' '); // Join with a space
+      setText(`${prefix}MiddleName`, combinedMiddleAndFormer);
+      
+      setText(`${prefix}DOB`, dob);
+      setText(`${prefix}Nationality`, nationality);
+      setText(`${prefix}POB`, pob);
+      setText(`${prefix}Address1`, address1);
+      setText(`${prefix}Address2`, address2);
+      setText(`${prefix}GPS`, gps);
+      setText(`${prefix}Tin`, tin);
+      setText(`${prefix}PhoneNumber`, phone);
+      setText(`${prefix}Email`, email);
+      setText(`${prefix}GhNumber`, ghanaCard);
+      setText(`${prefix}PlaceOfWork`, placeOfWork);
+      setText(`${prefix}Directpercent`, directPercent);
+      setText(`${prefix}votinRight`, votingRights);
+      setText(`${prefix}votinRight2`, votingRights);
+      setText(`${prefix}Indirectpercent`, indirectPercent);
+      
+      // For director and secretary names in the declaration sections
+      if (num === 1) {
+        setText("Fbo2directorName", getDirectorFullName(1));
+        setText("Fbo2secretaryName", val("isecFname") + " " + val("isecSname"));
+      } else {
+        setText("Sbo2directorName", getDirectorFullName(2) || getDirectorFullName(1));
+        setText("Sbo2secretaryName", val("isecFname") + " " + val("isecSname"));
+      }
     }
   }
-}
+
   // Function to get director full name by index
   function getDirectorFullName(index) {
     const prefix = `idirector${index}_`;
@@ -608,6 +750,11 @@ function fillBeneficialOwners() {
       }
       if (directors.length >= 2) fillDirector(2);
     }
+    
+    // Add these lines to fill director declarations and consent letters
+    fillDirectorDeclarations();
+    fillConsentLetters();
+    
     fillSecretary();
     fillSubscribers();
     fillBeneficialOwners();
