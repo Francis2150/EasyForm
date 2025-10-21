@@ -847,12 +847,12 @@
 }
 
 /* Checkboxes (unlabeled ones in a vertical list) */
-#chk5_1 { top: 293px; left: 505px; width: 13px; height: 12px; position: absolute; }
-#chk5_2 { top: 313px; left: 505px; width: 13px; height: 12px; position: absolute; }
-#chk5_3 { top: 332px; left: 505px; width: 13px; height: 12px; position: absolute; }
-#chk5_4 { top: 352px; left: 505px; width: 13px; height: 12px; position: absolute; }
-#chk5_5 { top: 370px; left: 505px; width: 13px; height: 12px; position: absolute; }
-#chk5_6 { top: 389px; left: 505px; width: 13px; height: 12px; position: absolute; }
+.chk5_1 { top: 293px; left: 505px; width: 13px; height: 12px; position: absolute; }
+.chk5_2 { top: 313px; left: 505px; width: 13px; height: 12px; position: absolute; }
+.chk5_3 { top: 332px; left: 505px; width: 13px; height: 12px; position: absolute; }
+.chk5_4 { top: 352px; left: 505px; width: 13px; height: 12px; position: absolute; }
+.chk5_5 { top: 370px; left: 505px; width: 13px; height: 12px; position: absolute; }
+.chk5_6 { top: 389px; left: 505px; width: 13px; height: 12px; position: absolute; }
 #chk5_7 { top: 407px; left: 505px; width: 13px; height: 12px; position: absolute; }
 
 .secTittleMR { top: 482px; left: 242px; width: 14px; height: 14px; position: absolute; }

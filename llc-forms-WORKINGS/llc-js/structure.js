@@ -38,15 +38,15 @@
       <option value="British">British</option>
       <option value="American">American</option>
       <option value="Canadian">Canadian</option>
-      <option value="French">French</option>
+     
       <option value="German">German</option>
       <option value="Chinese">Chinese</option>
-      <option value="Indian">Indian</option>
+     
       <option value="South African">South African</option>
       <option value="Kenyan">Kenyan</option>
       <option value="Ivorian">Ivorian</option>
       <option value="Togolese">Togolese</option>
-      <option value="Other">Other</option>
+     
     `;
 
     // -----------------------------

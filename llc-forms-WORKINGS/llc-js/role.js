@@ -54,6 +54,7 @@
           <div class="qualificationBox hidden">
             <label>Qualification:</label>
             <select class="secQualification">
+              <option value="Professional qualification">Professional qualification</option>
               <option value="">Select Qualification</option>
               <option>Tertiary level qualification</option>
               <option>Company Secretary Trainee</option>
@@ -61,7 +62,7 @@
               <option>Institute of Chartered Accountants</option>
               <option>Under supervision of a qualified Company Secretary</option>
               <option>Institute of Chartered Secretaries and Administrators</option>
-              <option>Professional qualification</option>
+              
             </select>
           </div>
 
