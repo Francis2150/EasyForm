@@ -28,7 +28,7 @@
     return `${dd}/${mm}/${yyyy}`;
   }
 
-  // Parse date from various formats
+  // Parse date from various formats (YYYY-MM-DD or DD/MM/YYYY)
   function parseDate(dateString) {
     if (!dateString) return { day: "", month: "", year: "" };
     
@@ -58,14 +58,11 @@
   // Track which director is assigned as secretary
   let secretaryDirectorIndex = null;
 
-  // Map the company-level fields ✅
- function fillCompany() {
-
-    // Get the suffix once, at the beginning.
+  // Fill company-level information
+  function fillCompany() {
     const endWith = val("iendWith").toLowerCase();
 
-    // --- Company Name Logic ---
-    // Use a loop to avoid repetition. Also, provide a default empty string.
+    // Company Name Logic
     const companyNameValue = val("icompanyName") || ""; 
     setText("companyName", companyNameValue + endWith);
     
@@ -75,33 +72,27 @@
         setText(id, companyNameValue + endWith);
     });
 
-    // --- End With Suffix Check ---
     // Show a checkmark for the correct suffix overlay
     setText("endWithLTD", endWith === "ltd" ? "\u2714" : "");
     setText("endWithLIMITED", endWith === "limited" ? "\u2714" : "");
 
-    // --- Constitution Type Check ---
-    // Show a tick for registered vs standard
+    // Constitution Type Check
     const constitution = val("iconstitutionType");
     setText("registeredCon", constitution === "Registered" ? "\u2714" : "");
     setText("standardCon", constitution === "Standard" ? "\u2714" : "");
 
-    // --- Presenter and Company Details ---
-    // The one presenting the company
+    // Presenter and Company Details
     setText("presentedBy", val("ipresentedBy"));
     setText("presenterTIN", val("ipresenterTin"));
     setText("principalActivities", val("iactivities"));
 
-    // --- Financials ---
-    // Stated capital -> StatedCapital on page 7
+    // Financials
     setText("StatedCapital", val("icapital") || "0");
-    
-    // ADD THESE LINES:
     setText("estimatedRevenue", val("iestimatedRevenue"));
     setText("numOfEmp", val("inumOfEmployees"));
-}
+  }
 
-  // Office mapping✅
+  // Fill office address information
   function fillOffice() {
     setText("officedigital-address", val("iofficeGps"));
     setText("officeLandmark", val("iofficeLandmark"));
@@ -112,21 +103,21 @@
     setText("officeDistrict", val("iofficeDistrict"));
     setText("officeRegion", val("iofficeRegion"));
 
-    // Postal type fields:✅
+    // Postal type fields
     const postalType = val("iofficePostalType").toLowerCase();
     const boxNumber = val("iofficeBoxNumber");
 
-    // Set checkmarks✅
+    // Set checkmarks for postal type
     setText("emptyBox1", postalType === "pobox" ? "\u2714" : "");
     setText("emptyBox2", postalType === "pmb" ? "\u2714" : "");
     setText("emptyBox3", postalType === "dtd" ? "\u2714" : "");
 
-    // Clear all number fields first✅
+    // Clear all number fields first
     setText("OfficeBoxNumber", "");
     setText("PMB", "");
     setText("DTD", "");
 
-    // Place box number under the correct postal type✅
+    // Place box number under the correct postal type
     if (postalType === "pobox") {
       setText("OfficeBoxNumber", boxNumber);
     } else if (postalType === "pmb") {
@@ -135,7 +126,7 @@
       setText("DTD", boxNumber);
     }
 
-    // Set other office info✅
+    // Set other office info
     setText("OfficeBoxNumberTown", val("iofficeBoxTown"));
     setText("OfficeBoxNumberRegion", val("iofficeBoxRegion"));
     setText("OfficeContactOne", val("iofficeContact1"));
@@ -143,7 +134,7 @@
     setText("Officeemail", val("iofficeEmail"));
   }
 
-  // titlesMap is like {MR: 'D1tittleMR', MRS: 'D1tittleMRS', ...}
+  // Apply title overlay (MR, MRS, etc.)
   function applyTitleOverlay(prefix, titleValue) {
     const titles = ["MR", "MRS", "MISS", "MS", "DR"];
     titles.forEach(t => {
@@ -153,7 +144,7 @@
 
     if (!titleValue) return;
     const normalized = titleValue.trim().toUpperCase();
-    // possible mappings
+    // Normalize title values
     let key = normalized;
     if (key === "MRS" || key === "MRS.") key = "MRS";
     if (key === "MISS") key = "MISS";
@@ -162,13 +153,14 @@
     setText(targetId, "\u2714");
   }
 
-  // Gender overlays: set male/female checkboxes
+  // Apply gender overlay (male/female checkboxes)
   function applyGenderOverlay(prefix, genderValue) {
+    // Clear all gender checkboxes first
     setText(prefix + "GenderMale", "");
     setText(prefix + "GenderFemale", "");
     setText(prefix + "genderMale", "");
     setText(prefix + "genderFemale", "");
-    // there are several different overlay id patterns; try a few
+    
     const normalized = (genderValue || "").toLowerCase();
     if (normalized === "male") {
       setText(prefix + "GenderMale", "\u2714");
@@ -184,7 +176,7 @@
     const overlayPrefix = index === 1 ? "D1" : "D2";
     const formPrefix = `idirector${index}_`;
 
-    // attempt to read form fields
+    // Read form fields
     const fname = val(formPrefix + "fname");
     const mname = val(formPrefix + "mname");
     const sname = val(formPrefix + "sname");
@@ -230,7 +222,7 @@
     setText(`${overlayPrefix}TIN`, tin);
     setText(`${overlayPrefix}GhanaCard`, ghanaCard);
 
-    // residential
+    // Residential address
     setText(`${overlayPrefix}DigitalAddress`, resGps);
     setText(`${overlayPrefix}housenumber`, resHse);
     setText(`${overlayPrefix}Landmark`, resLandmark);
@@ -241,11 +233,10 @@
     setText(`${overlayPrefix}Region`, resRegion);
     setText(`${overlayPrefix}Country`, resCountry);
 
-    // A few shared IDs in your template: D1FullName etc
+    // Special fields for first director
     if (index === 1) {
       setText("D1FullName", fullName);
       setText("directorName", fullName);
-      // signature placeholder - you could replace with actual signature image/text later
       setText("D1signature", fullName ? `Signed: ${fullName}` : "");
     } else if (index === 2) {
       setText("D2FirstName", fname);
@@ -253,7 +244,7 @@
       setText("D2Signature", fullName ? `Signed: ${fullName}` : "");
     }
 
-    // Also update a generic 'directorFullName' field sometimes used
+    // Update generic director name fields
     setText("FdirectorFullName", fullName);
     setText("directorFullName2", fullName);
     setText("directorFullName3", fullName);
@@ -354,7 +345,7 @@
         val("idirector1_resStreet") + ", " + 
         val("idirector1_resCity")
       );
-      // MODIFIED: Use combined postal address instead of just house number
+      // Use combined postal address instead of just house number
       setText("FdirectorBoxNumber", getCombinedPostalAddress());
       setText("FdirectorPhoneNumber", val("idirector1_contact1"));
     }
@@ -368,7 +359,7 @@
         val("idirector2_resStreet") + ", " + 
         val("idirector2_resCity")
       );
-      // MODIFIED: Use combined postal address instead of just house number
+      // Use combined postal address instead of just house number
       setText("SdirectorBoxNumber", getCombinedPostalAddress());
       setText("SdirectorPhoneNumber", val("idirector2_contact1"));
     }
@@ -382,7 +373,7 @@
         val("isecResStreet") + ", " + 
         val("isecResCity")
       );
-      // MODIFIED: Use combined postal address instead of just house number
+      // Use combined postal address instead of just house number
       setText("SecBoxNumber", getCombinedPostalAddress());
       setText("SecPhoneNumber", val("isecContact1"));
       setText("SecQualification", val("isecQualification"));
@@ -391,9 +382,8 @@
 
   // Fill secretary overlay from secretary form
   function fillSecretary() {
-    // If there is a secretary linked from director (Roles.fillSecretaryForm), the isec* ids will be filled automatically.
+    // If there is a secretary linked from director, the isec* ids will be filled automatically
     const prefix = "isec";
-    // find isecFname etc
     const fname = val(prefix + "Fname");
     const mname = val(prefix + "Mname");
     const sname = val(prefix + "Sname");
@@ -426,10 +416,10 @@
     setText("SecSignature", fullName ? `Signed: ${fullName}` : "");
     setText("SecfullName", fullName);
     
-    // Fix: Set secretaryFullName overlay
+    // Set secretaryFullName overlay
     setText("secretaryFullName", fullName);
     setText("secretaryFullName2", fullName);
-     setText("secretaryFullName3", fullName);
+    setText("secretaryFullName3", fullName);
   }
 
   // Fill first N subscribers into SH1/SH2 overlays (maps up to 2)
@@ -454,7 +444,7 @@
       const mname = val(prefix + "mname");
       const sname = val(prefix + "sname");
       const former = val(prefix + "former");
-      const title = val(prefix + "title"); // 🆕
+      const title = val(prefix + "title");
       const gender = val(prefix + "gender");
       const dob = val(prefix + "dob");
       const pob = val(prefix + "pob");
@@ -471,7 +461,7 @@
       setText(`SH${i+1}MiddleName`, mname);
       setText(`SH${i+1}LastName`, sname);
       setText(`SH${i+1}FormerName`, former);
-      applyTitleOverlay(`SH${i+1}`, title); // 🆕 added
+      applyTitleOverlay(`SH${i+1}`, title);
       applyGenderOverlay(`SH${i+1}`, gender);
       setText(`SH${i+1}DOB`, dob);
       setText(`SH${i+1}POB`, pob);
@@ -483,8 +473,8 @@
       setText(`SH${i+1}NoOfShare`, shares);
       setText(`SH${i+1}ShareAmount`, shares);
       setText(`SH${i+1}DigitalAddress`, val(prefix + "resGps"));
-      setText(`SH${i+1}Landmark`, val(prefix + "resLandmark")); // 🆕 added
-      setText(`SH${i+1}StreetName`, val(prefix + "resStreet")); // 🆕 added
+      setText(`SH${i+1}Landmark`, val(prefix + "resLandmark"));
+      setText(`SH${i+1}StreetName`, val(prefix + "resStreet"));
       setText(`SH${i+1}Town`, val(prefix + "resTown"));
       setText(`SH${i+1}housenumber`, val(prefix + "resHse"));
       setText(`SH${i+1}Signature`, full ? `Signed: ${full}` : "");
@@ -525,8 +515,8 @@
     for (let i = 0; i < 2; i++) {
       const fs = fieldsets[i];
       const num = i + 1;
-      // FIX: Changed prefix to match HTML IDs (without underscore)
-      const prefix = num === 1 ? "owner1" : "owner2"; // Prefix for overlay elements
+      // Prefix for overlay elements
+      const prefix = num === 1 ? "owner1" : "owner2";
       
       if (!fs) {
         // Clear all fields for this owner if not present
@@ -569,7 +559,6 @@
       const email = val(formPrefix + "email");
       const ghanaCard = val(formPrefix + "ghanaCard");
       
-    
       // Determine the role of this person (director, secretary, or both)
       const ownerFullName = [fname, mname, sname].filter(Boolean).join(" ");
       let role = "";
@@ -603,7 +592,6 @@
       
       // Use the role instead of occupation in placeOfWork
       const placeOfWork = val(formPrefix + "resCity") + ", " + role;
-      // ===== END: CHANGE IS HERE =====
       
       const directPercent = val(formPrefix + "directPercent");
       const votingRights = val(formPrefix + "votingRights");
@@ -614,8 +602,8 @@
       setText(`${prefix}Surname`, sname);
       
       // Combine middle name and former name into a single string
-      const nameParts = [mname, former].filter(Boolean); // Get non-empty parts
-      const combinedMiddleAndFormer = nameParts.join(' '); // Join with a space
+      const nameParts = [mname, former].filter(Boolean);
+      const combinedMiddleAndFormer = nameParts.join(' ');
       setText(`${prefix}MiddleName`, combinedMiddleAndFormer);
       
       setText(`${prefix}DOB`, dob);
@@ -697,22 +685,21 @@
     // Reset secretary director index
     secretaryDirectorIndex = null;
     
-    // subscribers and owners are handled above in fillSubscribers/fillBeneficialOwners
-    // but this function will also ensure that if a director is secretary it populates sec fields
-    // check for any director role boxes (the role-checkboxes exist inside directors)
+    // Check for any director role boxes
     const directorFieldsets = document.querySelectorAll("#idirectorsContainer fieldset");
     directorFieldsets.forEach(fs => {
       const roleWrapper = fs.querySelector(".role-checkboxes");
       if (!roleWrapper) return;
       const directorId = fs.id; // e.g., idirector1
-      // if secretary checked, copy to secretary form (isec*)
+      
+      // If secretary checked, copy to secretary form (isec*)
       const secCheckbox = roleWrapper.querySelector('[data-role="secretary"]');
       if (secCheckbox && secCheckbox.checked) {
         // Track which director is assigned as secretary
         const idx = directorId.match(/\d+$/)?.[0] || "1";
         secretaryDirectorIndex = parseInt(idx);
         
-        // build data object similarly to Roles.copyDirectorDataToRole and directly set isec* fields
+        // Build data object and directly set isec* fields
         const prefix = `idirector${idx}_`;
         // Transfer values to isec fields
         const mapping = {
@@ -741,7 +728,7 @@
           ResRegion: prefix + "resRegion",
           ResCountry: prefix + "resCountry",
         };
-        // write directly to isec* inputs if they exist
+        // Write directly to isec* inputs if they exist
         for (const [isecKey, directorIdRef] of Object.entries(mapping)) {
           const destId = "isec" + isecKey;
           const srcVal = val(directorIdRef);
@@ -762,19 +749,20 @@
   function updateOverlay() {
     fillCompany();
     fillOffice();
-    // directors: only map first two to pages
+    
+    // Directors: only map first two to pages
     const directorsContainer = document.getElementById("idirectorsContainer");
     if (directorsContainer) {
       const directors = Array.from(directorsContainer.querySelectorAll("fieldset"));
       if (directors.length >= 1) fillDirector(1);
       else {
-        // clear D1 overlays
+        // Clear D1 overlays
         ["FirstName","MiddleName","LastName","DOB","POB","Nationality","Ocupation"].forEach(k => setText("D1" + k, ""));
       }
       if (directors.length >= 2) fillDirector(2);
     }
     
-    // Add these lines to fill director declarations and consent letters
+    // Fill director declarations and consent letters
     fillDirectorDeclarations();
     fillConsentLetters();
     
@@ -783,17 +771,16 @@
     fillBeneficialOwners();
     fillRoleLinkedEntries();
 
-    // Dates
+    // Set current date in all date fields
     const today = nowDateString();
-    ["date1","date2","date3","date4","date5","date6","date7","date8","date9","date10","date11","date3"].forEach(did => setText(did, today));
+    ["date1","date2","date3","date4","date5","date6","date7","date8","date9","date10","date11"].forEach(did => setText(did, today));
   }
 
   // Attach event listeners to all form inputs to trigger updateOverlay
   function attachListeners() {
-    // all relevant form inputs: pick all inputs/selects within the form
+    // All relevant form inputs
     const form = document.getElementById("icompanyForm");
     if (!form) {
-      // in some deployments the form may be on a separate page — we still attempt to wire up if present
       console.warn("Form with id icompanyForm not found in DOM when wiring overlay update listeners.");
     } else {
       form.querySelectorAll("input, select, textarea").forEach(el => {
@@ -802,12 +789,12 @@
       });
     }
 
-    // dynamic container observers: directors, subscribers, owners
+    // Dynamic container observers: directors, subscribers, owners
     const observeContainer = id => {
       const container = document.getElementById(id);
       if (!container) return;
       const obs = new MutationObserver(mutations => {
-        // small delay allowing scripts that create elements (Roles/Structure) to run
+        // Small delay allowing scripts that create elements to run
         setTimeout(updateOverlay, 80);
         // Also rewire new inputs inside newly created fieldsets
         mutations.forEach(m => {
@@ -817,7 +804,7 @@
                 el.addEventListener("input", updateOverlay);
                 el.addEventListener("change", updateOverlay);
               });
-              // check for role-checkboxes added - attach change handler
+              // Check for role-checkboxes added - attach change handler
               node.querySelectorAll?.(".roleCheck").forEach(cb => {
                 cb.addEventListener("change", () => {
                   setTimeout(updateOverlay, 40);
@@ -834,22 +821,21 @@
     observeContainer("isubscribersContainer");
     observeContainer("iownersContainer");
 
-    // If you have a Roles module that toggles qualification/share boxes, keep observing them too.
+    // Quick update if roles toggled
     document.addEventListener("click", e => {
-      // quick update if roles toggled
       if (e.target && (e.target.classList?.contains("roleCheck") || e.target.closest?.(".role-checkboxes"))) {
         setTimeout(updateOverlay, 50);
       }
     });
 
-    // Also update overlay on initial load
+    // Update overlay on initial load
     updateOverlay();
   }
 
   // Run on DOM ready
   document.addEventListener("DOMContentLoaded", () => {
     attachListeners();
-    // ensure a final run in case other scripts populate values after DOMContentLoaded
+    // Ensure a final run in case other scripts populate values after DOMContentLoaded
     setTimeout(updateOverlay, 250);
     setTimeout(updateOverlay, 800);
   });
