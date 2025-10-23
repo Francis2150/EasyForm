@@ -9,287 +9,7 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Custom CSS -->
-    <style>
-        :root {
-            --primary-color: #006633;
-            --secondary-color: #f8f9fa;
-            --accent-color: #ffcc00;
-            --text-color: #333;
-            --light-gray: #e9ecef;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f5f5;
-            color: var(--text-color);
-        }
-        
-        .navbar {
-            background-color: var(--primary-color);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .navbar-brand {
-            font-weight: bold;
-            color: white !important;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        .card {
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-            border: none;
-        }
-        
-        .card-header {
-            background-color: var(--primary-color);
-            color: white;
-            border-radius: 10px 10px 0 0 !important;
-            font-weight: bold;
-        }
-        
-        .btn-primary {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-        
-        .btn-primary:hover {
-            background-color: #00552a;
-            border-color: #00552a;
-        }
-        
-        .btn-accent {
-            background-color: var(--accent-color);
-            color: var(--text-color);
-            border: none;
-        }
-        
-        .btn-accent:hover {
-            background-color: #e6b800;
-            color: var(--text-color);
-        }
-        
-        .form-section {
-            display: none;
-        }
-        
-        .form-section.active {
-            display: block;
-        }
-        
-        .dashboard-card {
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        
-        .credit-balance {
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--primary-color);
-        }
-        
-        .transaction-item {
-            padding: 10px;
-            border-bottom: 1px solid var(--light-gray);
-        }
-        
-        .transaction-item:last-child {
-            border-bottom: none;
-        }
-        
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 20px;
-            border-radius: 5px;
-            color: white;
-            font-weight: bold;
-            z-index: 1000;
-            display: none;
-        }
-        
-        .notification.success {
-            background-color: #28a745;
-        }
-        
-        .notification.error {
-            background-color: #dc3545;
-        }
-        
-        .notification.info {
-            background-color: #17a2b8;
-        }
-        
-        .loading-spinner {
-            display: none;
-            text-align: center;
-            padding: 20px;
-        }
-        
-        .loading-spinner.active {
-            display: block;
-        }
-        
-        .registration-type-card {
-            cursor: pointer;
-            transition: transform 0.3s;
-        }
-        
-        .registration-type-card:hover {
-            transform: translateY(-5px);
-        }
-        
-        .registration-type-card.selected {
-            border: 2px solid var(--primary-color);
-        }
-        
-        .form-step {
-            display: none;
-        }
-        
-        .form-step.active {
-            display: block;
-        }
-        
-        .step-indicator {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 30px;
-        }
-        
-        .step {
-            flex: 1;
-            text-align: center;
-            position: relative;
-        }
-        
-        .step::before {
-            content: "";
-            position: absolute;
-            top: 15px;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background-color: var(--light-gray);
-            z-index: -1;
-        }
-        
-        .step:first-child::before {
-            left: 50%;
-        }
-        
-        .step:last-child::before {
-            right: 50%;
-        }
-        
-        .step.active::before {
-            background-color: var(--primary-color);
-        }
-        
-        .step-circle {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background-color: var(--light-gray);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 5px;
-        }
-        
-        .step.active .step-circle {
-            background-color: var(--primary-color);
-            color: white;
-        }
-        
-        .step.completed .step-circle {
-            background-color: var(--accent-color);
-            color: var(--text-color);
-        }
-        
-        .director-item, .subsidiary-item {
-            background-color: var(--secondary-color);
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 10px;
-            position: relative;
-        }
-        
-        .remove-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: #dc3545;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 25px;
-            height: 25px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-        
-        .add-btn {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        
-        .add-btn:hover {
-            background-color: #00552a;
-        }
-        
-        .payment-method {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            border: 1px solid var(--light-gray);
-            border-radius: 5px;
-            margin-bottom: 10px;
-            cursor: pointer;
-        }
-        
-        .payment-method:hover {
-            background-color: var(--secondary-color);
-        }
-        
-        .payment-method.selected {
-            border-color: var(--primary-color);
-            background-color: rgba(0, 102, 51, 0.1);
-        }
-        
-        .payment-method img {
-            width: 40px;
-            height: 40px;
-            margin-right: 15px;
-        }
-        
-        @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
-            
-            .step-indicator {
-                margin-bottom: 20px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="corrected.css">
 </head>
 <body>
     <!-- Navigation -->
@@ -338,12 +58,12 @@
                                     <input type="email" class="form-control" id="loginEmail" placeholder="your@email.com" required>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="loginPhone" class="form-label">Phone Number (Password)</label>
+                                    <label for="loginPhone" class="form-label">Password</label>
                                     <div class="input-group">
                                         <span class="input-group-text">+233</span>
                                         <input type="tel" class="form-control" id="loginPhone" placeholder="241234567" required>
                                     </div>
-                                    <div class="form-text">Your phone number is used as your password</div>
+                                   
                                 </div>
                                 <button type="button" class="btn btn-primary w-100" id="loginBtn">Login</button>
                                 <div class="text-center mt-3">
@@ -362,15 +82,15 @@
                                     <input type="email" class="form-control" id="signupEmail" placeholder="your@email.com" required>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="signupPhone" class="form-label">Phone Number (Password)</label>
+                                    <label for="signupPhone" class="form-label">Password</label>
                                     <div class="input-group">
                                         <span class="input-group-text">+233</span>
                                         <input type="tel" class="form-control" id="signupPhone" placeholder="241234567" required>
                                     </div>
-                                    <div class="form-text">Your phone number will be used as your password</div>
+                                    
                                 </div>
                                 <div class="mb-3">
-                                    <label for="confirmPhone" class="form-label">Confirm Phone Number</label>
+                                    <label for="confirmPhone" class="form-label">Confirm Phone password</label>
                                     <div class="input-group">
                                         <span class="input-group-text">+233</span>
                                         <input type="tel" class="form-control" id="confirmPhone" placeholder="241234567" required>
@@ -743,7 +463,7 @@
         const db = firebase.firestore();
 
         // Paystack Configuration - Using test key for development
-        const paystackKey = "pk_test_4126067326a4ff0fbdac73d10db5474b483a824d";
+        const paystackKey = "pk_live_4126067326a4ff0fbdac73d10db5474b483a824d";
 
         // Global Variables
         let currentUser = null;
@@ -1057,37 +777,53 @@
                 });
         }
 
-        function loadUserData() {
-            if (!currentUser) return;
-            
-            db.collection('users').doc(currentUser.uid).get()
-                .then((doc) => {
-                    if (doc.exists) {
-                        const userData = doc.data();
+        // ✅ Real-time Firestore listener
+function loadUserData() {
+    console.log('Setting up real-time listener for user:', currentUser.uid);
+    showLoading(true);
+
+    const userDocRef = db.collection('users').doc(currentUser.uid);
+
+    // Detach any previous listener (optional, if you store unsubscribe somewhere)
+    if (window.userListener) {
+        window.userListener(); // Unsubscribe old one
+    }
+
+    // Set up new real-time listener
+    window.userListener = userDocRef.onSnapshot(
+        (doc) => {
+            showLoading(false);
+            if (doc.exists) {
+                console.log('User data updated in real-time:', doc.data());
+                updateDashboard(doc.data());
+            } else {
+                console.log('User document not found, creating new one.');
+                const userData = {
+                    email: currentUser.email,
+                    credit_balance: 0,
+                    usage_count: 0,
+                    transactions: [],
+                    created_at: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                userDocRef.set(userData)
+                    .then(() => {
+                        console.log('New user document created.');
                         updateDashboard(userData);
-                    } else {
-                        // Create user record if it doesn't exist
-                        const userData = {
-                            email: currentUser.email,
-                            credit_balance: 0,
-                            usage_count: 0,
-                            transactions: [],
-                            created_at: firebase.firestore.FieldValue.serverTimestamp()
-                        };
-                        
-                        db.collection('users').doc(currentUser.uid).set(userData)
-                            .then(() => {
-                                updateDashboard(userData);
-                            })
-                            .catch((error) => {
-                                showNotification(error.message, 'error');
-                            });
-                    }
-                })
-                .catch((error) => {
-                    showNotification(error.message, 'error');
-                });
+                    })
+                    .catch((error) => {
+                        console.error('Error creating user document:', error);
+                        showNotification(error.message, 'error');
+                    });
+            }
+        },
+        (error) => {
+            showLoading(false);
+            console.error('Real-time listener error:', error);
+            showNotification('Error loading user data: ' + error.message, 'error');
         }
+    );
+}
+
 
         function updateDashboard(userData) {
             const balance = userData.credit_balance || 0;
