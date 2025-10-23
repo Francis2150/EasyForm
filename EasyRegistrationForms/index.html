@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Dashboard — EasyRegistrationForms</title></head>
+<body>
+<h1>EasyRegistrationForms</h1>
+<div>
+<p>Signed in as: <span id="phoneSpan">(not signed in)</span></p>
+<p>Credits left: <strong id="credits">0</strong></p>
+</div>
+
+
+<h3>Forms</h3>
+<ul>
+<li><button onclick="openForm('sole.html', 10, 'Sole Proprietorship')">Sole Proprietorship (10 GHS)</button></li>
+<li><button onclick="openForm('limited.html', 20, 'Limited Company')">Limited Company (20 GHS)</button></li>
+<li><button onclick="openForm('ngo.html', 20, 'NGO')">NGO (20 GHS)</button></li>
+<li><button onclick="openForm('other.html', 5, 'Other Service')">Other Services (5 GHS)</button></li>
+</ul>
+
+
+<p><a href="payment.html">Buy Credits</a></p>
+
+
+<script type="module">
+import { getUserWallet, chargeForForm } from './js/firebase-client.js';
+// Load user uid from localStorage
+const uid = localStorage.getItem('userUid');
+if (!uid) { alert('Not signed in — redirecting to signup'); window.location.href='signup.html'; }
+
+
+async function load() {
+const wallet = await getUserWallet(uid);
+document.getElementById('phoneSpan').innerText = wallet?.phone || uid;
+document.getElementById('credits').innerText = wallet?.credits ?? 0;
+}
+await load();
+
+
+window.openForm = async (file, cost, name) => {
+try {
+await chargeForForm(uid, name, cost);
+// success
+window.location.href = file;
+} catch (err) {
+alert(err.message + ' — please buy credits');
+window.location.href = 'payment.html';
+}
+};
+</script>
+</body>
+</html>

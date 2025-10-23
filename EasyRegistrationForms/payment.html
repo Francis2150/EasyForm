@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ghana Business Registration Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #004d40;
+            --secondary-color: #ffab00;
+            --accent-color: #00695c;
+            --light-bg: #f5f5f5;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar {
+            background-color: var(--primary-color);
+        }
+
+        .auth-container {
+            max-width: 450px;
+            margin: 80px auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-container img {
+            height: 60px;
+            margin-bottom: 10px;
+        }
+
+        .form-floating {
+            margin-bottom: 20px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            padding: 12px;
+            font-weight: 600;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        .divider {
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .divider::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background-color: #e0e0e0;
+        }
+
+        .divider span {
+            background-color: white;
+            padding: 0 15px;
+            position: relative;
+            color: #757575;
+        }
+
+        .alert {
+            display: none;
+            margin-bottom: 20px;
+        }
+
+        .otp-container {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .recaptcha-container {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 15px;
+            display: none; /* Hidden by default */
+        }
+
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 10px 10px 0 0 !important;
+        }
+
+        .credit-balance {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .usage-count {
+            font-size: 1.5rem;
+            color: var(--accent-color);
+        }
+
+        .transaction-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+
+        .profile-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary-color);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .user-details {
+            margin-left: 20px;
+        }
+
+        .form-container {
+            display: none;
+        }
+
+        .nav-tabs .nav-link.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .nav-tabs .nav-link {
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark" style="display: none;" id="mainNavbar">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img src="https://i.imgur.com/8zJr2jK.png" alt="Ghana Business Registration" height="30">
+                <span class="ms-2">Business Registration Portal</span>
+            </a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#" id="dashboardLink">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="formsLink">Registration Forms</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="logoutLink">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <div class="container">
+        <!-- LOGIN VIEW -->
+        <div id="loginView" class="auth-container">
+            <div class="logo-container">
+                <img src="https://i.imgur.com/8zJr2jK.png" alt="Ghana Business Registration">
+                <h3 class="text-primary">Account Login</h3>
+                <p class="text-muted">Sign in to your account</p>
+            </div>
+            <div id="loginAlert" class="alert alert-danger" role="alert"></div>
+            <form id="loginForm">
+                <div class="form-floating">
+                    <input type="tel" class="form-control" id="loginPhoneNumber" placeholder="Phone Number" value="+233">
+                    <label for="loginPhoneNumber"><i class="fas fa-phone"></i> Phone Number</label>
+                </div>
+                <div id="loginRecaptcha" class="recaptcha-container"></div>
+                <button type="button" id="sendLoginOtpBtn" class="btn btn-primary w-100">
+                    <span id="sendLoginOtpBtnText">Send OTP</span>
+                    <span id="sendLoginOtpSpinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                </button>
+                <div id="loginOtpContainer" class="otp-container">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="loginOtpCode" placeholder="Enter OTP">
+                        <label for="loginOtpCode">Enter OTP Code</label>
+                    </div>
+                    <button type="button" id="verifyLoginOtpBtn" class="btn btn-primary w-100">
+                        <span id="verifyLoginOtpBtnText">Verify & Sign In</span>
+                        <span id="verifyLoginOtpSpinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    </button>
+                </div>
+            </form>
+            <div class="divider">
+                <span>OR</span>
+            </div>
+            <div class="text-center">
+                <p>Don't have an account? <a href="#" id="showSignupLink">Sign up</a></p>
+            </div>
+        </div>
+
+        <!-- SIGNUP VIEW -->
+        <div id="signupView" class="auth-container" style="display: none;">
+            <div class="logo-container">
+                <img src="https://i.imgur.com/8zJr2jK.png" alt="Ghana Business Registration">
+                <h3 class="text-primary">Create Account</h3>
+                <p class="text-muted">Sign up to get started</p>
+            </div>
+            <div id="signupAlert" class="alert alert-danger" role="alert"></div>
+            <form id="signupForm">
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="signupFullName" placeholder="Full Name">
+                    <label for="signupFullName"><i class="fas fa-user"></i> Full Name</label>
+                </div>
+                <div class="form-floating">
+                    <input type="email" class="form-control" id="signupEmail" placeholder="Email">
+                    <label for="signupEmail"><i class="fas fa-envelope"></i> Email</label>
+                </div>
+                <div class="form-floating">
+                    <input type="tel" class="form-control" id="signupPhoneNumber" placeholder="Phone Number" value="+233">
+                    <label for="signupPhoneNumber"><i class="fas fa-phone"></i> Phone Number</label>
+                </div>
+                <div class="form-floating">
+                    <input type="password" class="form-control" id="signupPasscode" placeholder="Passcode">
+                    <label for="signupPasscode"><i class="fas fa-lock"></i> 4-Digit Passcode</label>
+                </div>
+                <div id="signupRecaptcha" class="recaptcha-container"></div>
+                <button type="button" id="sendSignupOtpBtn" class="btn btn-primary w-100">
+                    <span id="sendSignupOtpBtnText">Send OTP</span>
+                    <span id="sendSignupOtpSpinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                </button>
+                <div id="signupOtpContainer" class="otp-container">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="signupOtpCode" placeholder="Enter OTP">
+                        <label for="signupOtpCode">Enter OTP Code</label>
+                    </div>
+                    <button type="button" id="verifySignupOtpBtn" class="btn btn-primary w-100">
+                        <span id="verifySignupOtpBtnText">Verify & Create Account</span>
+                        <span id="verifySignupOtpSpinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    </button>
+                </div>
+            </form>
+            <div class="divider">
+                <span>OR</span>
+            </div>
+            <div class="text-center">
+                <p>Already have an account? <a href="#" id="showLoginLink">Sign in</a></p>
+            </div>
+        </div>
+
+        <!-- DASHBOARD VIEW -->
+        <div id="dashboardView" class="dashboard-container">
+            <!-- User Info Card -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="user-info">
+                                <img src="https://i.imgur.com/placeholder.png" alt="Profile" class="profile-img">
+                                <div class="user-details">
+                                    <h4 id="userName">Loading...</h4>
+                                    <p class="text-muted" id="userPhone">Loading...</p>
+                                    <p class="text-muted" id="userEmail">Loading...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Credit Balance</h5>
+                        </div>
+                        <div class="card-body text-center">
+                            <div class="credit-balance" id="creditBalance">0 GHS</div>
+                            <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#topUpModal">
+                                <i class="fas fa-plus-circle me-2"></i>Top Up Credits
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Usage Statistics</h5>
+                        </div>
+                        <div class="card-body text-center">
+                            <div class="usage-count" id="usageCount">0 Submissions</div>
+                            <p class="text-muted mt-2">First 2 submissions are free</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Quick Actions</h5>
+                        </div>
+                        <div class="card-body">
+                            <button class="btn btn-outline-primary w-100 mb-2" id="newFormBtn">
+                                <i class="fas fa-file-alt me-2"></i>New Registration
+                            </button>
+                            <button class="btn btn-outline-secondary w-100" id="viewHistoryBtn">
+                                <i class="fas fa-history me-2"></i>View History
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transactions Card -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Recent Transactions</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="transactionsList">
+                                <p class="text-center text-muted">No transactions yet</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FORMS VIEW -->
+        <div id="formsView" class="form-container">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Business Registration Forms</h5>
+                </div>
+                <ul class="nav nav-tabs" id="formTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="sole-prop-tab" data-bs-toggle="tab" data-bs-target="#sole-prop" type="button" role="tab">Sole Proprietor (5 GHS)</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="limited-tab" data-bs-toggle="tab" data-bs-target="#limited" type="button" role="tab">Limited/NGO (10 GHS)</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="other-tab" data-bs-toggle="tab" data-bs-target="#other" type="button" role="tab">Other Services (2.5 GHS)</button>
+                    </li>
+                </ul>
+                <div class="tab-content" id="formTabContent">
+                    <div class="tab-pane fade show active" id="sole-prop" role="tabpanel">
+                        <form id="solePropForm" class="p-3">
+                            <div class="row mb-3">
+                                <div class="col-md-6"><input type="text" class="form-control" id="businessName" placeholder="Business Name" required></div>
+                                <div class="col-md-6"><input type="text" class="form-control" id="businessNature" placeholder="Nature of Business" required></div>
+                            </div>
+                            <div class="mb-3"><input type="text" class="form-control" id="proprietorName" placeholder="Proprietor's Name" required></div>
+                            <div class="mb-3"><input type="text" class="form-control" id="businessAddress" placeholder="Business Address" required></div>
+                            <button type="submit" class="btn btn-primary">Submit Form (5 GHS)</button>
+                        </form>
+                    </div>
+                    <div class="tab-pane fade" id="limited" role="tabpanel">
+                        <form id="limitedForm" class="p-3">
+                            <div class="mb-3"><input type="text" class="form-control" id="companyName" placeholder="Company Name" required></div>
+                            <div class="mb-3"><input type="text" class="form-control" id="companyAddress" placeholder="Company Address" required></div>
+                            <button type="submit" class="btn btn-primary">Submit Form (10 GHS)</button>
+                        </form>
+                    </div>
+                    <div class="tab-pane fade" id="other" role="tabpanel">
+                        <form id="otherForm" class="p-3">
+                            <div class="mb-3"><input type="text" class="form-control" id="serviceType" placeholder="Service Type" required></div>
+                            <div class="mb-3"><input type="text" class="form-control" id="registrationNumber" placeholder="Registration Number" required></div>
+                            <button type="submit" class="btn btn-primary">Submit Form (2.5 GHS)</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Up Modal -->
+    <div class="modal fade" id="topUpModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Top Up Credits</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label>Select Amount</label>
+                        <div class="btn-group w-100" role="group">
+                            <input type="radio" class="btn-check" name="topUpAmount" id="amount10" value="10" autocomplete="off">
+                            <label class="btn btn-outline-primary" for="amount10">10 GHS</label>
+                            <input type="radio" class="btn-check" name="topUpAmount" id="amount20" value="20" autocomplete="off" checked>
+                            <label class="btn btn-outline-primary" for="amount20">20 GHS</label>
+                            <input type="radio" class="btn-check" name="topUpAmount" id="amount50" value="50" autocomplete="off">
+                            <label class="btn btn-outline-primary" for="amount50">50 GHS</label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="paymentNumber" class="form-label">Mobile Money Number</label>
+                        <input type="tel" class="form-control" id="paymentNumber" placeholder="+233XXXXXXXXX">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="processPaymentBtn">Process Payment</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase & Other Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+
+    <script>
+        // --- CONFIGURATION ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyBzSHkVxRiLC5gsq04LTTDnXaGdoF7eJ2c",
+            authDomain: "easyregistrationforms.firebaseapp.com",
+            projectId: "easyregistrationforms",
+            storageBucket: "easyregistrationforms.firebasestorage.app",
+            messagingSenderId: "589421628989",
+            appId: "1:589421628989:web:d9f6e9dbe372ab7acd6454",
+            measurementId: "G-GVCPBN8VB5"
+        };
+        const paystackKey = "pk_live_4126067326a4ff0fbdac73d10db5474b483a824d";
+
+        // --- INITIALIZATION ---
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // --- GLOBAL STATE ---
+        let currentUser = null;
+        let userData = null;
+        let loginConfirmationResult = null;
+        let signupConfirmationResult = null;
+
+        // --- VIEW MANAGEMENT ---
+        const views = {
+            login: document.getElementById('loginView'),
+            signup: document.getElementById('signupView'),
+            dashboard: document.getElementById('dashboardView'),
+            forms: document.getElementById('formsView')
+        };
+        const mainNavbar = document.getElementById('mainNavbar');
+
+        function showView(viewName) {
+            Object.keys(views).forEach(key => views[key].style.display = 'none');
+            views[viewName].style.display = 'block';
+
+            if (viewName === 'dashboard' || viewName === 'forms') {
+                mainNavbar.style.display = 'block';
+            } else {
+                mainNavbar.style.display = 'none';
+            }
+        }
+
+        // --- AUTHENTICATION HELPERS ---
+        function showAlert(elementId, message, type = 'danger') {
+            const alertEl = document.getElementById(elementId);
+            alertEl.textContent = message;
+            alertEl.className = `alert alert-${type}`;
+            alertEl.style.display = 'block';
+            setTimeout(() => alertEl.style.display = 'none', 5000);
+        }
+
+        function setLoading(buttonId, spinnerId, textId, isLoading) {
+            document.getElementById(buttonId).disabled = isLoading;
+            document.getElementById(spinnerId).style.display = isLoading ? 'inline-block' : 'none';
+            document.getElementById(textId).style.display = isLoading ? 'none' : 'inline-block';
+        }
+
+        function initRecaptcha(containerId) {
+            try {
+                const verifier = new firebase.auth.RecaptchaVerifier(containerId, { 'size': 'invisible' });
+                verifier.render().catch(e => console.error("reCAPTCHA render error", e));
+                return verifier;
+            } catch (e) {
+                console.error("reCAPTCHA init error", e);
+                return null;
+            }
+        }
+
+        // --- LOGIN LOGIC ---
+        document.getElementById('sendLoginOtpBtn').addEventListener('click', () => {
+            const phoneNumber = document.getElementById('loginPhoneNumber').value;
+            if (!phoneNumber.match(/^\+233\d{9}$/)) { showAlert('loginAlert', 'Invalid phone number.'); return; }
+            setLoading('sendLoginOtpBtn', 'sendLoginOtpSpinner', 'sendLoginOtpBtnText', true);
+            const verifier = initRecaptcha('loginRecaptcha');
+            auth.signInWithPhoneNumber(phoneNumber, verifier)
+                .then(result => { loginConfirmationResult = result; document.getElementById('loginOtpContainer').style.display = 'block'; })
+                .catch(error => { showAlert('loginAlert', error.message); verifier.clear(); })
+                .finally(() => setLoading('sendLoginOtpBtn', 'sendLoginOtpSpinner', 'sendLoginOtpBtnText', false));
+        });
+
+        document.getElementById('verifyLoginOtpBtn').addEventListener('click', () => {
+            const code = document.getElementById('loginOtpCode').value;
+            if (!code) { showAlert('loginAlert', 'Enter OTP.'); return; }
+            setLoading('verifyLoginOtpBtn', 'verifyLoginOtpSpinner', 'verifyLoginOtpBtnText', true);
+            loginConfirmationResult.confirm(code).then(result => {
+                // User is logged in, load data and show dashboard
+                currentUser = result.user;
+                loadUserData();
+            }).catch(error => showAlert('loginAlert', 'Invalid OTP.'))
+            .finally(() => setLoading('verifyLoginOtpBtn', 'verifyLoginOtpSpinner', 'verifyLoginOtpBtnText', false));
+        });
+
+        // --- SIGNUP LOGIC ---
+        document.getElementById('sendSignupOtpBtn').addEventListener('click', () => {
+            const fullName = document.getElementById('signupFullName').value;
+            const email = document.getElementById('signupEmail').value;
+            const phoneNumber = document.getElementById('signupPhoneNumber').value;
+            const passcode = document.getElementById('signupPasscode').value;
+            if (!fullName || !email || !phoneNumber.match(/^\+233\d{9}$/) || !/^\d{4}$/.test(passcode)) {
+                showAlert('signupAlert', 'Please fill all fields correctly.'); return;
+            }
+            setLoading('sendSignupOtpBtn', 'sendSignupOtpSpinner', 'sendSignupOtpBtnText', true);
+            const verifier = initRecaptcha('signupRecaptcha');
+            auth.signInWithPhoneNumber(phoneNumber, verifier)
+                .then(result => { signupConfirmationResult = result; document.getElementById('signupOtpContainer').style.display = 'block'; })
+                .catch(error => { showAlert('signupAlert', error.message); verifier.clear(); })
+                .finally(() => setLoading('sendSignupOtpBtn', 'sendSignupOtpSpinner', 'sendSignupOtpBtnText', false));
+        });
+
+        document.getElementById('verifySignupOtpBtn').addEventListener('click', () => {
+            const code = document.getElementById('signupOtpCode').value;
+            if (!code) { showAlert('signupAlert', 'Enter OTP.'); return; }
+            setLoading('verifySignupOtpBtn', 'verifySignupOtpSpinner', 'verifySignupOtpBtnText', true);
+            signupConfirmationResult.confirm(code).then(result => {
+                currentUser = result.user;
+                const newUser = {
+                    fullName: document.getElementById('signupFullName').value,
+                    email: document.getElementById('signupEmail').value,
+                    phoneNumber: currentUser.phoneNumber,
+                    credit_balance: 0,
+                    usage_count: 0,
+                    transactions: [],
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                db.collection('users').doc(currentUser.uid).set(newUser)
+                    .then(() => { userData = newUser; showView('dashboard'); updateDashboardUI(); })
+                    .catch(error => showAlert('signupAlert', 'Error creating account: ' + error.message));
+            }).catch(error => showAlert('signupAlert', 'Invalid OTP.'))
+            .finally(() => setLoading('verifySignupOtpBtn', 'verifySignupOtpSpinner', 'verifySignupOtpBtnText', false));
+        });
+
+        // --- DASHBOARD & APP LOGIC ---
+        function loadUserData() {
+            db.collection('users').doc(currentUser.uid).get().then(doc => {
+                if (doc.exists) {
+                    userData = doc.data();
+                    showView('dashboard');
+                    updateDashboardUI();
+                } else {
+                    showAlert('loginAlert', 'User data not found. Please sign up.');
+                    auth.signOut();
+                }
+            }).catch(error => {
+                showAlert('loginAlert', 'Error loading data.');
+                auth.signOut();
+            });
+        }
+
+        function updateDashboardUI() {
+            document.getElementById('userName').textContent = userData.fullName;
+            document.getElementById('userPhone').textContent = userData.phoneNumber;
+            document.getElementById('userEmail').textContent = userData.email;
+            document.getElementById('creditBalance').textContent = `${userData.credit_balance || 0} GHS`;
+            document.getElementById('usageCount').textContent = `${userData.usage_count || 0} Submissions`;
+            // Update transactions list here if needed
+        }
+
+        // --- NAVIGATION & EVENT LISTENERS ---
+        document.getElementById('showSignupLink').addEventListener('click', (e) => { e.preventDefault(); showView('signup'); });
+        document.getElementById('showLoginLink').addEventListener('click', (e) => { e.preventDefault(); showView('login'); });
+        document.getElementById('logoutLink').addEventListener('click', (e) => { e.preventDefault(); auth.signOut(); });
+        document.getElementById('dashboardLink').addEventListener('click', (e) => { e.preventDefault(); showView('dashboard'); });
+        document.getElementById('formsLink').addEventListener('click', (e) => { e.preventDefault(); showView('forms'); });
+        document.getElementById('newFormBtn').addEventListener('click', () => showView('forms'));
+        document.getElementById('viewHistoryBtn').addEventListener('click', () => alert('History feature coming soon!'));
+
+        // --- FORM SUBMISSION & PAYMENT LOGIC (Simplified) ---
+        function submitForm(formType, cost) {
+            const usageCount = userData.usage_count || 0;
+            const creditBalance = userData.credit_balance || 0;
+            let canSubmit = false;
+
+            if (usageCount < 2) {
+                canSubmit = true;
+                alert(`Form submitted! This was a free submission.`);
+            } else if (creditBalance >= cost) {
+                canSubmit = true;
+                alert(`Form submitted! ${cost} GHS deducted from your balance.`);
+                db.collection('users').doc(currentUser.uid).update({ credit_balance: creditBalance - cost });
+            } else {
+                alert(`Insufficient credits. You need ${cost} GHS. Please top up.`);
+                bootstrap.Modal.getOrCreateInstance(document.getElementById('topUpModal')).show();
+                return;
+            }
+
+            if (canSubmit) {
+                db.collection('users').doc(currentUser.uid).update({ usage_count: usageCount + 1 })
+                    .then(() => {
+                        userData.usage_count++;
+                        userData.credit_balance = Math.max(0, creditBalance - cost);
+                        updateDashboardUI();
+                        showView('dashboard');
+                    });
+            }
+        }
+
+        document.getElementById('solePropForm').addEventListener('submit', (e) => { e.preventDefault(); submitForm('sole_proprietor', 5); });
+        document.getElementById('limitedForm').addEventListener('submit', (e) => { e.preventDefault(); submitForm('limited_ngo', 10); });
+        document.getElementById('otherForm').addEventListener('submit', (e) => { e.preventDefault(); submitForm('other_services', 2.5); });
+
+        document.getElementById('processPaymentBtn').addEventListener('click', () => {
+            const amount = document.querySelector('input[name="topUpAmount"]:checked').value;
+            const paymentNumber = document.getElementById('paymentNumber').value;
+            if (!paymentNumber.match(/^\+233\d{9}$/)) { alert('Invalid payment number.'); return; }
+
+            const handler = PaystackPop.setup({
+                key: paystackKey, email: userData.email, amount: amount * 100, currency: 'GHS',
+                callback: response => {
+                    const transaction = { amount: parseFloat(amount), method: 'Mobile Money', timestamp: new Date(), ref: response.reference, type: 'payment' };
+                    const newBalance = (userData.credit_balance || 0) + parseFloat(amount);
+                    db.collection('users').doc(currentUser.uid).update({
+                        credit_balance: newBalance,
+                        transactions: firebase.firestore.FieldValue.arrayUnion(transaction)
+                    }).then(() => {
+                        userData.credit_balance = newBalance;
+                        updateDashboardUI();
+                        bootstrap.Modal.getInstance(document.getElementById('topUpModal')).hide();
+                        alert('Payment successful! Credits updated.');
+                    });
+                },
+                onClose: () => console.log('Payment closed.')
+            });
+            handler.openIframe();
+        });
+
+        // --- AUTH STATE LISTENER ---
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                currentUser = user;
+                loadUserData();
+            } else {
+                currentUser = null;
+                userData = null;
+                showView('login');
+            }
+        });
+
+    </script>
+</body>
+</html>
