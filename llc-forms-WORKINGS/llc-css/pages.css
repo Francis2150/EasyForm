@@ -28,6 +28,18 @@
     position: absolute;
 }
 
+/* Company Name */
+.trial {
+    top: 285.5px;
+    background-color: chartreuse;
+    left: 169px;
+    width: 380px;
+    border-top: 1px solid rgb(124,117,117);
+    border-bottom: 1px solid rgb(124,117,117);
+    position: absolute;
+}
+
+
 /* LTD checkbox */
 #endWithLTD {
     top: 380px;
