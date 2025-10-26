@@ -40,7 +40,7 @@
 .SecQualification {
     top: 690px;
     left: 104px;
-    width: 225px;
+    width: 425px;
 }
 
 .SecSignature {
@@ -52,7 +52,7 @@
 }
 
 .date9 {
-    top: 890px;
+    top: 894px;
     left: 144px;
     width: 125px;
 }
@@ -78,7 +78,7 @@
 }
 
 .FdirectorResidentialAddress {
-    top: 690px;
+    top: 700px;
     left: 115px;
     width: 525px;
 }
@@ -98,7 +98,7 @@
 }
 
 .date10 {
-    top: 867px;
+    top: 870px;
     left: 144px;
     width: 125px;
 }
@@ -131,7 +131,6 @@
 }
 
 .SdirectorPhoneNumber {
-    background-color: blue;
     top: 767px;
     left: 104px;
     width: 225px;
@@ -146,7 +145,7 @@
 }
 
 .date11 {
-    top: 867px;
+    top: 870px;
     left: 144px;
     width: 125px;
 }

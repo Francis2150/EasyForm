@@ -13,7 +13,7 @@
     height: 12px;
 }
 
-#companyName3 {
+.companyName3 {
     top: 215px;
     left: 35px;
     width: 355px;
@@ -122,10 +122,10 @@
 }
 
 .date3 {
-    top: 716px;
+    top: 713px;
     left: 230px;
     width: 260px;
-    font-size: 22px;
+    font-size: 25px;
 }
 
 .checkmark-2 {
@@ -201,15 +201,18 @@
 }
 
 .static-4 {
+    border-bottom: 2px solid rgb(122, 114, 114);
     top: 730px;
     left: 195px;
-    width: 235px;
+    width: 185px;
 }
 
 .date4 {
+ 
+    border-bottom: 2px solid rgb(122, 114, 114);
     top: 729px;
     left: 500px;
-    width: 240px;
+    width: 220px;
 }
 
 .Fbo2secretaryName {
@@ -233,7 +236,8 @@
 }
 
 .date5 {
-    top: 881px;
+    border-bottom: 2px solid rgb(122, 114, 114);
+    top: 883px;
     left: 500px;
     width: 230px;
 }

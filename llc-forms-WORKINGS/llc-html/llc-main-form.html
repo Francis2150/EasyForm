@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="../llc-css/pages.css">
     <link rel="stylesheet" href="../llc-css/bo1.css">
     <link rel="stylesheet" href="../llc-css/firstbo2.css">
-    <link rel="stylesheet" href="../llc-css/secondbo2.css">
+   
     <link rel="stylesheet" href="../llc-css/statutoryDec.css">
     <link rel="stylesheet" href="../llc-css/consentLet.css">
     <link rel="stylesheet" href="../llc-css/addPages.css">
@@ -31,7 +31,7 @@
 </div>
 
 <main>
-<section class="sect1" id="sect1" style="display:none;">
+<section class="sect1" id="sect1" style="display:;">
   <h2 class="header">Company Registration Requirement</h2>
 
   <form id="icompanyForm">
@@ -218,11 +218,11 @@
   <img src="../llc-images/LLC1.jpg" alt="Page 1">
 
   <p class="overlay-text registeredCon" id="registeredCon"></p>
-  <p class="overlay-text standardCon" id="standardCon">&#10004;</p>
+  <p class="overlay-text standardCon" id="standardCon"></p>
   <p class="overlay-text companyName1" id="companyName"></p>
   
-  <p class="overlay-text endWithLTD" id="endWithLTD"></p>
-  <p class="overlay-text endWithLIMITED" id="endWithLIMITED"></p>
+  <p class="overlay-text endWithLTD" id="endWithLTD">1</p>
+  <p class="overlay-text endWithLIMITED" id="endWithLIMITED">2</p>
   <p class="overlay-text presentedBy" id="presentedBy"></p>
   <p class="overlay-text presenterTIN" id="presenterTIN"></p>
   <p class="overlay-text principalActivities" id="principalActivities"></p>
@@ -483,22 +483,27 @@
 <div class="page" >
   <img src="../llc-images/LLC14.jpg" alt="Page 14">
   <p class="overlay-text checkmark1">&#10004;</p>
-  <p class="overlay-text companyName" id="companyName2"></p>
+  <p class="overlay-text companyName2" id="companyName2"></p>
   <p class="overlay-text Country" id="Country">ghana</p>
   <p class="overlay-text checkmark2">&#10004;</p>
   <p class="overlay-text benOner1" id="owner1fullName"></p>
   <p class="overlay-text benOner2" id="owner2fullName"></p>
- <p class="overlay-text benOner4" id="owner3fullName"></p>
-  <p class="overlay-text benOner3" id="owner4fullName"></p>
+ <p class="overlay-text benOner3" id="owner3fullName"></p>
+  <p class="overlay-text benOner4" id="owner4fullName"></p>
 
+  <p class="overlay-text benOner5" id="owner5fullName"></p>
+
+  <p class="overlay-text benOner6" id="owner6fullName"></p>
   <p class="overlay-text BO1M" id="owner1status"></p>
   <p class="overlay-text BO2M" id="owner2status"></p>
   <p class="overlay-text BO3M" id="owner3status"></p>
   <p class="overlay-text BO4M" id="owner4status"></p>
+  <p class="overlay-text BO5M" id="owner5status"></p>
+  <p class="overlay-text BO6M" id="owner6status"></p>     
   <p class="overlay-text directorName" id="directorFullName"></p>
- <!--- <p class="overlay-text static DP" id="directorSignature">DIRECTOR</p> -->
+  <p class="overlay-text static DP" id="directorSignature">DIRECTOR</p>
 
-  <p class="overlay-text date" id="date1"></p>
+  <p class="overlay-text date1" id="date1"></p>
 </div>
 
 <div class="page" >
@@ -506,14 +511,14 @@
   <p class="overlay-text secFullName" id="secretaryFullName"></p>
   <p class="overlay-text static secP" id="secP">secretary</p>
  
-  <p class="overlay-text date" id="date2"></p>
+  <p class="overlay-text date2" id="date2"></p>
 </div>
 
-<!--1st bo2, this contains infomatiion of beneficial owner1-->
-<div class="page Owner1" >
+<!-- 1st BO2: Beneficial Owner 1 -->
+<div class="page Owner1">
   <img src="../llc-images/LLC16.jpg" alt="Page 16">
   <p class="overlay-text checkmark-1">&#10004;</p>
-  <p class="overlay-text companyName" id="companyName3"></p>
+  <p class="overlay-text companyName3" id="companyName3"></p>
   <p class="overlay-text static static-1">ghana</p>
   <p class="overlay-text Fbo2FirstName" id="owner1FirstName"></p>
   <p class="overlay-text Fbo2Surname" id="owner1Surname"></p>
@@ -535,7 +540,7 @@
   <p class="overlay-text checkmark-2">&#10004;</p>
 </div>
 
-<div class="page Owner1" >
+<div class="page Owner1">
   <img src="../llc-images/LLC17.jpg" alt="Page 17">
   <p class="overlay-text checkmark-3">&#10004;</p>
   <p class="overlay-text Fbo2Directpercent" id="owner1votinRight"></p>
@@ -546,65 +551,71 @@
   <p class="overlay-text static checkmark-6">&#10004;</p>
   <p class="overlay-text static checkmark-7">&#10004;</p>
   <p class="overlay-text Fb02directorName" id="directorFullName2"></p>
-  <!---<p class="overlay-text signature dir1-signature" id="Fbo2directorSignature"></p>-->
   <p class="overlay-text static static-4">director</p>
   <p class="overlay-text date4" id="date4"></p>
   <p class="overlay-text Fbo2secretaryName" id="secretaryFullName2"></p>
-  <!---<p class="overlay-text signature dir1-signature-2" id="Fbo2secretarySignature"></p>-->
   <p class="overlay-text static static-5">secretary</p>
   <p class="overlay-text date5" id="date5"></p>
 </div>
-<div class="page Owner1" >
+
+<div class="page Owner1">
   <img src="../llc-images/LLC18.jpg" alt="Page 18">
 </div>
 
-<!--2nd bo2, this contains infomatiion of beneficial owner2-->
-<div class="page Owner2" >
+<!-- 2nd BO2: Beneficial Owner 2 (now uses same classes as Owner1) -->
+<div class="page Owner2">
   <img src="../llc-images/LLC19.jpg" alt="Page 19">
-  <p class="overlay-text checkmark-8">&#10004;</p>
-  <p class="overlay-text companyName4" id="companyName4"></p>
-  <p class="overlay-text static static-6">ghana</p>
-  <p class="overlay-text Sbo2FirstName" id="owner2FirstName"></p>
-  <p class="overlay-text Sbo2Surname" id="owner2Surname"></p>
-  <p class="overlay-text Sbo2Previousname" id="owner2MiddleName"></p>
-  <p class="overlay-text Sbo2DOB" id="owner2DOB"></p>
-  <p class="overlay-text Sbo2Nationality" id="owner2Nationality"></p>
-  <p class="overlay-text Sbo2POB" id="owner2POB"></p>
-  <p class="overlay-text Sbo2Address1" id="owner2Address1"></p>
-  <p class="overlay-text Sbo2Address2" id="owner2Address2"></p>
-  <p class="overlay-text Sbo2GPS" id="owner2GPS"></p>
-  <p class="overlay-text Sbo2Tin" id="owner2Tin"></p>
-  <p class="overlay-text Sbo2PhoneNumber" id="owner2PhoneNumber"></p>
-  <p class="overlay-text Sb02Email" id="owner2Email"></p>
-  <p class="overlay-text static static-7">ghana cARD</p>
-  <p class="overlay-text Sb02GhNumber" id="owner2GhNumber"></p>
-  <p class="overlay-text Sbo2PlaceOfWork" id="owner2PlaceOfWork"></p>
-  <p class="overlay-text static static-8">ghana</p>
-  <p class="overlay-text date6" id="date6"></p>
-  <p class="overlay-text checkmark-9">&#10004;</p>
+
+  <p class="overlay-text checkmark-1">&#10004;</p>
+  <p class="overlay-text companyName3" id="companyName4"></p>
+  <p class="overlay-text static static-1">ghana</p>
+
+  <p class="overlay-text Fbo2FirstName" id="owner2FirstName"></p>
+  <p class="overlay-text Fbo2Surname" id="owner2Surname"></p>
+  <p class="overlay-text Fbo2Previousname" id="owner2MiddleName"></p>
+  <p class="overlay-text Fbo2DOB" id="owner2DOB"></p>
+  <p class="overlay-text Fbo2Nationality" id="owner2Nationality"></p>
+  <p class="overlay-text Fbo2POB" id="owner2POB"></p>
+
+  <p class="overlay-text Fbo2Address1" id="owner2Address1"></p>
+  <p class="overlay-text Fbo2Address2" id="owner2Address2"></p>
+  <p class="overlay-text Fbo2GPS" id="owner2GPS"></p>
+  <p class="overlay-text Fbo2Tin" id="owner2Tin"></p>
+  <p class="overlay-text Fbo2PhoneNumber" id="owner2PhoneNumber"></p>
+  <p class="overlay-text Fb02Email" id="owner2Email"></p>
+
+  <p class="overlay-text static static-2">ghana cARD</p>
+  <p class="overlay-text Fb02GhNumber" id="owner2GhNumber"></p>
+  <p class="overlay-text Fbo2PlaceOfWork" id="owner2PlaceOfWork"></p>
+  <p class="overlay-text static static-3">ghana</p>
+
+  <p class="overlay-text date3" id="date6"></p>
+  <p class="overlay-text checkmark-2">&#10004;</p>
 </div>
 
-<div class="page Owner2" >
+<div class="page Owner2">
   <img src="../llc-images/LLC20.jpg" alt="Page 20">
-  <p class="overlay-text checkmark-10">&#10004;</p>
-  <p class="overlay-text Sbo2Directpercent" id="owner2votinRight"></p>
-  <p class="overlay-text Sbo2votinRight" id="owner2votinRight2"></p>
-  <p class="overlay-text Sbo2Indirectpercent" id="owner2Indirectpercent"></p>
-  <p class="overlay-text static checkmark-11">&#10004;</p>
-  <p class="overlay-text static checkmark-12">&#10004;</p>
-  <p class="overlay-text static checkmark-13">&#10004;</p>
-  <p class="overlay-text static checkmark-14">&#10004;</p>
-  <p class="overlay-text Sb02directorName" id="directorFullName3"></p>
-  <!--<p class="overlay-text signature Sbo2directorSignature" id="Sbo2directorSignature"></p>-->
-  <p class="overlay-text static static-9">director</p>
-  <p class="overlay-text date7" id="date7"></p>
-  <p class="overlay-text Sbo2secretaryName" id="secretaryFullName3"></p>
-  <!--<p class="overlay-text signature Sbo2secretarySignature" id="Sbo2secretarySignature"></p>-->
-  <p class="overlay-text static static-10">secretary</p>
-  <p class="overlay-text date8" id="date8"></p>
+
+  <p class="overlay-text checkmark-3">&#10004;</p>
+  <p class="overlay-text Fbo2Directpercent" id="owner2votinRight"></p>
+  <p class="overlay-text Fbo2votinRight" id="owner2votinRight2"></p>
+  <p class="overlay-text Fbo2Indirectpercent" id="owner2Indirectpercent"></p>
+
+  <p class="overlay-text checkmark-4">&#10004;</p>
+  <p class="overlay-text checkmark-5">&#10004;</p>
+  <p class="overlay-text checkmark-6">&#10004;</p>
+  <p class="overlay-text checkmark-7">&#10004;</p>
+
+  <p class="overlay-text Fb02directorName" id="directorFullName3"></p>
+  <p class="overlay-text static static-4">director</p>
+  <p class="overlay-text date4" id="date7"></p>
+
+  <p class="overlay-text Fbo2secretaryName" id="secretaryFullName3"></p>
+  <p class="overlay-text static static-5">secretary</p>
+  <p class="overlay-text date5" id="date8"></p>
 </div>
 
-<div class="page Owner2" >
+<div class="page Owner2">
   <img src="../llc-images/LLC21.jpg" alt="Page 21">
 </div>
 

@@ -1,86 +1,67 @@
 /* ---- this is for pge one ---- */
 /* Checkbox styles */
-#registeredCon {
+.registeredCon {
     top: 173px;
     left: 314.5px;
     width: 14px;
     height: 14px;
-    border: 1px solid rgb(124,117,117);
     position: absolute;
 }
 
-#standardCon {
+.standardCon {
     top: 173px;
     left: 529.5px;
     width: 14px;
     height: 14px;
-    border: 1px solid rgb(124,117,117);
     position: absolute;
 }
 
 /* Company Name */
-#companyName {
-    top: 245.5px;
+.companyName1 {
+    top: 247.5px;
     left: 169px;
     width: 380px;
-    border-top: 1px solid rgb(124,117,117);
-    border-bottom: 1px solid rgb(124,117,117);
     position: absolute;
 }
 
-/* Company Name */
-.trial {
-    top: 285.5px;
-    background-color: chartreuse;
-    left: 169px;
-    width: 380px;
-    border-top: 1px solid rgb(124,117,117);
-    border-bottom: 1px solid rgb(124,117,117);
-    position: absolute;
-}
 
 
 /* LTD checkbox */
-#endWithLTD {
-    top: 380px;
-    left: 361.5px;
-    width: 14px;
-    height: 14px;
-    border: 1px solid rgb(124,117,117);
-    position: absolute;
-}
-
-/* LIMITED checkbox */
-#endWithLIMITED {
+.endWithLTD {
     top: 380px;
     left: 194.5px;
     width: 14px;
     height: 14px;
-    border: 1px solid rgb(124,117,117);
+    position: absolute;
+}
+
+/* LIMITED checkbox */
+.endWithLIMITED {
+    top: 380px;
+    left: 361.5px;
+    width: 14px;
+    height: 14px;
     position: absolute;
 }
 
 /* Presented by */
-#presentedBy {
-    top: 397.4px;
+.presentedBy {
+    top: 398.5px;
     left: 169px;
     width: 380px;
-    border-bottom: 1px solid rgb(124,117,117);
     position: absolute;
 }
 
 /* Presenter TIN */
-#presenterTIN {
-    top: 434px;
-    left: 336px;
+.presenterTIN {
+    top: 436px;
+    left: 336.5px;
     width: 205px;
-    border-top: 1px solid rgb(124,117,117);
-    border-bottom: 1px solid rgb(124,117,117);
     position: absolute;
 }
 
 /* Principal Activities */
-#principalActivities {
+.principalActivities {
     top: 850px;
     left: 26px;
     width: 563px;
@@ -91,67 +72,61 @@
 
 /* ---- this is for page two ---- */
 
-#officedigital-address {
-    top: 28px;
+.officedigital-address {
+    top: 29px;
     left: 193px;
     width: 180px;
     position: absolute;
 }
 
-#officeLandmark {
-    top: 47px;
+.officeLandmark {
+    top: 48px;
     left: 193px;
     width: 383px;
-    border-bottom: 1px solid rgb(124,117,117);
-    border-top: 1px solid rgb(124,117,117);
+   
     position: absolute;
 }
 
-#officehousenumber {
-    top: 66px;
-    left: 193px;
-    width: 383px;
-    position: absolute;
-}
-
-#officetown {
-    top: 84px;
+.officehousenumber {
+    top: 67px;
     left: 193px;
     width: 383px;
     position: absolute;
 }
 
-#officeStreet {
-    top: 103px;
-    left: 193px;
-    width: 383px;
-    border-top: 1px solid rgb(124,117,117);
-    border-bottom: 1px solid rgb(124,117,117);
-    position: absolute;
-}
-
-#officeCity {
-    top: 141px;
+.officetown {
+    top: 85.5px;
     left: 193px;
     width: 383px;
     position: absolute;
 }
 
-#officeDistrict {
-    top: 159.5px;
+.officeStreet {
+    top: 104px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
-    border-bottom: 1px solid rgb(124,117,117);
     position: absolute;
 }
 
-#officeRegion {
-    top: 177px;
+.officeCity {
+    top: 142.5px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
-    border-bottom: 1px solid rgb(124,117,117);
+    position: absolute;
+}
+
+.officeDistrict {
+    top: 161px;
+    left: 193px;
+    width: 383px;
+    position: absolute;
+}
+
+.officeRegion {
+    top: 180px;
+    left: 193px;
+    width: 383px;
+   
     position: absolute;
 }
 
@@ -160,7 +135,7 @@
     left: 338px;
     width: 14px;
     height: 14px;
-    border: 1px solid rgb(124,117,117);
+   
     position: absolute;
 }
 
@@ -191,7 +166,7 @@
     font-size: 23px;
 }
 
-#emptyBox1 {
+.emptyBox1 {
     top: 802px;
     left: 265px;
     width: 14px;
@@ -199,7 +174,7 @@
     position: absolute;
 }
 
-#emptyBox2 {
+.emptyBox2 {
     top: 802px;
     left: 362px;
     width: 14px;
@@ -207,7 +182,7 @@
     position: absolute;
 }
 
-#emptyBox3 {
+.emptyBox3 {
     top: 802px;
     left: 435px;
     width: 14px;
@@ -216,71 +191,62 @@
 }
 
 #OfficeBoxNumber {
-    top: 819.5px;
+    top: 820px;
     left: 193px;
     width: 90px;
-    border-top: 1px solid rgb(124,117,117);
+   
     position: absolute;
 }
 
 #PMB {
-    top: 819.5px;
+    top: 820px;
     left: 289px;
     width: 90px;
-    border-top: 1px solid rgb(124,117,117);
     position: absolute;
 }
 
 #DTD {
-    top: 819.5px;
+    top: 820px;
     left: 385px;
     width: 90px;
-    border-top: 1px solid rgb(124,117,117);
     position: absolute;
 }
 
-#OfficeBoxNumberTown {
-    top: 838px;
+.OfficeBoxNumberTown {
+    top: 839.5px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
     position: absolute;
 }
 
-#OfficeBoxNumberRegion {
-    top: 857px;
+.OfficeBoxNumberRegion {
+    top: 858px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
     position: absolute;
 }
 
-#OfficeContactOne {
-    top: 895px;
+.OfficeContactOne {
+    top: 895.8px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
     position: absolute;
 }
 
-#OfficeContactTwo {
-    top: 913px;
+.OfficeContactTwo {
+    top: 914.3px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
-    border-bottom: 1px solid rgb(124,117,117);
     position: absolute;
 }
 
 
 /* ---- this is for page three ---- */
 
-#Officeemail {
-    top: 28px;
+.Officeemail {
+    top: 29.5px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
-    border-bottom: 1px solid rgb(124,117,117);
     position: absolute;
 }
 
@@ -316,7 +282,7 @@
     position: absolute;
 }
 
-#D1tittleMR {
+.D1tittleMR {
     top: 294px;
     left: 242px;
     width: 14px;
@@ -324,7 +290,7 @@
     position: absolute;
 }
 
-#D1tittleMRS {
+.D1tittleMRS {
     top: 294px;
     left: 338.5px;
     width: 14px;
@@ -332,7 +298,7 @@
     position: absolute;
 }
 
-#D1tittleMISS {
+.D1tittleMISS {
     top: 294px;
     left: 434px;
     width: 14px;
@@ -340,7 +306,7 @@
     position: absolute;
 }
 
-#D1tittleMS {
+.D1tittleMS {
     top: 294px;
     left: 505px;
     width: 14px;
@@ -348,7 +314,7 @@
     position: absolute;
 }
 
-#D1tittleDR {
+.D1tittleDR {
     top: 294px;
     left: 580px;
     width: 14px;
@@ -356,40 +322,35 @@
     position: absolute;
 }
 
-#D1FirstName {
-    top: 310px;
+.D1FirstName {
+    top: 311.8px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
     position: absolute;
 }
 
-#D1MiddleName {
-    top: 329px;
+.D1MiddleName {
+    top: 330.5px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
     position: absolute;
 }
 
-#D1LastName {
-    top: 348px;
+.D1LastName {
+    top: 349.9px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
     position: absolute;
 }
 
-#D1FormerName {
-    top: 368px;
+.D1FormerName {
+    top: 368.5px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
-    border-bottom: 1px solid rgb(124,117,117);
     position: absolute;
 }
 
-#D1GenderMale {
+.D1GenderMale {
     top: 389px;
     left: 242.5px;
     width: 14px;
@@ -397,7 +358,7 @@
     position: absolute;
 }
 
-#D1GenderFemale {
+.D1GenderFemale {
     top: 389px;
     left: 338.5px;
     width: 14px;
@@ -405,150 +366,137 @@
     position: absolute;
 }
 
-#D1DOB {
-    top: 405px;
+.D1DOB {
+    top: 406.5px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
     position: absolute;
 }
 
-#D1POB {
-    top: 423px;
+.D1POB {
+    top: 425px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
     position: absolute;
 }
 
-#D1Nationality {
-    top: 442px;
+.D1Nationality {
+    top: 443.5px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
     position: absolute;
 }
 
-#D1Ocupation {
-    top: 461px;
+.D1Occupation {
+    top: 463px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
     position: absolute;
 }
 
-#D1PhoneNO1 {
-    top: 480px;
+.D1PhoneNO1 {
+    top: 481.2px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
     position: absolute;
 }
 
-#D1PhoneNO2 {
-    top: 499px;
+.D1PhoneNO2 {
+    top: 499.9px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
-    border-bottom: 1px solid rgb(124,117,117);
     position: absolute;
 }
 
-#D1Email {
-    top: 536px;
+.D1Email {
+    top: 537.5px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#D1TIN {
-    top: 556px;
+.D1TIN {
+    top: 556.5px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
-    border-bottom: 1px solid rgb(124,117,117);
     position: absolute;
 }
 
-#D1GhanaCard {
+.D1GhanaCard {
     top: 576px;
-    left: 330px;
-    width: 238px;
-    border-top: 1px solid rgb(124,117,117);
-    border-bottom: 1px solid rgb(124,117,117);
+    left: 285px;
+    width: 288px;
     position: absolute;
 }
 
-#D1DigitalAddress {
-    top: 630px;
-    left: 193px;
-    width: 383px;
-    border-top: 1px solid rgb(124,117,117);
-    position: absolute;
-}
-
-#D1Landmark {
-    top: 650px;
-    left: 193px;
-    width: 383px;
-    border-top: 1px solid rgb(124,117,117);
-    position: absolute;
-}
-
-#D1housenumber {
-    top: 668px;
+.D1DigitalAddress {
+    top: 632px;
     left: 193px;
     width: 383px;
     position: absolute;
 }
 
-#D1town {
-    top: 686px;
+.D1Landmark {
+    top: 650.5px;
+    left: 193px;
+    width: 383px;
+  
+    position: absolute;
+}
+
+.D1housenumber {
+    top: 668.9px;
     left: 193px;
     width: 383px;
     position: absolute;
 }
 
-#D1StreetName {
-    top: 705.5px;
+.D1town {
+    top: 688px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
-    border-bottom: 1px solid rgb(124,117,117);
     position: absolute;
 }
 
-#D1City {
-    top: 743px;
+.D1StreetName {
+    top: 706.5px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+    position: absolute;
+
+}
+
+.D1City {
+    top: 745.5px;
+    left: 193px;
+    width: 383px;
+  
     position: absolute;
 }
 
-#D1District {
-    top: 762px;
+.D1District {
+    top: 763.9px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#D1Region {
-    top: 781px;
+.D1Region {
+    top: 782.9px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#D1Country {
-    top: 801px;
+.D1Country {
+    top: 801.5px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
-    border-bottom: 1px solid rgb(124,117,117);
+  
+
     position: absolute;
 }
 
@@ -604,7 +552,7 @@
 }
 
 .D2TittleMR {
-    top: 446px;
+    top: 445.5px;
     left: 243px;
     width: 14px;
     height: 14px;
@@ -612,7 +560,7 @@
 }
 
 .D2TittleMRS {
-    top: 446px;
+    top: 445.5px;
     left: 337.5px;
     width: 14px;
     height: 14px;
@@ -620,7 +568,7 @@
 }
 
 .D2TittleMISS {
-    top: 446px;
+    top: 445.5px;
     left: 435px;
     width: 14px;
     height: 14px;
@@ -628,7 +576,7 @@
 }
 
 .D2TittleMS {
-    top: 446px;
+    top: 445.5px;
     left: 506px;
     width: 14px;
     height: 14px;
@@ -636,47 +584,47 @@
 }
 
 .D2TittleDR {
-    top: 446px;
+    top: 445.5px;
     left: 578px;
     width: 14px;
     height: 14px;
     position: absolute;
 }
 
-#D2FirstName {
-    top: 461px;
+.D2FirstName {
+    top: 463.1px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#D2MiddleName {
+.D2MiddleName {
     top: 482px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#D2LastName {
-    top: 499.5px;
+.D2LastName {
+    top: 499.999999px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#D2FormerName {
-    top: 517px;
+.D2FormerName {
+    top: 518.9px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
-    border-bottom: 1px solid rgb(124,117,117);
+  
+
     position: absolute;
 }
 
-#D2genderMale {
+.D2genderMale {
     top: 538px;
     left: 241px;
     width: 14px;
@@ -684,7 +632,7 @@
     position: absolute;
 }
 
-#D2genderFemale {
+.D2genderFemale {
     top: 538px;
     left: 338px;
     width: 14px;
@@ -692,149 +640,149 @@
     position: absolute;
 }
 
-#D2DOB {
-    top: 554px;
+.D2DOB {
+    top: 556.6px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#D2POB {
-    top: 573px;
+.D2POB {
+    top: 575.6px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#D2Nationality {
-    top: 591px;
+.D2Nationality {
+    top: 593.89px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
 .D2Occupation {
-    top: 611px;
+    top: 612.599px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#D2PhoneNO1 {
-    top: 631px;
+.D2PhoneNO1 {
+    top: 631.8px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
-    border-bottom: 1px solid rgb(124,117,117);
+  
+
     position: absolute;
 }
 
-#D2PhoneNO2 {
+.D2PhoneNO2 {
     top: 651px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
-    border-bottom: 1px solid rgb(124,117,117);
+  
+
     position: absolute;
 }
 
-#D2Email {
-    top: 685px;
+.D2Email {
+    top: 688px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#D2TIN {
-    top: 705px;
+.D2TIN {
+    top: 707px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#D2GhanaCard {
-    top: 725px;
-    left: 330px;
-    width: 238px;
-    border-top: 1px solid rgb(124,117,117);
-    border-bottom: 1px solid rgb(124,117,117);
+.D2GhanaCard {
+    top: 726.5px;
+    left: 285px;
+    width: 288px;
+  
+
     position: absolute;
 }
 
-#D2DigitalAddress {
-    top: 780px;
+.D2DigitalAddress {
+    top: 783px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#D2Landmark {
-    top: 799px;
+.D2Landmark {
+    top: 802px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#D2housenumber {
-    top: 816px;
+.D2housenumber {
+    top: 820.5px;
     left: 193px;
     width: 123px;
     position: absolute;
 }
 
-#D2town {
-    top: 816px;
+.D2town {
+    top: 820.5px;
     left: 352px;
     width: 223px;
     position: absolute;
 }
 
-#D2StreetName {
-    top: 838px;
+.D2StreetName {
+    top: 839.5px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#D2City {
-    top: 856px;
+.D2City {
+    top: 857.7px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#D2District {
-    top: 876px;
+.D2District {
+    top: 876.6px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#D2Region {
-    top: 894px;
+.D2Region {
+    top: 895.77px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#D2Country {
-    top: 913px;
+.D2Country {
+    top: 914.5px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
-    border-bottom: 1px solid rgb(124,117,117);
+  
+
     position: absolute;
 }
 
@@ -873,152 +821,152 @@
 .secTittleMS { top: 482px; left: 505px; width: 14px; height: 14px; position: absolute; }
 .secTittleDR { top: 482px; left: 578px; width: 14px; height: 14px; position: absolute; }
 
-#SecFirstName {
-    top: 499px; left: 193px; width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+.SecFirstName {
+    top: 501px; left: 193px; width: 383px;
+  
     position: absolute;
 }
 
-#secMiddleName {
-    top: 516.5px; left: 193px; width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+.secMiddleName {
+    top: 519.5px; left: 193px; width: 383px;
+  
     position: absolute;
 }
 
-#secLastName {
-    top: 536px; left: 193px; width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+.secLastName {
+    top: 538px; left: 193px; width: 383px;
+  
     position: absolute;
 }
 
-#secFormerName {
-    top: 556px; left: 193px; width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+.secFormerName {
+    top: 557px; left: 193px; width: 383px;
+  
     position: absolute;
 }
 
-#secTIN {
-    top: 573.5px; left: 193px; width: 383px;
-    border-top: 1px solid rgb(124,117,117);
-    border-bottom: 1px solid rgb(124,117,117);
+.secTIN {
+    top: 575.5px; left: 193px; width: 383px;
+  
+
     position: absolute;
 }
 
-#secGhanaCard {
-    top: 594px; left: 330px; width: 238px;
-    border-top: 1px solid rgb(124,117,117);
-    border-bottom: 1px solid rgb(124,117,117);
+.secGhanaCard {
+    top: 594px; left: 253px; width: 288px;
+  
+
     position: absolute;
 }
 
-#secgenderMale {
+.secgenderMale {
     top: 632.5px; left: 242px; width: 15px; height: 13px;
     position: absolute;
 }
 
-#secgenderFemale {
+.secgenderFemale {
     top: 632.5px; left: 338px; width: 15px; height: 13px;
     position: absolute;
 }
 
-#secDOB {
-    top: 648.3px; left: 193px; width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+.secDOB {
+    top: 650px; left: 193px; width: 383px;
+  
     position: absolute;
 }
 
-#secPOB {
-    top: 668.2px; left: 193px; width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+.secPOB {
+    top: 670px; left: 193px; width: 383px;
+  
     position: absolute;
 }
 
-#secNationality {
-    top: 686px; left: 193px; width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+.secNationality {
+    top: 688.9px; left: 193px; width: 383px;
+  
     position: absolute;
 }
 
-#secOccupation {
-    top: 707px; left: 193px; width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+.secOccupation {
+    top: 709px; left: 193px; width: 383px;
+  
     position: absolute;
 }
 
-#secPhoneNO1 {
-    top: 725px; left: 193px; width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+.secPhoneNO1 {
+    top: 726.5px; left: 193px; width: 383px;
+  
     position: absolute;
 }
 
-#secPhoneNO2 {
-    top: 744px; left: 193px; width: 383px;
-    border-top: 1px solid rgb(124,117,117);
-    border-bottom: 1px solid rgb(124,117,117);
+.secPhoneNO2 {
+    top: 745.5px; left: 193px; width: 383px;
+  
+
     position: absolute;
 }
 
-#secEmail {
-    top: 780px; left: 193px; width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+.secEmail {
+    top: 783px; left: 193px; width: 383px;
+  
     position: absolute;
 }
 
-#secDigitalAddress {
-    top: 837.5px; left: 193px; width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+.secDigitalAddress {
+    top: 839.5px; left: 193px; width: 383px;
+  
     position: absolute;
 }
 
-#secLandmark {
-    top: 856px; left: 193px; width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+.secLandmark {
+    top: 858.5px; left: 193px; width: 383px;
+  
     position: absolute;
 }
 
-#sechousenumber {
-    top: 876px; left: 193px; width: 123px;
+.sechousenumber {
+    top: 878px; left: 193px; width: 123px;
     position: absolute;
 }
 
-#secTown {
-    top: 876px; left: 352px; width: 223px;
+.secTown {
+    top: 878px; left: 352px; width: 223px;
     position: absolute;
 }
 
-#secStreetNane {
-    top: 894px; left: 193px; width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+.secStreetNane {
+    top: 896px; left: 193px; width: 383px;
+  
     position: absolute;
 }
 
-#secCity {
+.secCity {
     top: 914px; left: 193px; width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#secDistrict {
-    top: 932px; left: 193px; width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+.secDistrict {
+    top: 933.5px; left: 193px; width: 383px;
+  
     position: absolute;
 }
 
-#secRegion {
-    top: 951px; left: 193px; width: 383px;
-    border-top: 1px solid rgb(124,117,117);
-    border-bottom: 1px solid rgb(124,117,117);
+.secRegion {
+    top: 952.5px; left: 193px; width: 383px;
+  
+
     position: absolute;
 }
 
 /* ---- this is for page 6 ---- */
 
-#secCountry {
+.secCountry {
     top: 10px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
-    border-bottom: 1px solid rgb(124,117,117);
+  
+
     position: absolute;
 }
 
@@ -1033,116 +981,140 @@
 
 /* ---- this is for page 7 ---- */
 
-#AuditorTIN {
-    top: 160px;
+.AuditorTIN {
+    top: 161px;
     left: 193px;
     width: 400px;
-    border-bottom: 1px solid rgb(124,117,117);
+
     position: absolute;
 }
 
-#AuditorName {
+.AuditorName {
     top: 199px;
     left: 193px;
     width: 400px;
-    border-bottom: 1px solid rgb(124,117,117);
+
     position: absolute;
 }
 
-#GPSAddress {
-    top: 310px;
+.auditorGPS {
+   
+    top: 312px;
     left: 193px;
     width: 400px;
-    border-top: 1px solid rgb(124,117,117);
-    border-bottom: 1px solid rgb(124,117,117);
+  
+
     position: absolute;
 }
 
-#AuditorAddress {
+.auditorPOBOX {
     top: 332px;
     left: 193px;
     width: 400px;
-    border-bottom: 1px solid rgb(124,117,117);
+
     position: absolute;
 }
 
-#HouseNumber {
+.auditorHouseNumber {
+    padding-top:4px;
     top: 424px;
     left: 193px;
     width: 400px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#StreetName {
-    top: 480px;
+.auditorStreetName {
+    top: 482px;
     left: 193px;
     width: 400px;
-    border-top: 1px solid rgb(124,117,117);
-    border-bottom: 1px solid rgb(124,117,117);
+  
+
     position: absolute;
 }
 
-#City {
-    top: 517px;
+.auditorCity {
+    top: 518.5px;
     left: 193px;
     width: 400px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#District {
-    top: 536px;
+.auditorDistrict {
+    top: 537px;
     left: 193px;
     width: 400px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#Region {
-    top: 555px;
+.auditorRegion {
+    top: 557px;
     left: 193px;
     width: 400px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#MobileNumber {
+.auditorMobileNumber {
     top: 575px;
     left: 193px;
     width: 400px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#OfficeNumber {
+.auditorOfficeNumber {
     top: 594px;
     left: 193px;
     width: 400px;
-    border-top: 1px solid rgb(124,117,117);
-    border-bottom: 1px solid rgb(124,117,117);
+  
+
     position: absolute;
 }
 
-#authorisedShares {
-    top: 649px;
+.authorisedShares {
+    top: 651px;
     left: 193px;
     width: 390px;
-    border-bottom: 1px solid rgb(124,117,117);
+
     position: absolute;
 }
 
-#StatedCapital {
-    top: 669px;
+.StatedCapital {
+    padding-top: 1px;
+    top: 670px;
     left: 230px;
     width: 220px;
-    border-bottom: 1px solid rgb(124,117,117);
+border-bottom: 1px solid #5b5858;
+    position: absolute;
+}
+.equityAuthorisedShares {
+    top: 708px;
+    left: 193px;
+    width: 390px;
+
+    position: absolute;
+}
+.equityIssuedShares {
+    top: 764px;
+    left: 193px;
+    width: 390px;
+
+    position: absolute;
+}
+.equitySharesAmount {
+    top: 820px;
+    left: 233px;
+    width: 250px;
+
     position: absolute;
 }
 
 
 /* ---- this is for page 8 ---- */
-#SH1tittleMR {
+.SH1tittleMR {
     top: 143px;
     left: 242px;
     width: 14px;
@@ -1150,7 +1122,7 @@
     position: absolute;
 }
 
-#SH1tittleMRS {
+.SH1tittleMRS {
     top: 143px;
     left: 315.5px;
     width: 14px;
@@ -1158,7 +1130,7 @@
     position: absolute;
 }
 
-#SH1tittleMISS {
+.SH1tittleMISS {
     top: 143px;
     left: 386px;
     width: 14px;
@@ -1166,7 +1138,7 @@
     position: absolute;
 }
 
-#SH1tittleMS {
+.SH1tittleMS {
     top: 143px;
     left: 459px;
     width: 14px;
@@ -1174,62 +1146,61 @@
     position: absolute;
 }
 
-#SH1tittleDR {
+.SH1tittleDR {
+    
     top: 143px;
-    left: 578px;
+    left: 529px;
     width: 14px;
     height: 14px;
     position: absolute;
 }
 
-#SH1FirstName {
-    top: 158.2px;
+.SH1FirstName {
+    top: 160.5px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#SH1MiddleName {
-    top: 178px;
+.SH1MiddleName {
+    top: 180px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#SH1LastName {
-    top: 197.5px;
+.SH1LastName {
+    top: 198px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#SH1FormerName {
-    top: 216px;
+.SH1FormerName {
+    top: 217px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#SH1TIN {
-    top: 235px;
+.SH1TIN {
+    top: 236px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
-    border-bottom: 1px solid rgb(124,117,117);
+  
+
     position: absolute;
 }
 
-#SH1GhanaCard {
+.SH1GhanaCard {
     top: 255px;
-    left: 330px;
-    width: 238px;
-    border-top: 1px solid rgb(124,117,117);
-    border-bottom: 1px solid rgb(124,117,117);
-    position: absolute;
+    left: 253px;
+    width: 288px;
+     position: absolute;
 }
 
 #SH1genderMale {
@@ -1248,43 +1219,43 @@
     position: absolute;
 }
 
-#SH1DOB {
-    top: 310px;
+.SH1DOB {
+    top: 312px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#SH1POB {
-    top: 328px;
+.SH1POB {
+    top: 330px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#SH1Nationality {
-    top: 348px;
+.SH1Nationality {
+    top: 349px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#SH1Occupation {
-    top: 367px;
+.SH1Occupation {
+    top: 368.2px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#SH1DigitalAddress {
-    top: 387px;
+.SH1DigitalAddress {
+    top: 387.5px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
@@ -1292,41 +1263,41 @@
     top: 406px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#SH1housenumber {
-    top: 424px;
+.SH1housenumber {
+    top: 424.5px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#SH1Town {
-    top: 442.3px;
+.SH1Town {
+    top: 443.5px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#SH1NoOfShare {
-    top: 461px;
+.SH1NoOfShare {
+    top: 462.5px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
-    border-bottom: 1px solid rgb(124,117,117);
+  
+
     position: absolute;
 }
 
-#SH1ShareAmount {
+.SH1ShareAmount {
     top: 481px;
     left: 258px;
     width: 193px;
-    border-top: 1px solid rgb(124,117,117);
-    border-bottom: 1px solid rgb(124,117,117);
+  
+
     position: absolute;
 }
 
@@ -1380,53 +1351,53 @@
     position: absolute;
 }
 
-#SH2FirstName {
-    top: 592px;
+.SH2FirstName {
+    top: 594px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#SH2MiddleName {
-    top: 611px;
+.SH2MiddleName {
+    top: 613px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#SH2LastName {
-    top: 629px;
+.SH2LastName {
+    top: 632px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#SH2FormerName {
-    top: 649px;
+.SH2FormerName {
+    top: 650.5px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#SH2TIN {
-    top: 668px;
+.SH2TIN {
+    top: 669.5px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
-    border-bottom: 1px solid rgb(124,117,117);
+  
+
     position: absolute;
 }
 
-#SH2GhanaCard {
+.SH2GhanaCard {
     top: 689px;
-    left: 330px;
-    width: 238px;
-    border-top: 1px solid rgb(124,117,117);
-    border-bottom: 1px solid rgb(124,117,117);
+    left: 253px;
+    width: 288px;
+  
+
     position: absolute;
 }
 
@@ -1446,83 +1417,83 @@
     position: absolute;
 }
 
-#SH2DOB {
-    top: 743px;
+.SH2DOB {
+    top: 745px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#SH2POB {
-    top: 763px;
+.SH2POB {
+    top: 763.9px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#SH2Nationality {
-    top: 781px;
+.SH2Nationality {
+    top: 782.5px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#SH2Occupation {
+.SH2Occupation {
     top: 801px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#SH2DigitalAddress {
-    top: 819px;
+.SH2DigitalAddress {
+    top: 820px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#SH2Landmark {
-    top: 837px;
+.SH2Landmark {
+    top: 839px;
     left: 193px;
     width: 208px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#SH2housenumber {
-    top: 837px;
+.SH2housenumber {
+    top: 839px;
     left: 422px;
     width: 153px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#SH2Town {
-    top: 855px;
+.SH2Town {
+    top: 857px;
     left: 193px;
     width: 383px;
     position: absolute;
 }
 
-#SH2NoOfShare {
-    top: 873px;
+.SH2NoOfShare {
+    top: 876px;
     left: 193px;
     width: 383px;
-    border-top: 1px solid rgb(124,117,117);
+  
     position: absolute;
 }
 
-#SH2ShareAmount {
-    top: 895px;
+.SH2ShareAmount {
+    top: 895.5px;
     left: 258px;
     width: 193px;
-    border-top: 1px solid rgb(124,117,117);
-    border-bottom: 1px solid rgb(124,117,117);
+  
+
     position: absolute;
 }
 
@@ -1537,21 +1508,21 @@
 
 
 /* ---- this is for page 12 ---- */
-#estimatedRevenue {
-    top: 140px;
+.estimatedRevenue {
+    top: 142px;
     left: 193px;
     width: 209px;
-    border-top: 1px solid rgb(124,117,117);
-    border-bottom: 1px solid rgb(124,117,117);
+  
+
     position: absolute;
 }
 
-#numOfEmp {
-    top: 160px;
+.numOfEmp {
+    top: 161px;
     left: 193px;
     width: 209px;
-    border-top: 1px solid rgb(124,117,117);
-    border-bottom: 1px solid rgb(124,117,117);
+  
+
     position: absolute;
 }
 

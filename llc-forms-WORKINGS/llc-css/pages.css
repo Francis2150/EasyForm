@@ -29,7 +29,7 @@
 /* LTD checkbox */
 .endWithLTD {
     top: 380px;
-    left: 361.5px;
+    left: 194.5px;
     width: 14px;
     height: 14px;
     position: absolute;
@@ -38,7 +38,7 @@
 /* LIMITED checkbox */
 .endWithLIMITED {
     top: 380px;
-    left: 194.5px;
+    left: 361.5px;
     width: 14px;
     height: 14px;
     position: absolute;
@@ -425,8 +425,8 @@
 
 .D1GhanaCard {
     top: 576px;
-    left: 330px;
-    width: 238px;
+    left: 285px;
+    width: 288px;
     position: absolute;
 }
 
@@ -708,8 +708,8 @@
 
 .D2GhanaCard {
     top: 726.5px;
-    left: 330px;
-    width: 238px;
+    left: 285px;
+    width: 288px;
   
 
     position: absolute;
@@ -853,7 +853,7 @@
 }
 
 .secGhanaCard {
-    top: 594px; left: 330px; width: 238px;
+    top: 594px; left: 253px; width: 288px;
   
 
     position: absolute;
@@ -1122,7 +1122,7 @@ border-bottom: 1px solid #5b5858;
     position: absolute;
 }
 
-#SH1tittleMRS {
+.SH1tittleMRS {
     top: 143px;
     left: 315.5px;
     width: 14px;
@@ -1130,7 +1130,7 @@ border-bottom: 1px solid #5b5858;
     position: absolute;
 }
 
-#SH1tittleMISS {
+.SH1tittleMISS {
     top: 143px;
     left: 386px;
     width: 14px;
@@ -1138,7 +1138,7 @@ border-bottom: 1px solid #5b5858;
     position: absolute;
 }
 
-#SH1tittleMS {
+.SH1tittleMS {
     top: 143px;
     left: 459px;
     width: 14px;
@@ -1147,8 +1147,9 @@ border-bottom: 1px solid #5b5858;
 }
 
 .SH1tittleDR {
+    
     top: 143px;
-    left: 578px;
+    left: 529px;
     width: 14px;
     height: 14px;
     position: absolute;
@@ -1197,8 +1198,8 @@ border-bottom: 1px solid #5b5858;
 
 .SH1GhanaCard {
     top: 255px;
-    left: 330px;
-    width: 238px;
+    left: 253px;
+    width: 288px;
      position: absolute;
 }
 
@@ -1350,40 +1351,40 @@ border-bottom: 1px solid #5b5858;
     position: absolute;
 }
 
-#SH2FirstName {
-    top: 592px;
+.SH2FirstName {
+    top: 594px;
     left: 193px;
     width: 383px;
   
     position: absolute;
 }
 
-#SH2MiddleName {
-    top: 611px;
+.SH2MiddleName {
+    top: 613px;
     left: 193px;
     width: 383px;
   
     position: absolute;
 }
 
-#SH2LastName {
-    top: 629px;
+.SH2LastName {
+    top: 632px;
     left: 193px;
     width: 383px;
   
     position: absolute;
 }
 
-#SH2FormerName {
-    top: 649px;
+.SH2FormerName {
+    top: 650.5px;
     left: 193px;
     width: 383px;
   
     position: absolute;
 }
 
-#SH2TIN {
-    top: 668px;
+.SH2TIN {
+    top: 669.5px;
     left: 193px;
     width: 383px;
   
@@ -1391,10 +1392,10 @@ border-bottom: 1px solid #5b5858;
     position: absolute;
 }
 
-#SH2GhanaCard {
+.SH2GhanaCard {
     top: 689px;
-    left: 330px;
-    width: 238px;
+    left: 253px;
+    width: 288px;
   
 
     position: absolute;
@@ -1416,31 +1417,31 @@ border-bottom: 1px solid #5b5858;
     position: absolute;
 }
 
-#SH2DOB {
-    top: 743px;
+.SH2DOB {
+    top: 745px;
     left: 193px;
     width: 383px;
   
     position: absolute;
 }
 
-#SH2POB {
-    top: 763px;
+.SH2POB {
+    top: 763.9px;
     left: 193px;
     width: 383px;
   
     position: absolute;
 }
 
-#SH2Nationality {
-    top: 781px;
+.SH2Nationality {
+    top: 782.5px;
     left: 193px;
     width: 383px;
   
     position: absolute;
 }
 
-#SH2Occupation {
+.SH2Occupation {
     top: 801px;
     left: 193px;
     width: 383px;
@@ -1448,47 +1449,47 @@ border-bottom: 1px solid #5b5858;
     position: absolute;
 }
 
-#SH2DigitalAddress {
-    top: 819px;
+.SH2DigitalAddress {
+    top: 820px;
     left: 193px;
     width: 383px;
   
     position: absolute;
 }
 
-#SH2Landmark {
-    top: 837px;
+.SH2Landmark {
+    top: 839px;
     left: 193px;
     width: 208px;
   
     position: absolute;
 }
 
-#SH2housenumber {
-    top: 837px;
+.SH2housenumber {
+    top: 839px;
     left: 422px;
     width: 153px;
   
     position: absolute;
 }
 
-#SH2Town {
-    top: 855px;
+.SH2Town {
+    top: 857px;
     left: 193px;
     width: 383px;
     position: absolute;
 }
 
-#SH2NoOfShare {
-    top: 873px;
+.SH2NoOfShare {
+    top: 876px;
     left: 193px;
     width: 383px;
   
     position: absolute;
 }
 
-#SH2ShareAmount {
-    top: 895px;
+.SH2ShareAmount {
+    top: 895.5px;
     left: 258px;
     width: 193px;
   
@@ -1507,8 +1508,8 @@ border-bottom: 1px solid #5b5858;
 
 
 /* ---- this is for page 12 ---- */
-#estimatedRevenue {
-    top: 140px;
+.estimatedRevenue {
+    top: 142px;
     left: 193px;
     width: 209px;
   
@@ -1516,8 +1517,8 @@ border-bottom: 1px solid #5b5858;
     position: absolute;
 }
 
-#numOfEmp {
-    top: 160px;
+.numOfEmp {
+    top: 161px;
     left: 193px;
     width: 209px;
   

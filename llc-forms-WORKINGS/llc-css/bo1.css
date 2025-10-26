@@ -7,14 +7,14 @@
     position: absolute;
 }
 
-#companyName2 {
+.companyName2 {
     top: 261px;
     left: 35px;
     width: 350px;
     position: absolute;
 }
 
-#Country {
+.Country {
     top: 300px;
     left: 435px;
     width: 165px;
@@ -30,11 +30,10 @@
 }
 
  .benOner1{
-    top: 491px;
+    top: 492px;
     left: 35px;
     width: 345px;
-    border-top: 1px solid rgb(124,117,117);
-    border-bottom: 1px solid rgb(124,117,117);
+   
     position: absolute;
 }
 
@@ -42,28 +41,39 @@
     top: 530px;
     left: 35px;
     width: 345px;
-    border-top: 1px solid rgb(124,117,117);
-    border-bottom: 1px solid rgb(124,117,117);
+
     position: absolute;
 }
 
 .benOner3{
-    top: 602px;
+    top: 567.5px;
     left: 35px;
     width: 345px;
-    border-top: 1px solid rgb(124,117,117);
-    border-bottom: 1px solid rgb(124,117,117);
+
     position: absolute;
 }
 
 .benOner4{
-    top: 567px;
+    top: 604.5px;
     left: 35px;
     width: 345px;
-    border-top: 1px solid rgb(124,117,117);
-    border-bottom: 1px solid rgb(124,117,117);
     position: absolute;
 }
+
+.benOner5{
+    top: 642.5px;
+    left: 35px;
+    width: 345px;
+    position: absolute;
+}
+
+.benOner6{
+    top: 679.5px;
+    left: 35px;
+    width: 345px;
+    position: absolute;
+}
+
 
 .BO1M {
     top: 494px;
@@ -97,6 +107,22 @@
     position: absolute;
 }
 
+.BO5M {
+    top: 645px;
+    left: 439px;
+    width: 14px;
+    height: 14px;
+    position: absolute;
+}
+
+.BO6M {
+    top: 682px;
+    left: 439px;
+    width: 14px;
+    height: 14px;
+    position: absolute;
+}
+
 .dir1-signature {
     top: 120px;
     left: 485px;
@@ -124,7 +150,8 @@
 
 
 
-#date1 {
+.date1 {
+    border-bottom: 2px solid rgb(122, 114, 114);
     top: 1006px;
     left: 510px;
     width: 209px;
@@ -133,7 +160,8 @@
 
 /* Page 15 */
 .secFullName{
-    top: 1px;
+    border-bottom: 2px solid rgb(122, 114, 114);
+    top: -2px;
     left: 90px;
     width: 289px;
     font-size: 12px;
@@ -141,8 +169,9 @@
 }
 
 #secP {
-    top: 50px;
-    left: 185px;
+    border-bottom: 2px solid rgb(122, 114, 114);
+    top: 52.5px;
+    left: 165px;
     width: 129px;
     font-size: 12px;
     position: absolute;
@@ -157,7 +186,8 @@
     position: absolute;
 }
 
-#date2 {
+.date2 {
+    border-bottom: 2px solid rgb(122, 114, 114);
     top: 52px;
     left: 510px;
     width: 219px;

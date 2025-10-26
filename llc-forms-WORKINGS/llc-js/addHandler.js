@@ -60,21 +60,41 @@
 
   // Fill company-level information
   function fillCompany() {
-    const endWith = val("iendWith").toLowerCase();
+// Get the suffix and normalize it to lowercase
+const endWithRaw = val("iendWith") || "";
+const endWith = endWithRaw.toLowerCase();
 
-    // Company Name Logic
-    const companyNameValue = val("icompanyName") || ""; 
-    setText("companyName", companyNameValue + endWith);
+// Get and normalize company name
+let companyNameValue = val("icompanyName") || "";
+const lowerCompanyName = companyNameValue.toLowerCase().trim();
 
-    // Set the same company name for elements 2 through 9
-    const nameElementIds = ["companyName2", "companyName3", "companyName4", "companyName5", "companyName6", "companyName7", "companyName8", "companyName9", "companyName10", "companyName11", "companyName12", "companyName13"];
-    nameElementIds.forEach(id => {
-        setText(id, companyNameValue + endWith);
-    });
+// Detect if company name already includes any legal suffix
+const hasSuffix = /(limited|ltd)(\s+company)?$/.test(lowerCompanyName);
 
-    // Show a checkmark for the correct suffix overlay
-    setText("endWithLTD", endWith === "ltd" ? "\u2714" : "");
-    setText("endWithLIMITED", endWith === "limited" ? "\u2714" : "");
+// Only add suffix if it's not already part of the company name
+const formattedSuffix = !hasSuffix && endWith 
+  ? " " + endWith.toUpperCase()
+  : "";
+
+// Set the main company name
+setText("companyName", companyNameValue + formattedSuffix);
+
+// Set the same company name for elements 2 through 13
+const nameElementIds = [
+  "companyName2", "companyName3", "companyName4", "companyName5",
+  "companyName6", "companyName7", "companyName8", "companyName9",
+  "companyName10", "companyName11", "companyName12", "companyName13"
+];
+
+nameElementIds.forEach(id => {
+  setText(id, companyNameValue + formattedSuffix);
+});
+
+// Show a checkmark for the correct suffix overlay
+setText("endWithLTD", endWith === "ltd" ? "\u2714" : "");
+setText("endWithLIMITED", endWith === "limited" ? "\u2714" : "");
+
+
 
     // Constitution Type Check
     const constitution = val("iconstitutionType");
@@ -573,125 +593,104 @@ setText("equityIssuedShares",
     }
 
     // Now fill detailed views for all owners
-    for (let i = 0; i < fieldsets.length; i++) {
-      const fs = fieldsets[i];
-      const num = i + 1;
-      // Prefix for overlay elements
-      const prefix = `owner${num}`;
-      
-      if (!fs) {
-        // Clear all fields for this owner if not present
-        setText(`${prefix}FirstName`, "");
-        setText(`${prefix}Surname`, "");
-        setText(`${prefix}MiddleName`, "");
-        setText(`${prefix}DOB`, "");
-        setText(`${prefix}Nationality`, "");
-        setText(`${prefix}POB`, "");
-        setText(`${prefix}Address1`, "");
-        setText(`${prefix}Address2`, "");
-        setText(`${prefix}GPS`, "");
-        setText(`${prefix}Tin`, "");
-        setText(`${prefix}PhoneNumber`, "");
-        setText(`${prefix}Email`, "");
-        setText(`${prefix}GhNumber`, "");
-        setText(`${prefix}PlaceOfWork`, "");
-        setText(`${prefix}Directpercent`, "");
-        setText(`${prefix}votinRight`, "");
-        setText(`${prefix}Indirectpercent`, "");
-        continue;
-      }
-      
-      const idx = fs.id.match(/\d+$/)?.[0];
-      const formPrefix = `iowner${idx}_`;
-      
-      // Get all the form values
-      const fname = val(formPrefix + "fname");
-      const mname = val(formPrefix + "mname");
-      const sname = val(formPrefix + "sname");
-      const former = val(formPrefix + "former");
-      const dob = val(formPrefix + "dob");
-      const pob = val(formPrefix + "pob");
-      const nationality = val(formPrefix + "nation");
-      const address1 = val(formPrefix + "resHse") + ", " + val(formPrefix + "resStreet")+ ", " + val(formPrefix + "resCity")+ ", " + val(formPrefix + "resCountry");
-      const address2 = val("iofficeHse") + ", " + val("iofficeStreetName") + ", " + val("iofficeCity") + ", " + val(formPrefix + "resCountry");
-      const gps = val(formPrefix + "resGps");
-      const tin = val(formPrefix + "tin");
-      const phone = val(formPrefix + "contact1");
-      const email = val(formPrefix + "email");
-      const ghanaCard = val(formPrefix + "ghanaCard");
-      
-      // Determine the role of this person (director, secretary, or both)
-      const ownerFullName = [fname, mname, sname].filter(Boolean).join(" ");
-      let role = "";
-      
-      // Check if this owner is also a director
-      const directorsContainer = document.getElementById("idirectorsContainer");
-      if (directorsContainer) {
-        const directors = Array.from(directorsContainer.querySelectorAll("fieldset"));
-        for (let j = 0; j < directors.length; j++) {
-          const directorIdx = directors[j].id.match(/\d+$/)?.[0] || "1";
-          const directorPrefix = `idirector${directorIdx}_`;
-          const directorFullName = [val(directorPrefix + "fname"), val(directorPrefix + "mname"), val(directorPrefix + "sname")].filter(Boolean).join(" ");
-          
-          if (directorFullName === ownerFullName) {
-            role = "Director";
-            break;
-          }
-        }
-      }
-      
-      // Check if this owner is also the secretary
-      const secretaryFullName = [val("isecFname"), val("isecMname"), val("isecSname")].filter(Boolean).join(" ");
-      if (secretaryFullName === ownerFullName) {
-        role = role ? role + " & Secretary" : "Secretary";
-      }
-      
-      // If no role found, use the occupation
-      if (!role) {
-        role = val(formPrefix + "occupation");
-      }
-      
-      // Use the role instead of occupation in placeOfWork
-      const placeOfWork = val(formPrefix + "resCity") + ", " + role;
-      
-      const directPercent = val(formPrefix + "directPercent");
-      const votingRights = val(formPrefix + "votingRights");
-      const indirectPercent = val(formPrefix + "indirectPercent");
-      
-      // Map to overlay elements
-      setText(`${prefix}FirstName`, fname);
-      setText(`${prefix}Surname`, sname);
-      
-      // Combine middle name and former name into a single string
-      const nameParts = [mname, former].filter(Boolean);
-      const combinedMiddleAndFormer = nameParts.join(' ');
-      setText(`${prefix}MiddleName`, combinedMiddleAndFormer);
-      
-      setText(`${prefix}DOB`, dob);
-      setText(`${prefix}Nationality`, nationality);
-      setText(`${prefix}POB`, pob);
-      setText(`${prefix}Address1`, address1);
-      setText(`${prefix}Address2`, address2);
-      setText(`${prefix}GPS`, gps);
-      setText(`${prefix}Tin`, tin);
-      setText(`${prefix}PhoneNumber`, phone);
-      setText(`${prefix}Email`, email);
-      setText(`${prefix}GhNumber`, ghanaCard);
-      setText(`${prefix}PlaceOfWork`, placeOfWork);
-      setText(`${prefix}Directpercent`, directPercent);
-      setText(`${prefix}votinRight`, votingRights);
-      setText(`${prefix}votinRight2`, votingRights);
-      setText(`${prefix}Indirectpercent`, indirectPercent);
-      
-      // For director and secretary names in the declaration sections
-      if (num === 1) {
-        setText("Fbo2directorName", getDirectorFullName(1));
-        setText("Fbo2secretaryName", val("isecFname") + " " + val("isecSname"));
-      } else if (num === 2) {
-        setText("Sbo2directorName", getDirectorFullName(2) || getDirectorFullName(1));
-        setText("Sbo2secretaryName", val("isecFname") + " " + val("isecSname"));
+for (let i = 0; i < fieldsets.length; i++) {
+  const fs = fieldsets[i];
+  const num = i + 1;
+  const prefix = `owner${num}`;
+
+  if (!fs) {
+    // Clear all fields for this owner if not present
+    const fieldsToClear = [
+      "FirstName", "Surname", "MiddleName", "DOB", "Nationality", "POB",
+      "Address1", "Address2", "GPS", "Tin", "PhoneNumber", "Email",
+      "GhNumber", "PlaceOfWork", "Directpercent", "votinRight", "votinRight2", "Indirectpercent"
+    ];
+    fieldsToClear.forEach(f => setText(`${prefix}${f}`, ""));
+    continue;
+  }
+
+  const idx = fs.id.match(/\d+$/)?.[0];
+  const formPrefix = `iowner${idx}_`;
+
+  // Get form values
+  const fname = val(formPrefix + "fname");
+  const mname = val(formPrefix + "mname");
+  const sname = val(formPrefix + "sname");
+  const former = val(formPrefix + "former");
+  const dob = val(formPrefix + "dob");
+  const pob = val(formPrefix + "pob");
+  const nationality = val(formPrefix + "nation");
+  const address1 = val(formPrefix + "resHse") + ", " + val(formPrefix + "resStreet") + ", " + val(formPrefix + "resCity") + ", " + val(formPrefix + "resCountry");
+  const address2 = val("iofficeHse") + ", " + val("iofficeStreetName") + ", " + val("iofficeCity") + ", " + val(formPrefix + "resCountry");
+  const gps = val(formPrefix + "resGps");
+  const tin = val(formPrefix + "tin");
+  const phone = val(formPrefix + "contact1");
+  const email = val(formPrefix + "email");
+  const ghanaCard = val(formPrefix + "ghanaCard");
+
+  // Role logic
+  const ownerFullName = [fname, mname, sname].filter(Boolean).join(" ");
+  let role = "";
+  const directorsContainer = document.getElementById("idirectorsContainer");
+  if (directorsContainer) {
+    const directors = Array.from(directorsContainer.querySelectorAll("fieldset"));
+    for (let j = 0; j < directors.length; j++) {
+      const directorIdx = directors[j].id.match(/\d+$/)?.[0] || "1";
+      const directorPrefix = `idirector${directorIdx}_`;
+      const directorFullName = [val(directorPrefix + "fname"), val(directorPrefix + "mname"), val(directorPrefix + "sname")].filter(Boolean).join(" ");
+      if (directorFullName === ownerFullName) {
+        role = "Director";
+        break;
       }
     }
+  }
+  const secretaryFullName = [val("isecFname"), val("isecMname"), val("isecSname")].filter(Boolean).join(" ");
+  if (secretaryFullName === ownerFullName) role = role ? role + " & Secretary" : "Secretary";
+  if (!role) role = val(formPrefix + "occupation");
+
+  const placeOfWork = val(formPrefix + "resCity") + ", " + role;
+
+  // Percentages with automatic '%' handling
+  const directPercentRaw = val(formPrefix + "directPercent") || "";
+  const votingRightsRaw = val(formPrefix + "votingRights") || "";
+  const indirectPercentRaw = val(formPrefix + "indirectPercent") || "";
+
+  const appendPercent = v => v && !v.toString().includes("%") ? v + "%" : v;
+
+  const directPercent = appendPercent(directPercentRaw);
+  const votingRights = appendPercent(votingRightsRaw);
+  const indirectPercent = appendPercent(indirectPercentRaw);
+
+  // Map to overlay elements
+  setText(`${prefix}FirstName`, fname);
+  setText(`${prefix}Surname`, sname);
+  setText(`${prefix}MiddleName`, [mname, former].filter(Boolean).join(" "));
+  setText(`${prefix}DOB`, dob);
+  setText(`${prefix}Nationality`, nationality);
+  setText(`${prefix}POB`, pob);
+  setText(`${prefix}Address1`, address1);
+  setText(`${prefix}Address2`, address2);
+  setText(`${prefix}GPS`, gps);
+  setText(`${prefix}Tin`, tin);
+  setText(`${prefix}PhoneNumber`, phone);
+  setText(`${prefix}Email`, email);
+  setText(`${prefix}GhNumber`, ghanaCard);
+  setText(`${prefix}PlaceOfWork`, placeOfWork);
+  setText(`${prefix}Directpercent`, directPercent);
+  setText(`${prefix}votinRight`, votingRights);
+  setText(`${prefix}votinRight2`, votingRights);
+  setText(`${prefix}Indirectpercent`, indirectPercent);
+
+  // Director & Secretary mapping in declaration
+  if (num === 1) {
+    setText("Fbo2directorName", getDirectorFullName(1));
+    setText("Fbo2secretaryName", val("isecFname") + " " + val("isecSname"));
+  } else if (num === 2) {
+    setText("Sbo2directorName", getDirectorFullName(2) || getDirectorFullName(1));
+    setText("Sbo2secretaryName", val("isecFname") + " " + val("isecSname"));
+  }
+}
+
   }
 
   // Function to get director full name by index

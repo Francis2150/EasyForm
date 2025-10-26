@@ -249,80 +249,60 @@
     setText("directorFullName2", fullName);
     setText("directorFullName3", fullName);
   }
+function fillDirectorDeclarations() {
+  const directorsContainer = document.getElementById("idirectorsContainer");
+  if (!directorsContainer) return;
 
-  // Fill director declarations
-  function fillDirectorDeclarations() {
-    const directorsContainer = document.getElementById("idirectorsContainer");
-    if (!directorsContainer) return;
-    
-    const directors = Array.from(directorsContainer.querySelectorAll("fieldset"));
-    
-    // Handle first director declaration (page 22)
-    if (directors.length >= 1) {
-      const prefix = `idirector1_`;
-      const fname = val(prefix + "fname");
-      const mname = val(prefix + "mname");
-      const sname = val(prefix + "sname");
-      const fullName = [fname, mname, sname].filter(Boolean).join(" ");
-      
-      // Full name fields
-      setText("Ddirector1FullName1", fullName);
-      setText("Ddirector1FullName2", fullName);
-      setText("Ddirector1FullName3", fullName);
-      
-      // Address components
-      setText("Ddirector1HouseNumber", val(prefix + "resHse"));
-      setText("Ddirector1Landmark", val(prefix + "resLandmark"));
-      setText("Ddirector1StreetName", val(prefix + "resStreet"));
-      
-      // Combine city and town
-      const city = val(prefix + "resCity");
-      const town = val(prefix + "resTown");
-      setText("Ddirector1Town&City", city && town ? `${city}, ${town}` : city || town);
-      
-      // Date components - handle both YYYY-MM-DD and DD/MM/YYYY formats
-      const dob = val(prefix + "dob");
-      if (dob) {
-        const { day, month, year } = parseDate(dob);
-        setText("DayOfdeclaration", day);
-        setText("MonthOfdeclaration", month);
-        setText("YearOfdeclaration", year);
-      }
-    }
-    
-    // Handle second director declaration (page 23)
-    if (directors.length >= 2) {
-      const prefix = `idirector2_`;
-      const fname = val(prefix + "fname");
-      const mname = val(prefix + "mname");
-      const sname = val(prefix + "sname");
-      const fullName = [fname, mname, sname].filter(Boolean).join(" ");
-      
-      // Full name fields
-      setText("Ddirector2FullName1", fullName);
-      setText("Ddirector2FullName2", fullName);
-      setText("Ddirector2FullName3", fullName);
-      
-      // Address components
-      setText("Ddirector2HouseNumber", val(prefix + "resHse"));
-      setText("Ddirector2Landmark", val(prefix + "resLandmark"));
-      setText("Ddirector2StreetName", val(prefix + "resStreet"));
-      
-      // Combine city and town
-      const city = val(prefix + "resCity");
-      const town = val(prefix + "resTown");
-      setText("Ddirector2Town&City", city && town ? `${city}, ${town}` : city || town);
-      
-      // Date components - handle both YYYY-MM-DD and DD/MM/YYYY formats
-      const dob = val(prefix + "dob");
-      if (dob) {
-        const { day, month, year } = parseDate(dob);
-        setText("DayOfdeclaration2", day);
-        setText("MonthOfdeclaration2", month);
-        setText("YearOfdeclaration2", year);
-      }
-    }
+  const directors = Array.from(directorsContainer.querySelectorAll("fieldset"));
+
+  // Get today's date components
+  const today = nowDateString(); // "dd/mm/yyyy"
+  const [todayDay, todayMonth, todayYear] = today.split("/");
+
+  // Helper function to fill one director
+  function fillOneDirector(index) {
+    const prefix = `idirector${index}_`;
+    const fname = val(prefix + "fname");
+    const mname = val(prefix + "mname");
+    const sname = val(prefix + "sname");
+    const fullName = [fname, mname, sname].filter(Boolean).join(" ");
+
+    // Full name fields
+    setText(`Ddirector${index}FullName1`, fullName);
+    setText(`Ddirector${index}FullName2`, fullName);
+    setText(`Ddirector${index}FullName3`, fullName);
+
+    // Address components
+    setText(`Ddirector${index}HouseNumber`, val(prefix + "resHse"));
+    setText(`Ddirector${index}Landmark`, val(prefix + "resLandmark"));
+    setText(`Ddirector${index}StreetName`, val(prefix + "resStreet"));
+
+    // Combine city and town
+    const city = val(prefix + "resCity");
+    const town = val(prefix + "resTown");
+    setText(`Ddirector${index}Town&City`, city && town ? `${city}, ${town}` : city || town);
+
+    // Declaration date
+    setText(`DayOfdeclaration${index === 1 ? "" : index}`, todayDay);
+    setText(`MonthOfdeclaration${index === 1 ? "" : index}`, todayMonth);
+    setText(`YearOfdeclaration${index === 1 ? "" : index}`, todayYear);
   }
+
+  // Fill directors
+  for (let i = 1; i <= directors.length; i++) {
+    fillOneDirector(i);
+  }
+}
+
+// Function to get today's date as dd/mm/yyyy
+function nowDateString() {
+  const d = new Date();
+  const dd = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const yyyy = d.getFullYear();
+  return `${dd}/${mm}/${yyyy}`;
+}
+
 
   // Fill consent letters
   function fillConsentLetters() {
