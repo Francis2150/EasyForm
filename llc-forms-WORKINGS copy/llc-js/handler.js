@@ -1,4 +1,4 @@
-// handler.js
+// handler.js 
 (function() {
   // Safe helper: get element value (returns empty string if not found)
   function val(id) {
@@ -65,9 +65,9 @@
     // Company Name Logic
     const companyNameValue = val("icompanyName") || ""; 
     setText("companyName", companyNameValue + endWith);
-
-    // Set the same company name for elements 2 through 9
-    const nameElementIds = ["companyName2", "companyName3", "companyName4", "companyName5", "companyName6", "companyName7", "companyName8", "companyName9", "companyName10", "companyName11", "companyName12", "companyName13"];
+    
+    // Set the same company name for elements 2 through 8
+    const nameElementIds = ["companyName2", "companyName3", "companyName4", "companyName5", "companyName6", "companyName7", "companyName8"];
     nameElementIds.forEach(id => {
         setText(id, companyNameValue + endWith);
     });
@@ -87,23 +87,7 @@
     setText("principalActivities", val("iactivities"));
 
     // Financials
-    setText("StatedCapital", 
-  (parseFloat(val("icapital")) || 0).toLocaleString("en-US", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  })
-);
-setText("equityIssuedShares", 
-  (parseFloat(val("icapital")) || 0).toLocaleString("en-US")
-);
-    setText("equitySharesAmount", 
-  (parseFloat(val("icapital")) || 0).toLocaleString("en-US", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  })
-);
-
-
+    setText("StatedCapital", val("icapital") || "0");
     setText("estimatedRevenue", val("iestimatedRevenue"));
     setText("numOfEmp", val("inumOfEmployees"));
   }
@@ -187,9 +171,9 @@ setText("equityIssuedShares",
     }
   }
 
-  // Fill one director into overlay D1, D2, D3, etc. depending on index
+  // Fill one director into overlay D1 or D2 depending on index (1 or 2)
   function fillDirector(index) {
-    const overlayPrefix = `D${index}`;
+    const overlayPrefix = index === 1 ? "D1" : "D2";
     const formPrefix = `idirector${index}_`;
 
     // Read form fields
@@ -219,7 +203,7 @@ setText("equityIssuedShares",
     const resDistrict = val(formPrefix + "resDistrict");
     const resRegion = val(formPrefix + "resRegion");
     const resCountry = val(formPrefix + "resCountry");
-    const fullName = [fname, mname, sname, former].filter(Boolean).join(" ");
+    const fullName = [fname, mname, sname].filter(Boolean).join(" ");
 
     // Apply to overlay elements
     setText(`${overlayPrefix}FirstName`, fname);
@@ -258,17 +242,12 @@ setText("equityIssuedShares",
       setText("D2FirstName", fname);
       setText("D2signature", fullName ? `Signed: ${fullName}` : "");
       setText("D2Signature", fullName ? `Signed: ${fullName}` : "");
-    } else {
-      // For directors 3+, set signature if the element exists
-      setText(`${overlayPrefix}signature`, fullName ? `Signed: ${fullName}` : "");
     }
 
     // Update generic director name fields
     setText("FdirectorFullName", fullName);
     setText("directorFullName2", fullName);
     setText("directorFullName3", fullName);
-    setText("directorFullName4", fullName);
-    setText("directorFullName5", fullName);
   }
 
   // Fill director declarations
@@ -278,41 +257,69 @@ setText("equityIssuedShares",
     
     const directors = Array.from(directorsContainer.querySelectorAll("fieldset"));
     
-    // Handle all director declarations
-    for (let i = 1; i <= directors.length; i++) {
-      const prefix = `idirector${i}_`;
+    // Handle first director declaration (page 22)
+    if (directors.length >= 1) {
+      const prefix = `idirector1_`;
       const fname = val(prefix + "fname");
       const mname = val(prefix + "mname");
       const sname = val(prefix + "sname");
-      const former = val(prefix + "former");
-      const fullName = [fname, mname, sname, former].filter(Boolean).join(" ");
-
+      const fullName = [fname, mname, sname].filter(Boolean).join(" ");
+      
       // Full name fields
-      setText(`Ddirector${i}FullName1`, fullName);
-      setText(`Ddirector${i}FullName2`, fullName);
-      setText(`Ddirector${i}FullName3`, fullName);
+      setText("Ddirector1FullName1", fullName);
+      setText("Ddirector1FullName2", fullName);
+      setText("Ddirector1FullName3", fullName);
       
       // Address components
-      setText(`Ddirector${i}HouseNumber`, val(prefix + "resHse"));
-      setText(`Ddirector${i}Landmark`, val(prefix + "resLandmark"));
-      setText(`Ddirector${i}StreetName`, val(prefix + "resStreet"));
+      setText("Ddirector1HouseNumber", val(prefix + "resHse"));
+      setText("Ddirector1Landmark", val(prefix + "resLandmark"));
+      setText("Ddirector1StreetName", val(prefix + "resStreet"));
       
       // Combine city and town
       const city = val(prefix + "resCity");
       const town = val(prefix + "resTown");
-      setText(`Ddirector${i}Town&City`, city && town ? `${city}, ${town}` : city || town);
+      setText("Ddirector1Town&City", city && town ? `${city}, ${town}` : city || town);
       
       // Date components - handle both YYYY-MM-DD and DD/MM/YYYY formats
       const dob = val(prefix + "dob");
       if (dob) {
         const { day, month, year } = parseDate(dob);
-        const dayId = i === 1 ? "DayOfdeclaration" : `DayOfdeclaration${i}`;
-        const monthId = i === 1 ? "MonthOfdeclaration" : `MonthOfdeclaration${i}`;
-        const yearId = i === 1 ? "YearOfdeclaration" : `YearOfdeclaration${i}`;
-        
-        setText(dayId, day);
-        setText(monthId, month);
-        setText(yearId, year);
+        setText("DayOfdeclaration", day);
+        setText("MonthOfdeclaration", month);
+        setText("YearOfdeclaration", year);
+      }
+    }
+    
+    // Handle second director declaration (page 23)
+    if (directors.length >= 2) {
+      const prefix = `idirector2_`;
+      const fname = val(prefix + "fname");
+      const mname = val(prefix + "mname");
+      const sname = val(prefix + "sname");
+      const fullName = [fname, mname, sname].filter(Boolean).join(" ");
+      
+      // Full name fields
+      setText("Ddirector2FullName1", fullName);
+      setText("Ddirector2FullName2", fullName);
+      setText("Ddirector2FullName3", fullName);
+      
+      // Address components
+      setText("Ddirector2HouseNumber", val(prefix + "resHse"));
+      setText("Ddirector2Landmark", val(prefix + "resLandmark"));
+      setText("Ddirector2StreetName", val(prefix + "resStreet"));
+      
+      // Combine city and town
+      const city = val(prefix + "resCity");
+      const town = val(prefix + "resTown");
+      setText("Ddirector2Town&City", city && town ? `${city}, ${town}` : city || town);
+      
+      // Date components - handle both YYYY-MM-DD and DD/MM/YYYY formats
+      const dob = val(prefix + "dob");
+      if (dob) {
+        const { day, month, year } = parseDate(dob);
+        setText("DayOfdeclaration2", day);
+        setText("MonthOfdeclaration2", month);
+        setText("YearOfdeclaration2", year);
       }
     }
   }
@@ -329,56 +336,36 @@ setText("equityIssuedShares",
       return parts.join(", ");
     }
     
-    const directorsContainer = document.getElementById("idirectorsContainer");
-    if (!directorsContainer) return;
+    // First director consent letter (page 25)
+    const director1FullName = getDirectorFullName(1);
+    if (director1FullName) {
+      setText("LFdirectorFullName", director1FullName);
+      setText("FdirectorResidentialAddress", 
+        val("idirector1_resHse") + ", " + 
+        val("idirector1_resStreet") + ", " + 
+        val("idirector1_resCity")
+      );
+      // Use combined postal address instead of just house number
+      setText("FdirectorBoxNumber", getCombinedPostalAddress());
+      setText("FdirectorPhoneNumber", val("idirector1_contact1"));
+    }
     
-    const directors = Array.from(directorsContainer.querySelectorAll("fieldset"));
-    
-    // Handle all director consent letters
-    for (let i = 1; i <= directors.length; i++) {
-      const prefix = `idirector${i}_`;
-      const fname = val(prefix + "fname");
-      const mname = val(prefix + "mname");
-      const sname = val(prefix + "sname");
-      const former = val(prefix + "former");
-      const fullName = [fname, mname, sname, former].filter(Boolean).join(" ");
-
-      if (fullName) {
-        // Use different ID patterns for different directors
-        let fullNameId, addressId, boxId, phoneId;
-        
-        if (i === 1) {
-          fullNameId = "LFdirectorFullName";
-          addressId = "FdirectorResidentialAddress";
-          boxId = "FdirectorBoxNumber";
-          phoneId = "FdirectorPhoneNumber";
-        } else if (i === 2) {
-          fullNameId = "LSdirectorFullName";
-          addressId = "SdirectorResidentialAddress";
-          boxId = "SdirectorBoxNumber";
-          phoneId = "SdirectorPhoneNumber";
-        } else {
-          // For directors 3+, use a generic pattern
-          fullNameId = `D${i}FullName`;
-          addressId = `D${i}ResidentialAddress`;
-          boxId = `D${i}BoxNumber`;
-          phoneId = `D${i}PhoneNumber`;
-        }
-        
-        setText(fullNameId, fullName);
-        setText(addressId, 
-          val(prefix + "resHse") + ", " + 
-          val(prefix + "resStreet") + ", " + 
-          val(prefix + "resCity")
-        );
-        // Use combined postal address instead of just house number
-        setText(boxId, getCombinedPostalAddress());
-        setText(phoneId, val(prefix + "contact1"));
-      }
+    // Second director consent letter (page 26)
+    const director2FullName = getDirectorFullName(2);
+    if (director2FullName) {
+      setText("LSdirectorFullName", director2FullName);
+      setText("SdirectorResidentialAddress", 
+        val("idirector2_resHse") + ", " + 
+        val("idirector2_resStreet") + ", " + 
+        val("idirector2_resCity")
+      );
+      // Use combined postal address instead of just house number
+      setText("SdirectorBoxNumber", getCombinedPostalAddress());
+      setText("SdirectorPhoneNumber", val("idirector2_contact1"));
     }
     
     // Secretary consent letter (page 24)
-    const secretaryFullName = [val("isecFname"), val("isecMname"), val("isecSname"), val("isecFormer")].filter(Boolean).join(" ");
+    const secretaryFullName = [val("isecFname"), val("isecMname"), val("isecSname")].filter(Boolean).join(" ");
     if (secretaryFullName) {
       setText("SecfullName", secretaryFullName);
       setText("SecResidentialAddress", 
@@ -400,13 +387,12 @@ setText("equityIssuedShares",
     const fname = val(prefix + "Fname");
     const mname = val(prefix + "Mname");
     const sname = val(prefix + "Sname");
-    const former = val(prefix + "Former");
-    const fullName = [fname, mname, sname, former].filter(Boolean).join(" ");
+    const fullName = [fname, mname, sname].filter(Boolean).join(" ");
 
     setText("SecFirstName", fname);
     setText("secMiddleName", mname);
     setText("secLastName", sname);
-    setText("secFormerName", former);
+    setText("secFormerName", val(prefix + "Former"));
     setText("secTIN", val(prefix + "Tin"));
     setText("secGhanaCard", val(prefix + "GhanaCard"));
     applyTitleOverlay("sec", val(prefix + "Title"));
@@ -436,120 +422,73 @@ setText("equityIssuedShares",
     setText("secretaryFullName3", fullName);
   }
 
-  // *** UPDATED VALIDATION FUNCTION ***
-  // Shows dynamic error messages using CSS classes for all share inputs
-  function updateShareValidation(changedInput) {
-    const container = document.getElementById("isubscribersContainer");
-    if (!container) return;
-
-    // Find all share percentage inputs, including dynamic ones from Roles.js
-    const shareInputs = container.querySelectorAll('input[id*="sharePercent"], input.shareInput');
-    let totalPercent = 0;
-
-    shareInputs.forEach(input => {
-      // Only consider inputs that are visible and within a fieldset that isn't hidden
-      const fieldset = input.closest('fieldset');
-      if (fieldset && fieldset.style.display !== 'none' && input.offsetParent !== null) {
-        totalPercent += parseFloat(input.value) || 0;
-      }
-    });
-
-    // Update validation message for ALL share inputs to ensure consistency
-    shareInputs.forEach(input => {
-      const errorElementId = (input.id || input.className) + "-error";
-      let errorElement = document.getElementById(errorElementId);
-
-      if (!errorElement) {
-        errorElement = document.createElement("div");
-        errorElement.id = errorElementId;
-        errorElement.className = "share-validation-error"; // Add base class
-        // Insert after the input's parent div (e.g., .sharePercentBox)
-        const inputParent = input.closest('.sharePercentBox') || input.parentElement;
-        if (inputParent) {
-          inputParent.appendChild(errorElement);
-        }
-      }
-
-      // Remove previous state classes to reset the style
-      errorElement.classList.remove("error", "warning");
-
-      if (totalPercent > 100) {
-        const excess = (totalPercent - 100).toFixed(2);
-        errorElement.textContent = `Total exceeds 100% by ${excess}%`;
-        errorElement.classList.add("error"); // Add error class for red color
-      } else if (totalPercent < 100 && totalPercent > 0) {
-        const remaining = (100 - totalPercent).toFixed(2);
-        errorElement.textContent = `${remaining}% remaining to reach 100%`;
-        errorElement.classList.add("warning"); // Add warning class for orange color
-      } else {
-        // Total is exactly 100% or 0, the message will be hidden by the default CSS
-        errorElement.textContent = ""; // Clear text as well
-      }
-    });
-  }
-
-  // Fill subscribers into SH1, SH2, SH3, etc. overlays
+  // Fill first N subscribers into SH1/SH2 overlays (maps up to 2)
   function fillSubscribers() {
     const container = document.getElementById("isubscribersContainer");
     if (!container) return;
     const fieldsets = Array.from(container.querySelectorAll("fieldset"));
-    const statedCapital = parseFloat(val("icapital")) || 0;
 
-    fieldsets.forEach((fs, i) => {
+    for (let i = 0; i < 2; i++) {
+      const fs = fieldsets[i];
+      if (!fs) {
+        setText(`SH${i+1}FirstName`, "");   
+        setText(`SH${i+1}NoOfShare`, "");
+        setText(`SH${i+1}ShareAmount`, "");
+        continue;
+      }
+
       const idx = fs.id.match(/\d+$/)?.[0];
-      if (!idx) return;
       const prefix = `isubscriber${idx}_`;
 
-      // --- Extract values ---
       const fname = val(prefix + "fname");
       const mname = val(prefix + "mname");
       const sname = val(prefix + "sname");
+      const former = val(prefix + "former");
+      const title = val(prefix + "title");
+      const gender = val(prefix + "gender");
+      const dob = val(prefix + "dob");
+      const pob = val(prefix + "pob");
+      const nation = val(prefix + "nation");
+      const occupation = val(prefix + "occupation");
       const full = [fname, mname, sname].filter(Boolean).join(" ");
-      const sharePercentField = document.getElementById(prefix + "sharePercent");
-      const sharePercent = parseFloat(sharePercentField?.value) || 0;
+      const tin = val(prefix + "tin");
+      const gh = val(prefix + "ghanaCard");
+      const shares = val(prefix + "sharePercent") || val("isubscriberShares") || "";
+      const address = val(prefix + "resStreet") + " " + val(prefix + "resTown");
 
-      // --- Determine if validation is needed ---
-      const needsValidation = full || sharePercentField?.style.display !== "none";
-
-      if (!needsValidation || sharePercent <= 0) return; // skip calculations
-
-      // --- Calculations ---
-      const shareAmount = (sharePercent / 100) * statedCapital;
-      const noOfShare = shareAmount;
-
-      // --- Overlay mapping ---
+      // Map everything
       setText(`SH${i+1}FirstName`, fname);
-      setText(`SH${i+1}MiddleName`, val(prefix + "mname"));
-      setText(`SH${i+1}LastName`, val(prefix + "sname"));
-      setText(`SH${i+1}FormerName`, val(prefix + "former"));
-      applyTitleOverlay(`SH${i+1}`, val(prefix + "title"));
-      applyGenderOverlay(`SH${i+1}`, val(prefix + "gender"));
-      setText(`SH${i+1}DOB`, val(prefix + "dob"));
-      setText(`SH${i+1}POB`, val(prefix + "pob"));
-      setText(`SH${i+1}Nationality`, val(prefix + "nation"));
-      setText(`SH${i+1}Occupation`, val(prefix + "occupation"));
-      setText(`SH${i+1}TIN`, val(prefix + "tin"));
-      setText(`SH${i+1}GhanaCard`, val(prefix + "ghanaCard"));
-      setText(`SH${i+1}Address`, `${val(prefix + "resStreet")} ${val(prefix + "resTown")}`);
+      setText(`SH${i+1}MiddleName`, mname);
+      setText(`SH${i+1}LastName`, sname);
+      setText(`SH${i+1}FormerName`, former);
+      applyTitleOverlay(`SH${i+1}`, title);
+      applyGenderOverlay(`SH${i+1}`, gender);
+      setText(`SH${i+1}DOB`, dob);
+      setText(`SH${i+1}POB`, pob);
+      setText(`SH${i+1}Nationality`, nation);
+      setText(`SH${i+1}Occupation`, occupation);
+      setText(`SH${i+1}TIN`, tin);
+      setText(`SH${i+1}GhanaCard`, gh);
+      setText(`SH${i+1}Address`, address);
+      setText(`SH${i+1}NoOfShare`, shares);
+      setText(`SH${i+1}ShareAmount`, shares);
       setText(`SH${i+1}DigitalAddress`, val(prefix + "resGps"));
       setText(`SH${i+1}Landmark`, val(prefix + "resLandmark"));
       setText(`SH${i+1}StreetName`, val(prefix + "resStreet"));
       setText(`SH${i+1}Town`, val(prefix + "resTown"));
       setText(`SH${i+1}housenumber`, val(prefix + "resHse"));
       setText(`SH${i+1}Signature`, full ? `Signed: ${full}` : "");
-      setText(`SH${i+1}NoOfShare`, noOfShare.toLocaleString("en-US"));
-      setText(`SH${i+1}ShareAmount`, shareAmount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
-    });
+    }
   }
 
-  // Fill beneficial owners into BO1..BO4 and detailed views
+  // Fill beneficial owners into BO1..BO4 (map up to 4) and detailed views
   function fillBeneficialOwners() {
     const container = document.getElementById("iownersContainer");
     if (!container) return;
     const fieldsets = Array.from(container.querySelectorAll("fieldset"));
 
     // First, fill the list view on page 14 (LLC14.jpg)
-    for (let i = 0; i < fieldsets.length; i++) {
+    for (let i = 0; i < 4; i++) {
       const fs = fieldsets[i];
       const num = i + 1;
       if (!fs) {
@@ -572,12 +511,12 @@ setText("equityIssuedShares",
       setText(`owner${num}status`, full ? "\u2714" : "");
     }
 
-    // Now fill detailed views for all owners
-    for (let i = 0; i < fieldsets.length; i++) {
+    // Now fill detailed views for the first two owners
+    for (let i = 0; i < 2; i++) {
       const fs = fieldsets[i];
       const num = i + 1;
       // Prefix for overlay elements
-      const prefix = `owner${num}`;
+      const prefix = num === 1 ? "owner1" : "owner2";
       
       if (!fs) {
         // Clear all fields for this owner if not present
@@ -687,7 +626,7 @@ setText("equityIssuedShares",
       if (num === 1) {
         setText("Fbo2directorName", getDirectorFullName(1));
         setText("Fbo2secretaryName", val("isecFname") + " " + val("isecSname"));
-      } else if (num === 2) {
+      } else {
         setText("Sbo2directorName", getDirectorFullName(2) || getDirectorFullName(1));
         setText("Sbo2secretaryName", val("isecFname") + " " + val("isecSname"));
       }
@@ -811,20 +750,16 @@ setText("equityIssuedShares",
     fillCompany();
     fillOffice();
     
-    // Directors: map all directors to pages
+    // Directors: only map first two to pages
     const directorsContainer = document.getElementById("idirectorsContainer");
     if (directorsContainer) {
       const directors = Array.from(directorsContainer.querySelectorAll("fieldset"));
-      for (let i = 1; i <= directors.length; i++) {
-        fillDirector(i);
+      if (directors.length >= 1) fillDirector(1);
+      else {
+        // Clear D1 overlays
+        ["FirstName","MiddleName","LastName","DOB","POB","Nationality","Ocupation"].forEach(k => setText("D1" + k, ""));
       }
-      
-      // Clear overlays for directors that don't exist
-      for (let i = directors.length + 1; i <= 5; i++) { // Assuming max 5 directors
-        ["FirstName","MiddleName","LastName","DOB","POB","Nationality","Ocupation"].forEach(k => {
-          setText(`D${i}${k}`, "");
-        });
-      }
+      if (directors.length >= 2) fillDirector(2);
     }
     
     // Fill director declarations and consent letters
@@ -854,25 +789,6 @@ setText("equityIssuedShares",
       });
     }
 
-    // *** MODIFICATION: Add a helper to attach listeners to share inputs ***
-    const attachShareListeners = (contextNode = document) => {
-      // Updated selector to include dynamic inputs from Roles.js
-      const selector = 'input[id*="sharePercent"], input.shareInput';
-      contextNode.querySelectorAll(selector).forEach(input => {
-        // Avoid adding duplicate listeners by marking the element
-        if (!input.hasAttribute('data-share-listener-attached')) {
-          // This single listener will handle validation
-          input.addEventListener('input', () => {
-            updateShareValidation(input);
-          });
-          input.setAttribute('data-share-listener-attached', 'true');
-        }
-      });
-    };
-
-    // Initial attachment for any share inputs present on page load
-    attachShareListeners();
-
     // Dynamic container observers: directors, subscribers, owners
     const observeContainer = id => {
       const container = document.getElementById(id);
@@ -894,8 +810,6 @@ setText("equityIssuedShares",
                   setTimeout(updateOverlay, 40);
                 });
               });
-              // *** MODIFICATION: Attach share listeners to new nodes ***
-              attachShareListeners(node);
             }
           });
         });

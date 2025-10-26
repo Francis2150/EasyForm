@@ -155,24 +155,3 @@
     backface-visibility: hidden;    /* ✅ stops flicker */
   }
 }
-
-/* Add this CSS to your stylesheet */
-
-/* Base style for the validation message */
-.share-validation-error {
-  font-size: 0.8em;
-  margin-top: 4px;
-  display: none; /* Hidden by default */
-}
-
-/* Style for when the total exceeds 100% (ERROR) */
-.share-validation-error.error {
-  color: red !important;
-  display: block !important;
-}
-
-/* Style for when the total is less than 100% (WARNING/INFO) */
-.share-validation-error.warning {
-  color: rgb(0, 42, 255) !important;
-  display: block !important;
-}

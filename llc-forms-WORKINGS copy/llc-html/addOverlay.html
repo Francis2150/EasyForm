@@ -17,21 +17,19 @@
     <link rel="stylesheet" href="../llc-css/secondbo2.css">
     <link rel="stylesheet" href="../llc-css/statutoryDec.css">
     <link rel="stylesheet" href="../llc-css/consentLet.css">
-    <link rel="stylesheet" href="../llc-css/addPages.css">
-    <link rel="stylesheet" href="../llc-css/addSubPages.css">
     <title>LIMITED LIABILITY FORM</title>
     <style></style>
   </head>
   <body>
 <div class="button-container">
   <button class="print-btn" onclick="window.print()">Print form</button>
-  <button id="download-btn" class="clear-btn">Download</button>
+  <button id="clear-focus" class="clear-btn">Clear</button>
   <button class="clear-all" id="reset-all">Reset All</button>
   <button onclick="location.href='index.html'" class="home" id="home">index</button>
 </div>
 
 <main>
-<section class="sect1" id="sect1" style="display:none;">
+<section class="sect1">
   <h2 class="header">Company Registration Requirement</h2>
 
   <form id="icompanyForm">
@@ -214,13 +212,13 @@
 <!--output section-->
 
 <section class="sect2">
-<div class="page" >
+<div class="page">
   <img src="../llc-images/LLC1.jpg" alt="Page 1">
 
   <p class="overlay-text registeredCon" id="registeredCon"></p>
   <p class="overlay-text standardCon" id="standardCon">&#10004;</p>
-  <p class="overlay-text companyName1" id="companyName"></p>
-  
+  <p class="overlay-text companyName" id="companyName"></p>
+   <p class="overlay-text trial" id="D5FirstName">for trial</p>
   <p class="overlay-text endWithLTD" id="endWithLTD"></p>
   <p class="overlay-text endWithLIMITED" id="endWithLIMITED"></p>
   <p class="overlay-text presentedBy" id="presentedBy"></p>
@@ -228,7 +226,7 @@
   <p class="overlay-text principalActivities" id="principalActivities"></p>
 </div>
 
-   <div class="page" >
+   <div class="page">
   <img src="../llc-images/LLC2.jpg" alt="Page 2">
   <p class="overlay-text officedigital-address" id="officedigital-address">office gps address</p>
   <p class="overlay-text officeLandmark" id="officeLandmark">Office Landmark</p>
@@ -254,7 +252,7 @@
   <p class="overlay-text OfficeContactTwo" id="OfficeContactTwo">Contact(2)</p>
 </div>
 
-<div class="page"  >
+<div class="page">
   <img src="../llc-images/LLC3.jpg" alt="Page 3">
   <p class="overlay-text Officeemail" id="Officeemail">Office Email address</p>
   <p class="overlay-text chk1" id="chk1">&#10004;</p>
@@ -275,7 +273,7 @@
   <p class="overlay-text D1DOB" id="D1DOB">D 1 Date of Birth</p>
   <p class="overlay-text D1POB" id="D1POB">D 1 Place of Birth</p>
   <p class="overlay-text D1Nationality" id="D1Nationality">D 1 Nationality</p>
-  <p class="overlay-text D1Occupation" id="D1Ocupation">D 1 Occupation</p>
+  <p class="overlay-text D1Ocupation" id="D1Ocupation">D 1 Occupation</p>
   <p class="overlay-text D1PhoneNO1" id="D1PhoneNO1">D 1 Phone No. 1</p>
   <p class="overlay-text D1PhoneNO2" id="D1PhoneNO2">D 1 Phone No. 2</p>
   <p class="overlay-text D1Email" id="D1Email">D 1 Email address</p>
@@ -292,7 +290,7 @@
   <p class="overlay-text D1Country" id="D1Country">D 1 country</p>
   <p class="overlay-text sameaabove" id="sameaabove">same as above</p>
 </div>
-<div class="page"  >
+<div class="page">
   <img src="../llc-images/LLC4.jpg" alt="Page 4">
  <!-- <p class="overlay-text signature DOne-signature D1signature" id="D1signature"></p>-->
   <p class="overlay-text chk1-2" id="chk1-2">&#10004;</p>
@@ -330,8 +328,7 @@
   <p class="overlay-text D2Country" id="D2Country">D 2 country</p>
 </div>
 
-
-<div class="page" >
+<div class="page">
   <img src="../llc-images/LLC5.jpg" alt="Page 5">
   <p class="overlay-text sameasabov" id="sameasabov">same as above</p>
   <!--<p class="overlay-text signature DTwo-signature D2Signature" id="D2Signature"></p>-->
@@ -372,44 +369,36 @@
   <p class="overlay-text secRegion" id="secRegion">sec Region</p>
 </div>
 
-  <div class="page" >
+  <div class="page">
   <img src="../llc-images/LLC6.jpg" alt="Page 6">
   <p class="overlay-text secCountry" id="secCountry">sec Country</p>
  <!-- <p class="overlay-text signature sec-signature secSignature" id="secSignature"></p>-->
 </div>
 
-<div class="page" >
+<div class="page">
   <img src="../llc-images/LLC7.jpg" alt="Page 7">
   <p class="overlay-text static AuditorTIN" id="AuditorTIN">C0002435365</p>
   <p class="overlay-text static AuditorName" id="AuditorName">EDDIE NIKOI ACCOUNTING <br>CONSULTANCY</p>
-  <p class="overlay-text static auditorGPS" id="auditorGPS">GA-157-2770</p>
-  <p class="overlay-text static auditorPOBOX" id="auditorPOBOX">P.O.BOX OS 51 <br>OSU-ACCRA</p>
-  <p class="overlay-text static auditorHouseNumber" id="auditorHouseNumber">DZORWULU ANEX, <br>H/NO. C617/14, <br>last chance area</p>
-  <p class="overlay-text static auditorStreetName" id="auditorStreetName">TETTEH KWEI STREET</p>
-  <p class="overlay-text static auditorCity" id="auditorCity">ACCRA</p>
-  <p class="overlay-text static auditorDistrict" id="auditorDistrict">Ayawaso West Municipal District</p>
-  <p class="overlay-text static auditorRegion" id="auditorRegion">GREATER ACCRA</p>
-  <p class="overlay-text static auditorMobileNumber" id="auditorMobileNumber">0246356568</p>
-  <p class="overlay-text static auditorOfficeNumber" id="auditorOfficeNumber">(233-302) 783403</p>
+  <p class="overlay-text static GPSAddress" id="GPSAddress">GA-157-2770</p>
+  <p class="overlay-text static AuditorAddress" id="AuditorAddress">P.O.BOX OS 51 <br>OSU-ACCRA</p>
+  <p class="overlay-text static HouseNumber" id="HouseNumber">DZORWULU ANEX, <br>H/NO. C617/14, <br>last chance area</p>
+  <p class="overlay-text static StreetName" id="StreetName">TETTEH KWEI STREET</p>
+  <p class="overlay-text static City" id="City">ACCRA</p>
+  <p class="overlay-text static District" id="District">Ayawaso West Municipal District</p>
+  <p class="overlay-text static Region" id="Region">GREATER ACCRA</p>
+  <p class="overlay-text static MobileNumber" id="MobileNumber">0246356568</p>
+  <p class="overlay-text static OfficeNumber" id="OfficeNumber">(233-302) 783403</p>
   <p class="overlay-text static authorisedShares" id="authorisedShares">1,000,000,000</p>
-  <p class="overlay-text StatedCapital" id="StatedCapital"></p>
-
-  <p class="overlay-text equityAuthorisedShares" id="equityAuthorisedShares">1,000,000,000</p>
-
-  <p class="overlay-text equityIssuedShares" id="equityIssuedShares"></p>
-
-  <p class="overlay-text equitySharesAmount" id="equitySharesAmount"></p>
+  <p class="overlay-text StatedCapital" id="StatedCapital">10,000.00</p>
 </div>
 
-
-
-<div class="page" >
+<div class="page">
   <img src="../llc-images/LLC8.jpg" alt="Page 8">
-  <p class="overlay-text SH1tittleMR" id="SH1tittleMR"></p>
-  <p class="overlay-text SH1tittleMRS" id="SH1tittleMRS"></p>
-  <p class="overlay-text SH1tittleMISS" id="SH1tittleMISS"></p>
-  <p class="overlay-text SH1tittleMS" id="SH1tittleMS"></p>
-  <p class="overlay-text SH1tittleDR" id="SH1tittleDR"></p>
+  <p class="overlay-text SH1tittleMR" id="SH1tittleMR">1</p>
+  <p class="overlay-text SH1tittleMRS" id="SH1tittleMRS">2</p>
+  <p class="overlay-text SH1tittleMISS" id="SH1tittleMISS">3</p>
+  <p class="overlay-text SH1tittleMS" id="SH1tittleMS">4</p>
+  <p class="overlay-text SH1tittleDR" id="SH1tittleDR">5</p>
   <p class="overlay-text SH1FirstName" id="SH1FirstName">SH1 First Name</p>
   <p class="overlay-text SH1MiddleName" id="SH1MiddleName">SH1 Middle Name</p>
   <p class="overlay-text SH1LastName" id="SH1LastName">SH1 Last Name</p>
@@ -456,31 +445,31 @@
  <!--- <p class="overlay-text signature sh2-signature SH2Signature" id="SH2Signature"></p>-->
 </div>
 
-  <div class="page" >
+  <div class="page">
   <img src="../llc-images/LLC9.jpg" alt="Page 9">
 </div>
 
-<div class="page" >
+<div class="page">
   <img src="../llc-images/LLC10.jpg" alt="Page 10">
 </div>
 
-<div class="page" >
+<div class="page">
   <img src="../llc-images/LLC11.jpg" alt="Page 11">
 </div>
 
-<div class="page" >
+<div class="page">
   <img src="../llc-images/LLC12.jpg" alt="Page 12">
   <p class="overlay-text estimatedRevenue" id="estimatedRevenue"></p>
   <p class="overlay-text numOfEmp" id="numOfEmp"></p>
   <p class="overlay-text checkmark" id="checkmark">&#10004;</p>
 </div>
 
-<div class="page" >
+<div class="page">
   <img src="../llc-images/LLC13.jpg" alt="Page 13">
 </div>
 
 <!--bo1, this contains the list of all beneficial Owners-->
-<div class="page" >
+<div class="page">
   <img src="../llc-images/LLC14.jpg" alt="Page 14">
   <p class="overlay-text checkmark1">&#10004;</p>
   <p class="overlay-text companyName" id="companyName2"></p>
@@ -501,7 +490,7 @@
   <p class="overlay-text date" id="date1"></p>
 </div>
 
-<div class="page" >
+<div class="page">
   <img src="../llc-images/LLC15.jpg" alt="Page 15">
   <p class="overlay-text secFullName" id="secretaryFullName"></p>
   <p class="overlay-text static secP" id="secP">secretary</p>
@@ -510,7 +499,7 @@
 </div>
 
 <!--1st bo2, this contains infomatiion of beneficial owner1-->
-<div class="page Owner1" >
+<div class="page">
   <img src="../llc-images/LLC16.jpg" alt="Page 16">
   <p class="overlay-text checkmark-1">&#10004;</p>
   <p class="overlay-text companyName" id="companyName3"></p>
@@ -535,7 +524,7 @@
   <p class="overlay-text checkmark-2">&#10004;</p>
 </div>
 
-<div class="page Owner1" >
+<div class="page">
   <img src="../llc-images/LLC17.jpg" alt="Page 17">
   <p class="overlay-text checkmark-3">&#10004;</p>
   <p class="overlay-text Fbo2Directpercent" id="owner1votinRight"></p>
@@ -554,12 +543,12 @@
   <p class="overlay-text static static-5">secretary</p>
   <p class="overlay-text date5" id="date5"></p>
 </div>
-<div class="page Owner1" >
+<div class="page">
   <img src="../llc-images/LLC18.jpg" alt="Page 18">
 </div>
 
 <!--2nd bo2, this contains infomatiion of beneficial owner2-->
-<div class="page Owner2" >
+<div class="page">
   <img src="../llc-images/LLC19.jpg" alt="Page 19">
   <p class="overlay-text checkmark-8">&#10004;</p>
   <p class="overlay-text companyName4" id="companyName4"></p>
@@ -584,7 +573,7 @@
   <p class="overlay-text checkmark-9">&#10004;</p>
 </div>
 
-<div class="page Owner2" >
+<div class="page">
   <img src="../llc-images/LLC20.jpg" alt="Page 20">
   <p class="overlay-text checkmark-10">&#10004;</p>
   <p class="overlay-text Sbo2Directpercent" id="owner2votinRight"></p>
@@ -604,14 +593,11 @@
   <p class="overlay-text date8" id="date8"></p>
 </div>
 
-<div class="page Owner2" >
+<div class="page">
   <img src="../llc-images/LLC21.jpg" alt="Page 21">
 </div>
-
-
-
 <!--director 1 declaration-->
-<div class="page D1-declaration" >
+<div class="page">
   <img src="../llc-images/LLC22.jpg" alt="Page 22">
   <p class="overlay-text FdirectorFullName" id="Ddirector1FullName1"></p>
   <p class="overlay-text FdirectorFullName2" id="Ddirector1FullName2"></p>
@@ -627,7 +613,7 @@
  <!----<p class="overlay-text signature FdirectorSignature" id="FdirectorSignature"></p>-->
 </div>
 <!--director2 declaration-->
-<div class="page D2-declaration" >
+<div class="page">
   <img src="../llc-images/LLC22.jpg" alt="Page 22">
   <p class="overlay-text SdirectorFullName" id="Ddirector2FullName1"></p>
   <p class="overlay-text SdirectorFullName2" id="Ddirector2FullName2"></p>
@@ -642,10 +628,8 @@
   <p class="overlay-text SdirectorFullName3" id="Ddirector2FullName3"></p>
    <!---<p class="overlay-text signature SdirectorSignature" id="SdirectorSignature"></p>-->
 </div>
-
-
 <!--secretary consent letter-->
-<div class="page secretary-consent" >
+<div class="page">
   <img src="../llc-images/LLC24.jpg" alt="Page 24">
   <p class="overlay-text SecompanyName" id="companyName5"></p>
   <p class="overlay-text SecfullName" id="SecfullName"></p>
@@ -657,7 +641,7 @@
   <p class="overlay-text date9" id="date9"></p>
 </div>
 <!--director 1 consent letter-->
-<div class="page" >
+<div class="page">
   <img src="../llc-images/LLC25.jpg" alt="Page 25">
   <p class="overlay-text FdirectorCompanyName" id="companyName6"></p>
   <p class="overlay-text LFdirectorFullName" id="LFdirectorFullName"></p>
@@ -668,7 +652,7 @@
   <p class="overlay-text date10" id="date10"></p>
 </div>
 <!--director2 consent letter-->
-<div class="page" >
+<div class="page">
   <img src="../llc-images/LLC25.jpg" alt="Page 25">
   <p class="overlay-text SdirectorCompanyName" id="companyName7"></p>
   <p class="overlay-text LSdirectorFullName" id="LSdirectorFullName"></p>
@@ -678,15 +662,8 @@
   <!--<p class="overlay-text signature LSdirectorSignature" id="LSdirectorSignature"></p>-->
   <p class="overlay-text date11" id="date11"></p>
 </div>
-
-
-
-
 </section>
-
-
 </main>
-
 
     <script src="../llc-js/editable.js"></script>
    
@@ -703,9 +680,6 @@
 <script src="../llc-js/secContrl.js"></script>
 
 <script src="../llc-js/addHandler.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
-<script src="../llc-js/download.js"></script>
 
 
   </body>

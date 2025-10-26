@@ -434,18 +434,17 @@
           wrapper.querySelector(".votingRightsBox")?.classList.remove("hidden");
         }
       }
-// Don't auto-check secretary for new directors — SecretaryManager controls that.
-// Just leave it unchecked by default. If a link exists, handle that specifically.
-const linkedTag = "linkedFromDirector-" + directorFs.id;
-const secretaryLinked = document.querySelector(`#isecContainer fieldset[data-link="${linkedTag}"]`);
-if (secretaryLinked) {
-  const cb = wrapper.querySelector('.roleCheck[data-role="secretary"]');
-  if (cb) {
-    cb.checked = true;
-    wrapper.querySelector(".qualificationBox")?.classList.remove("hidden");
-  }
-}
 
+      // secretary: if secretary fields match (single or multiple), mark checkbox (best-effort)
+      // Here we check if any isec* input has value
+      const isecHasValue = Array.from(document.querySelectorAll(`[id^="isec"]`)).some(el => !!el.value);
+      if (isecHasValue) {
+        const cb = wrapper.querySelector('.roleCheck[data-role="secretary"]');
+        if (cb) {
+          cb.checked = true;
+          wrapper.querySelector(".qualificationBox")?.classList.remove("hidden");
+        }
+      }
     },
 
     exampleHelper() {
