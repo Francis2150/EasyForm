@@ -277,31 +277,82 @@ function createOwnerBlock(index) {
   `;
 
   const removeBtn = makeRemoveButton('Remove Owner');
-  removeBtn.addEventListener('click', () => {
-    fieldset.remove();
-    renumberFieldsets('iownersContainer', 'iowner', 'Beneficial Owner');
-  });
-  fieldset.appendChild(removeBtn);
-  return fieldset;
-}  addOwnerBtn.addEventListener('click', () => {
-    const next = ownersContainer.querySelectorAll('fieldset').length + 1;
-    ownersContainer.appendChild(createOwnerBlock(next));
-    renumberFieldsets('iownersContainer', 'iowner', 'Beneficial Owner');
-  });
+removeBtn.addEventListener('click', () => {
+  fieldset.remove();
+  renumberFieldsets('iownersContainer', 'iowner', 'Beneficial Owner');
+});
+fieldset.appendChild(removeBtn);
 
-  if (!ownersContainer.querySelector('fieldset')) {
-    ownersContainer.appendChild(createOwnerBlock(1));
+// ✅ Add class 'cell' to all input fields within this owner block
+fieldset.querySelectorAll('input').forEach(input => input.classList.add('cell'));
+
+return fieldset;
+}
+
+addOwnerBtn.addEventListener('click', () => {
+  const next = ownersContainer.querySelectorAll('fieldset').length + 1;
+  ownersContainer.appendChild(createOwnerBlock(next));
+  renumberFieldsets('iownersContainer', 'iowner', 'Beneficial Owner');
+});
+
+if (!ownersContainer.querySelector('fieldset')) {
+  ownersContainer.appendChild(createOwnerBlock(1));
+}
+
+// ✅ After all sections are initialized
+renumberFieldsets('idirectorsContainer', 'idirector', 'Director');
+renumberFieldsets('isubscribersContainer', 'isubscriber', 'Subscriber');
+renumberFieldsets('iownersContainer', 'iowner', 'Beneficial Owner');
+
+// ✅ Attach 'cell' class to all existing input fields on load
+document.querySelectorAll('input').forEach(input => {
+  input.classList.add('cell');
+});
+});
+
+document.addEventListener('paste', function (event) {
+  const activeElement = document.activeElement;
+
+  // Only work when the user is inside an input
+  if (activeElement && activeElement.tagName === 'INPUT') {
+    event.preventDefault();
+
+    // Get pasted text
+    const pasteData = (event.clipboardData || window.clipboardData).getData('text');
+
+    // Split by tab, comma, or newline (handles Excel/Sheets/CSV copy)
+    const values = pasteData
+      .split(/\t|,|\n/)
+      .map(v => v.trim())
+      .filter(v => v !== '');
+
+    // Get ALL visible, enabled inputs in document order
+    const inputs = Array.from(document.querySelectorAll('input:not([disabled]):not([hidden])'));
+
+    // Find the index of the currently focused input
+    const startIndex = inputs.indexOf(activeElement);
+
+    // Fill each subsequent field with the pasted values
+    for (let i = 0; i < values.length; i++) {
+      const nextInput = inputs[startIndex + i];
+      if (nextInput) {
+        // Convert if input is numeric
+        if (nextInput.type === 'number' && !isNaN(values[i])) {
+          nextInput.value = parseFloat(values[i]);
+        } else {
+          nextInput.value = values[i];
+        }
+      }
+    }
   }
-    // Call renumberFieldsets at end of load:
-    renumberFieldsets('idirectorsContainer', 'idirector', 'Director');
-    renumberFieldsets('isubscribersContainer', 'isubscriber', 'Subscriber');
-    renumberFieldsets('iownersContainer', 'iowner', 'Beneficial Owner');
-  });
+});
 
-  // Register module globally for cross-script access
-  App.register("Structure", Structure);
+
+
+
+// Register module globally for cross-script access
+App.register("Structure", Structure);
 })();
-
 
 
 (function() {

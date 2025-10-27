@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Company Data Collection Form</title>
+  <link rel="stylesheet" href="data.css">
+</head>
+<body>
+  <div class="container">
+    <h2>Company Data Collection Form</h2>
+
+    <div class="form-container">
+      <form id="mainForm">
+
+        <!-- 1. Company Information -->
+        <fieldset id="companyInfo">
+          <legend>Company Information</legend>
+          <div class="form-group"><label>Company Name</label><input name="Company Name" required></div>
+        
+          <div class="form-group"><label>Presented By</label><input name="Presented By" required></div>
+          <div class="form-group"><label>Presenter TIN</label><input name="Presenter TIN" required></div>
+          <div class="form-group"><label>Activities</label><input name="Activities"></div>
+          <div class="form-group"><label>Stated Capital</label><input type="number" name="Stated Capital"></div>
+          <div class="form-group"><label>Estimated Revenue</label><input type="number" name="Estimated Revenue"></div>
+          <div class="form-group"><label>Number of Employees</label><input type="number" name="Number of Employees"></div>
+        </fieldset>
+
+        <!-- 2. Office Details -->
+        <fieldset id="officeDetails">
+          <legend>Office Details</legend>
+          <div class="form-group"><label>GPS Address</label><input name="GPS Address"></div>
+          <div class="form-group"><label>Landmark</label><input name="Landmark"></div>
+          <div class="form-group"><label>Building No.</label><input name="Building No."></div>
+          <div class="form-group"><label>Town</label><input name="Town"></div>
+          <div class="form-group"><label>Street Name</label><input name="Street Name"></div>
+          <div class="form-group"><label>City</label><input name="City"></div>
+          <div class="form-group"><label>District</label><input name="District"></div>
+          <div class="form-group"><label>Region</label><input name="Region"></div>
+
+          <div class="form-group"><label>Postal Number</label><input name="Postal Number"></div>
+          <div class="form-group"><label>Postal Town</label><input name="Postal Town"></div>
+          <div class="form-group"><label>Postal Region</label><input name="Postal Region"></div>
+          <div class="form-group"><label>Contact 1</label><input name="Contact 1"></div>
+          <div class="form-group"><label>Contact 2</label><input name="Contact 2"></div>
+          <div class="form-group"><label>Email</label><input name="Email" type="email"></div>
+        </fieldset>
+
+        <!-- 3. Directors -->
+        <fieldset id="directors">
+          <legend>Directors</legend>
+          <div id="directorsContainer">
+            <div class="dynamic-section">
+              <h4>Director 1</h4>
+              <div class="form-group"><label>Voting Rights (%)</label><input type="number" name="Voting Rights" min="0" max="100"></div>
+              <div class="two-column">
+                <div class="form-group"><label>Title</label><input name="Title" type="text"></div>
+                <div class="form-group"><label>First Name</label><input name="First Name"></div>
+              </div>
+              <div class="two-column">
+                <div class="form-group"><label>Middle Name</label><input name="Middle Name"></div>
+                <div class="form-group"><label>Surname</label><input name="Surname"></div>
+              </div>
+              <div class="form-group"><label>Former Name</label><input name="Former Name"></div>
+              <div class="two-column">
+                <div class="form-group"><label>Gender</label><input name="Gender" type="text"></div>
+                <div class="form-group"><label>Date of Birth</label><input name="Date of Birth" type="text"></div>
+              </div>
+              <div class="two-column">
+                <div class="form-group"><label>Place of Birth</label><input name="Place of Birth"></div>
+                <div class="form-group"><label>Nationality</label><input name="Nationality" type="text"></div>
+              </div>
+              <div class="form-group"><label>Occupation</label><input name="Occupation"></div>
+              <div class="two-column">
+                <div class="form-group"><label>Contact 1</label><input name="Contact 1"></div>
+                <div class="form-group"><label>Contact 2</label><input name="Contact 2"></div>
+              </div>
+              <div class="form-group"><label>Email</label><input name="Email" type="email"></div>
+              <div class="two-column">
+                <div class="form-group"><label>TIN</label><input name="TIN"></div>
+                <div class="form-group"><label>Ghana Card</label><input name="Ghana Card"></div>
+              </div>
+              <div class="address-group">
+                <h5>Residential Address</h5>
+                <div class="two-column">
+                  <div class="form-group"><label>GPS</label><input name="GPS"></div>
+                  <div class="form-group"><label>House No.</label><input name="House No."></div>
+                </div>
+                <div class="form-group"><label>Landmark</label><input name="Landmark"></div>
+                <div class="form-group"><label>Street</label><input name="Street"></div>
+                <div class="two-column">
+                  <div class="form-group"><label>City</label><input name="City"></div>
+                  <div class="form-group"><label>Town</label><input name="Town"></div>
+                </div>
+                <div class="two-column">
+                  <div class="form-group"><label>District</label><input name="District"></div>
+                  <div class="form-group"><label>Region</label><input name="Region"></div>
+                </div>
+                <div class="form-group"><label>Country</label><input name="Country"></div>
+              </div>
+            </div>
+          </div>
+          <button type="button" class="btn-add" onclick="addDirector()">Add Director</button>
+        </fieldset>
+
+        <!-- 4. Secretary Details -->
+        <fieldset id="secretaryDetails">
+          <legend>Secretary Details</legend>
+          <div class="form-group"><label>Qualification</label><input name="Qualification"></div>
+          <div class="two-column">
+            <div class="form-group"><label>Title</label><input name="Title" type="text"></div>
+            <div class="form-group"><label>First Name</label><input name="First Name"></div>
+          </div>
+          <div class="two-column">
+            <div class="form-group"><label>Middle Name</label><input name="Middle Name"></div>
+            <div class="form-group"><label>Surname</label><input name="Surname"></div>
+          </div>
+          <div class="form-group"><label>Former Name</label><input name="Former Name"></div>
+          <div class="two-column">
+            <div class="form-group"><label>Gender</label><input name="Gender" type="text"></div>
+            <div class="form-group"><label>Date of Birth</label><input name="Date of Birth" type="text"></div>
+          </div>
+          <div class="two-column">
+            <div class="form-group"><label>Place of Birth</label><input name="Place of Birth"></div>
+            <div class="form-group"><label>Nationality</label><input name="Nationality" type="text"></div>
+          </div>
+          <div class="form-group"><label>Occupation</label><input name="Occupation"></div>
+          <div class="two-column">
+            <div class="form-group"><label>Contact 1</label><input name="Contact 1"></div>
+            <div class="form-group"><label>Contact 2</label><input name="Contact 2"></div>
+          </div>
+          <div class="form-group"><label>Email</label><input name="Email" type="email"></div>
+          <div class="two-column">
+            <div class="form-group"><label>TIN</label><input name="TIN"></div>
+            <div class="form-group"><label>Ghana Card</label><input name="Ghana Card"></div>
+          </div>
+          <div class="address-group">
+            <h5>Residential Address</h5>
+            <div class="two-column">
+              <div class="form-group"><label>GPS</label><input name="GPS"></div>
+              <div class="form-group"><label>House No.</label><input name="House No."></div>
+            </div>
+            <div class="form-group"><label>Landmark</label><input name="Landmark"></div>
+            <div class="form-group"><label>Street</label><input name="Street"></div>
+            <div class="two-column">
+              <div class="form-group"><label>City</label><input name="City"></div>
+              <div class="form-group"><label>Town</label><input name="Town"></div>
+            </div>
+            <div class="two-column">
+              <div class="form-group"><label>District</label><input name="District"></div>
+              <div class="form-group"><label>Region</label><input name="Region"></div>
+            </div>
+            <div class="form-group"><label>Country</label><input name="Country"></div>
+          </div>
+        </fieldset>
+
+        <!-- 5. Subscribers -->
+        <fieldset id="subscribers">
+          <legend>Subscribers</legend>
+          <div id="subscribersContainer">
+            <div class="dynamic-section">
+              <h4>Subscriber 1</h4>
+              <div class="two-column">
+                <div class="form-group"><label>Title</label><input name="Title" type="text"></div>
+                <div class="form-group"><label>First Name</label><input name="First Name"></div>
+              </div>
+              <div class="two-column">
+                <div class="form-group"><label>Middle Name</label><input name="Middle Name"></div>
+                <div class="form-group"><label>Surname</label><input name="Surname"></div>
+              </div>
+              <div class="form-group"><label>Former Name</label><input name="Former Name"></div>
+              <div class="two-column">
+                <div class="form-group"><label>Gender</label><input name="Gender" type="text"></div>
+                <div class="form-group"><label>Date of Birth</label><input name="Date of Birth" type="text"></div>
+              </div>
+              <div class="two-column">
+                <div class="form-group"><label>Place of Birth</label><input name="Place of Birth"></div>
+                <div class="form-group"><label>Nationality</label><input name="Nationality" type="text"></div>
+              </div>
+              <div class="form-group"><label>Occupation</label><input name="Occupation"></div>
+              <div class="two-column">
+                <div class="form-group"><label>Contact 1</label><input name="Contact 1"></div>
+                <div class="form-group"><label>Contact 2</label><input name="Contact 2"></div>
+              </div>
+              <div class="form-group"><label>Email</label><input name="Email" type="email"></div>
+              <div class="two-column">
+                <div class="form-group"><label>TIN</label><input name="TIN"></div>
+                <div class="form-group"><label>Ghana Card</label><input name="Ghana Card"></div>
+              </div>
+              <div class="form-group"><label>Share Percent</label><input type="number" name="Share Percent" min="0" max="100"></div>
+              <div class="address-group">
+                <h5>Residential Address</h5>
+                <div class="two-column">
+                  <div class="form-group"><label>GPS</label><input name="GPS"></div>
+                  <div class="form-group"><label>House No.</label><input name="House No."></div>
+                </div>
+                <div class="form-group"><label>Landmark</label><input name="Landmark"></div>
+                <div class="form-group"><label>Street</label><input name="Street"></div>
+                <div class="two-column">
+                  <div class="form-group"><label>City</label><input name="City"></div>
+                  <div class="form-group"><label>Town</label><input name="Town"></div>
+                </div>
+                <div class="two-column">
+                  <div class="form-group"><label>District</label><input name="District"></div>
+                  <div class="form-group"><label>Region</label><input name="Region"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button type="button" class="btn-add" onclick="addSubscriber()">Add Subscriber</button>
+        </fieldset>
+
+        <button type="submit">Submit Form</button>
+      </form>
+    </div>
+
+    <!-- Where the structured output appears -->
+    <div id="outputContainer" class="section-output"></div>
+  </div>
+
+  <!-- Notification element -->
+  <div id="notification" class="notification"></div>
+
+<script>
+let directorCount = 1;
+let subscriberCount = 1;
+
+function addDirector() {
+  directorCount++;
+  const container = document.getElementById('directorsContainer');
+  const newDirector = document.createElement('div');
+  newDirector.className = 'dynamic-section';
+  newDirector.innerHTML = `
+    <button type="button" class="remove-btn" onclick="removeEntry(this)">×</button>
+    <h4>Director ${directorCount}</h4>
+    <div class="form-group"><label>Voting Rights (%)</label><input type="number" name="Voting Rights" min="0" max="100"></div>
+    <div class="two-column">
+      <div class="form-group"><label>Title</label><input name="Title" type="text"></div>
+      <div class="form-group"><label>First Name</label><input name="First Name"></div>
+    </div>
+    <div class="two-column">
+      <div class="form-group"><label>Middle Name</label><input name="Middle Name"></div>
+      <div class="form-group"><label>Surname</label><input name="Surname"></div>
+    </div>
+    <div class="form-group"><label>Former Name</label><input name="Former Name"></div>
+    <div class="two-column">
+      <div class="form-group"><label>Gender</label><input name="Gender" type="text"></div>
+      <div class="form-group"><label>Date of Birth</label><input name="Date of Birth" type="text"></div>
+    </div>
+    <div class="two-column">
+      <div class="form-group"><label>Place of Birth</label><input name="Place of Birth"></div>
+      <div class="form-group"><label>Nationality</label><input name="Nationality" type="text"></div>
+    </div>
+    <div class="form-group"><label>Occupation</label><input name="Occupation"></div>
+    <div class="two-column">
+      <div class="form-group"><label>Contact 1</label><input name="Contact 1"></div>
+      <div class="form-group"><label>Contact 2</label><input name="Contact 2"></div>
+    </div>
+    <div class="form-group"><label>Email</label><input name="Email" type="email"></div>
+    <div class="two-column">
+      <div class="form-group"><label>TIN</label><input name="TIN"></div>
+      <div class="form-group"><label>Ghana Card</label><input name="Ghana Card"></div>
+    </div>
+    <div class="address-group">
+      <h5>Residential Address</h5>
+      <div class="two-column">
+        <div class="form-group"><label>GPS</label><input name="GPS"></div>
+        <div class="form-group"><label>House No.</label><input name="House No."></div>
+      </div>
+      <div class="form-group"><label>Landmark</label><input name="Landmark"></div>
+      <div class="form-group"><label>Street</label><input name="Street"></div>
+      <div class="two-column">
+        <div class="form-group"><label>City</label><input name="City"></div>
+        <div class="form-group"><label>Town</label><input name="Town"></div>
+      </div>
+      <div class="two-column">
+        <div class="form-group"><label>District</label><input name="District"></div>
+        <div class="form-group"><label>Region</label><input name="Region"></div>
+      </div>
+      <div class="form-group"><label>Country</label><input name="Country"></div>
+    </div>
+  `;
+  container.appendChild(newDirector);
+}
+
+function addSubscriber() {
+  subscriberCount++;
+  const container = document.getElementById('subscribersContainer');
+  const newSubscriber = document.createElement('div');
+  newSubscriber.className = 'dynamic-section';
+  newSubscriber.innerHTML = `
+    <button type="button" class="remove-btn" onclick="removeEntry(this)">×</button>
+    <h4>Subscriber ${subscriberCount}</h4>
+    <div class="two-column">
+      <div class="form-group"><label>Title</label><input name="Title" type="text"></div>
+      <div class="form-group"><label>First Name</label><input name="First Name"></div>
+    </div>
+    <div class="two-column">
+      <div class="form-group"><label>Middle Name</label><input name="Middle Name"></div>
+      <div class="form-group"><label>Surname</label><input name="Surname"></div>
+    </div>
+    <div class="form-group"><label>Former Name</label><input name="Former Name"></div>
+    <div class="two-column">
+      <div class="form-group"><label>Gender</label><input name="Gender" type="text"></div>
+      <div class="form-group"><label>Date of Birth</label><input name="Date of Birth" type="text"></div>
+    </div>
+    <div class="two-column">
+      <div class="form-group"><label>Place of Birth</label><input name="Place of Birth"></div>
+      <div class="form-group"><label>Nationality</label><input name="Nationality" type="text"></div>
+    </div>
+    <div class="form-group"><label>Occupation</label><input name="Occupation"></div>
+    <div class="two-column">
+      <div class="form-group"><label>Contact 1</label><input name="Contact 1"></div>
+      <div class="form-group"><label>Contact 2</label><input name="Contact 2"></div>
+    </div>
+    <div class="form-group"><label>Email</label><input name="Email" type="email"></div>
+    <div class="two-column">
+      <div class="form-group"><label>TIN</label><input name="TIN"></div>
+      <div class="form-group"><label>Ghana Card</label><input name="Ghana Card"></div>
+    </div>
+    <div class="form-group"><label>Share Percent</label><input type="number" name="Share Percent" min="0" max="100"></div>
+    <div class="address-group">
+      <h5>Residential Address</h5>
+      <div class="two-column">
+        <div class="form-group"><label>GPS</label><input name="GPS"></div>
+        <div class="form-group"><label>House No.</label><input name="House No."></div>
+      </div>
+      <div class="form-group"><label>Landmark</label><input name="Landmark"></div>
+      <div class="form-group"><label>Street</label><input name="Street"></div>
+      <div class="two-column">
+        <div class="form-group"><label>City</label><input name="City"></div>
+        <div class="form-group"><label>Town</label><input name="Town"></div>
+      </div>
+      <div class="two-column">
+        <div class="form-group"><label>District</label><input name="District"></div>
+        <div class="form-group"><label>Region</label><input name="Region"></div>
+      </div>
+    </div>
+  `;
+  container.appendChild(newSubscriber);
+}
+
+function removeEntry(button) {
+  const section = button.closest('.dynamic-section');
+  section.style.animation = 'fadeOut 0.3s ease-out';
+  setTimeout(() => {
+    section.remove();
+  }, 300);
+}
+
+document.getElementById('mainForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  const outputContainer = document.getElementById('outputContainer');
+  outputContainer.innerHTML = ''; // clear previous
+
+  const sections = this.querySelectorAll('fieldset');
+  sections.forEach((section, idx) => {
+    const sectionTitle = section.querySelector('legend').textContent;
+    const dynamicSections = section.querySelectorAll('.dynamic-section');
+    
+    if (dynamicSections.length > 0) {
+      // Handle dynamic sections (Directors, Subscribers)
+      dynamicSections.forEach((dynamicSection, dynIdx) => {
+        const inputs = dynamicSection.querySelectorAll('input, select');
+        let html = `<div class="section-container" data-section-id="${idx}-${dynIdx}">
+          <h3>${sectionTitle} - Entry ${dynIdx + 1}</h3>
+          <table>
+            <tr><th>Field Label</th><th>Submitted Data</th></tr>`;
+        
+        const fieldData = [];
+        inputs.forEach(inp=>{
+          const label = inp.name || inp.previousElementSibling?.textContent || 'Field';
+          const val = inp.value.trim();
+          fieldData.push({label, value: val});
+          html += `<tr data-field="${label}">
+            <td>${label}</td>
+            <td class="value-cell">${val}</td>
+          </tr>`;
+        });
+        
+        html += `</table>
+          <div class="button-group">
+            <button class="btn-edit">Edit Section</button>
+            <button class="btn-save" style="display:none;">Save Section</button>
+            <button class="btn-cancel" style="display:none;">Cancel</button>
+            <button class="btn-copy">Copy Section</button>
+          </div>
+        </div>`;
+        
+        const sectionDiv = document.createElement('div');
+        sectionDiv.innerHTML = html;
+        outputContainer.appendChild(sectionDiv);
+
+        setupSectionButtons(sectionDiv, fieldData, `${sectionTitle} - Entry ${dynIdx + 1}`);
+      });
+    } else {
+      // Handle regular sections
+      const inputs = section.querySelectorAll('input, select');
+      let html = `<div class="section-container" data-section-id="${idx}">
+        <h3>${sectionTitle}</h3>
+        <table>
+          <tr><th>Field Label</th><th>Submitted Data</th></tr>`;
+      
+      const fieldData = [];
+      inputs.forEach(inp=>{
+        const label = inp.name || inp.previousElementSibling?.textContent || 'Field';
+        const val = inp.value.trim();
+        fieldData.push({label, value: val});
+        html += `<tr data-field="${label}">
+          <td>${label}</td>
+          <td class="value-cell">${val}</td>
+        </tr>`;
+      });
+      
+      html += `</table>
+        <div class="button-group">
+          <button class="btn-edit">Edit Section</button>
+          <button class="btn-save" style="display:none;">Save Section</button>
+          <button class="btn-cancel" style="display:none;">Cancel</button>
+          <button class="btn-copy">Copy Section</button>
+        </div>
+      </div>`;
+      
+      const sectionDiv = document.createElement('div');
+      sectionDiv.innerHTML = html;
+      outputContainer.appendChild(sectionDiv);
+
+      setupSectionButtons(sectionDiv, fieldData, sectionTitle);
+    }
+  });
+
+  // Add reset button
+  const resetBtn = document.createElement('button');
+  resetBtn.textContent = 'Reset Form';
+  resetBtn.className = 'reset-btn';
+  resetBtn.addEventListener('click', () => {
+    document.getElementById('mainForm').reset();
+    document.getElementById('mainForm').style.display = 'block';
+    outputContainer.innerHTML = '';
+    directorCount = 1;
+    subscriberCount = 1;
+  });
+  outputContainer.appendChild(resetBtn);
+
+  // hide the input form once submitted
+  this.style.display='none';
+});
+
+function setupSectionButtons(sectionDiv, fieldData, sectionTitle) {
+  const editBtn = sectionDiv.querySelector('.btn-edit');
+  const saveBtn = sectionDiv.querySelector('.btn-save');
+  const cancelBtn = sectionDiv.querySelector('.btn-cancel');
+  const copyBtn = sectionDiv.querySelector('.btn-copy');
+  const table = sectionDiv.querySelector('table');
+
+  // Edit Section
+  editBtn.addEventListener('click', ()=>{
+    enableEditMode(table, fieldData);
+    editBtn.style.display='none';
+    saveBtn.style.display='inline-block';
+    cancelBtn.style.display='inline-block';
+  });
+
+  // Save Section
+  saveBtn.addEventListener('click', ()=>{
+    saveEditedData(table, fieldData);
+    disableEditMode(table);
+    editBtn.style.display='inline-block';
+    saveBtn.style.display='none';
+    cancelBtn.style.display='none';
+    showNotification(sectionTitle + " updated successfully!");
+  });
+
+  // Cancel Edit
+  cancelBtn.addEventListener('click', ()=>{
+    disableEditMode(table);
+    editBtn.style.display='inline-block';
+    saveBtn.style.display='none';
+    cancelBtn.style.display='none';
+  });
+
+  // Copy Section Values - MODIFIED TO COPY ONLY VALUES
+  copyBtn.addEventListener('click', ()=>{
+    // Filter out empty values and copy only the data values
+    const valuesOnly = fieldData
+      .map(item => item.value)
+      .filter(value => value.trim() !== '') // Remove empty values
+      .join('\n');
+    
+    navigator.clipboard.writeText(valuesOnly).then(()=>{
+      showNotification(sectionTitle + " data copied to clipboard!");
+    });
+  });
+}
+
+function enableEditMode(table, fieldData) {
+  table.classList.add('edit-mode');
+  const rows = table.querySelectorAll('tr:not(:first-child)');
+  
+  rows.forEach((row, index) => {
+    const valueCell = row.querySelector('.value-cell');
+    const currentValue = fieldData[index].value;
+    
+    // Create input element based on original field type
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.value = currentValue;
+    input.className = 'edit-input';
+    
+    valueCell.innerHTML = '';
+    valueCell.appendChild(input);
+  });
+}
+
+function disableEditMode(table) {
+  table.classList.remove('edit-mode');
+  const rows = table.querySelectorAll('tr:not(:first-child)');
+  
+  rows.forEach(row => {
+    const valueCell = row.querySelector('.value-cell');
+    const input = valueCell.querySelector('.edit-input');
+    
+    if (input) {
+      valueCell.textContent = input.value;
+    }
+  });
+}
+
+function saveEditedData(table, fieldData) {
+  const rows = table.querySelectorAll('tr:not(:first-child)');
+  
+  rows.forEach((row, index) => {
+    const input = row.querySelector('.edit-input');
+    if (input) {
+      fieldData[index].value = input.value;
+    }
+  });
+}
+
+function showNotification(message) {
+  const notification = document.getElementById('notification');
+  notification.textContent = message;
+  notification.classList.add('show');
+  
+  setTimeout(() => {
+    notification.classList.remove('show');
+  }, 3000);
+}
+
+// Add fade out animation
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+      transform: scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+  }
+`;
+document.head.appendChild(style);
+</script>
+
+</body>
+</html>
