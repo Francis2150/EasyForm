@@ -291,51 +291,54 @@ setText("equityIssuedShares",
     setText("directorFullName5", fullName);
   }
 
-  // Fill director declarations
-  function fillDirectorDeclarations() {
-    const directorsContainer = document.getElementById("idirectorsContainer");
-    if (!directorsContainer) return;
-    
-    const directors = Array.from(directorsContainer.querySelectorAll("fieldset"));
-    
-    // Handle all director declarations
-    for (let i = 1; i <= directors.length; i++) {
-      const prefix = `idirector${i}_`;
-      const fname = val(prefix + "fname");
-      const mname = val(prefix + "mname");
-      const sname = val(prefix + "sname");
-      const former = val(prefix + "former");
-      const fullName = [fname, mname, sname, former].filter(Boolean).join(" ");
+  /// Fill director declarations
+function fillDirectorDeclarations() {
+  const directorsContainer = document.getElementById("idirectorsContainer");
+  if (!directorsContainer) return;
 
-      // Full name fields
-      setText(`Ddirector${i}FullName1`, fullName);
-      setText(`Ddirector${i}FullName2`, fullName);
-      setText(`Ddirector${i}FullName3`, fullName);
-      
-      // Address components
-      setText(`Ddirector${i}HouseNumber`, val(prefix + "resHse"));
-      setText(`Ddirector${i}Landmark`, val(prefix + "resLandmark"));
-      setText(`Ddirector${i}StreetName`, val(prefix + "resStreet"));
-      
-      // Combine city and town
-      const city = val(prefix + "resCity");
-      const town = val(prefix + "resTown");
-      setText(`Ddirector${i}Town&City`, city && town ? `${city}, ${town}` : city || town);
-      
-      // Date components - handle both YYYY-MM-DD and DD/MM/YYYY formats
-      const dob = val(prefix + "dob");
-      if (dob) {
-        const { day, month, year } = parseDate(dob);
-        const dayId = i === 1 ? "DayOfdeclaration" : `DayOfdeclaration${i}`;
-        const monthId = i === 1 ? "MonthOfdeclaration" : `MonthOfdeclaration${i}`;
-        const yearId = i === 1 ? "YearOfdeclaration" : `YearOfdeclaration${i}`;
-        
-        setText(dayId, day);
-        setText(monthId, month);
-        setText(yearId, year);
-      }
-    }
+  const directors = Array.from(directorsContainer.querySelectorAll("fieldset"));
+
+  // Get today's date once (in local time)
+  const today = new Date();
+  const day = String(today.getDate()).padStart(2, "0");
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  const year = String(today.getFullYear());
+
+  // Handle all director declarations
+  for (let i = 1; i <= directors.length; i++) {
+    const prefix = `idirector${i}_`;
+    const fname = val(prefix + "fname");
+    const mname = val(prefix + "mname");
+    const sname = val(prefix + "sname");
+    const former = val(prefix + "former");
+    const fullName = [fname, mname, sname, former].filter(Boolean).join(" ");
+
+    // Full name fields
+    setText(`Ddirector${i}FullName1`, fullName);
+    setText(`Ddirector${i}FullName2`, fullName);
+    setText(`Ddirector${i}FullName3`, fullName);
+
+    // Address components
+    setText(`Ddirector${i}HouseNumber`, val(prefix + "resHse"));
+    setText(`Ddirector${i}Landmark`, val(prefix + "resLandmark"));
+    setText(`Ddirector${i}StreetName`, val(prefix + "resStreet"));
+
+    // Combine city and town
+    const city = val(prefix + "resCity");
+    const town = val(prefix + "resTown");
+    setText(`Ddirector${i}Town&City`, city && town ? `${city}, ${town}` : city || town);
+
+    // ✅ Use today's date for declaration date
+    const dayId = i === 1 ? "DayOfdeclaration" : `DayOfdeclaration${i}`;
+    const monthId = i === 1 ? "MonthOfdeclaration" : `MonthOfdeclaration${i}`;
+    const yearId = i === 1 ? "YearOfdeclaration" : `YearOfdeclaration${i}`;
+
+    setText(dayId, day);
+    setText(monthId, month);
+    setText(yearId, year);
   }
+}
+
 
   // Fill consent letters
   function fillConsentLetters() {
