@@ -64,10 +64,13 @@
           <!-- 3. Directors -->
           <fieldset id="directors">
             <legend>Directors</legend>
-            <div id="directorsContainer">
-              <div class="dynamic-section">
-                <h4>Director 1</h4>
-                <div class="director-roles">
+            
+            <!-- Director Roles Section -->
+            <div class="director-roles-section">
+              <h4>Director Roles</h4>
+              <div id="directorRolesContainer">
+                <div class="director-role-item">
+                  <h5>Director 1</h5>
                   <div class="checkbox-group">
                     <label class="checkbox-label">
                       <input type="checkbox" name="isSubscriber" onchange="toggleSharePercent(this, 0)">
@@ -83,6 +86,12 @@
                     </label>
                   </div>
                 </div>
+              </div>
+            </div>
+            
+            <div id="directorsContainer">
+              <div class="dynamic-section">
+                <h4>Director 1</h4>
                 <div class="two-column">
                   <div class="form-group"><label>First Name</label><input name="First Name"></div>
                   <div class="form-group"><label>Middle Name</label><input name="Middle Name"></div>
@@ -342,12 +351,32 @@
 }
 
 /* Director Roles Section Styles */
-.director-roles {
+.director-roles-section {
   background: #f8f9fa;
-  border-radius: 8px;
-  padding: 15px;
+  border-radius: var(--border-radius);
+  padding: 20px;
   margin-bottom: 20px;
-  border-left: 4px solid var(--primary-color);
+  border: 1px solid #e9ecef;
+}
+
+.director-roles-section h4 {
+  color: var(--primary-color);
+  margin-bottom: 15px;
+  font-size: 18px;
+}
+
+.director-role-item {
+  margin-bottom: 15px;
+  padding: 15px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.director-role-item h5 {
+  margin: 0 0 10px 0;
+  color: var(--dark-color);
+  font-size: 16px;
 }
 
 .checkbox-group {
@@ -935,7 +964,7 @@ function updateClientSectionData(sectionId, updatedData) {
 
 // Toggle Share Percentage input based on Subscriber checkbox
 function toggleSharePercent(checkbox, directorIndex) {
-  const sharePercentContainer = checkbox.closest('.director-roles').querySelector('.share-percent-container');
+  const sharePercentContainer = checkbox.closest('.director-role-item').querySelector('.share-percent-container');
   sharePercentContainer.style.display = checkbox.checked ? 'block' : 'none';
 }
 
@@ -1018,10 +1047,10 @@ document.getElementById('mainForm').addEventListener('submit', function(e){
   
   // Director Roles
   const directorRoles = [];
-  document.querySelectorAll('#directorsContainer .dynamic-section').forEach((section, index) => {
-    const isSubscriber = section.querySelector('input[name="isSubscriber"]').checked;
-    const isSecretary = section.querySelector('input[name="isSecretary"]').checked;
-    const sharePercent = isSubscriber ? section.querySelector('input[name="sharePercent"]').value : '';
+  document.querySelectorAll('#directorRolesContainer .director-role-item').forEach((roleItem, index) => {
+    const isSubscriber = roleItem.querySelector('input[name="isSubscriber"]').checked;
+    const isSecretary = roleItem.querySelector('input[name="isSecretary"]').checked;
+    const sharePercent = isSubscriber ? roleItem.querySelector('input[name="sharePercent"]').value : '';
     
     directorRoles.push({
       isSubscriber: isSubscriber,
@@ -1079,31 +1108,38 @@ document.getElementById('mainForm').addEventListener('submit', function(e){
 // Dynamic section functions
 function addDirector() {
   const container = document.getElementById('directorsContainer');
+  const rolesContainer = document.getElementById('directorRolesContainer');
   const currentCount = container.querySelectorAll('.dynamic-section').length;
   const newCount = currentCount + 1;
   
-  // Add new director section with roles
+  // Add new director role item
+  const newRoleItem = document.createElement('div');
+  newRoleItem.className = 'director-role-item';
+  newRoleItem.innerHTML = `
+    <h5>Director ${newCount}</h5>
+    <div class="checkbox-group">
+      <label class="checkbox-label">
+        <input type="checkbox" name="isSubscriber" onchange="toggleSharePercent(this, ${currentCount})">
+        <span>Is also a Subscriber</span>
+      </label>
+      <div class="share-percent-container" style="display: none;">
+        <label>Share Percentage</label>
+        <input type="number" name="sharePercent" min="0" max="100" step="0.01">
+      </div>
+      <label class="checkbox-label ${selectedSecretaryIndex !== -1 ? 'disabled' : ''}">
+        <input type="checkbox" name="isSecretary" onchange="handleSecretarySelection(this, ${currentCount})" ${selectedSecretaryIndex !== -1 ? 'disabled' : ''}>
+        <span>Is also the Secretary</span>
+      </label>
+    </div>
+  `;
+  rolesContainer.appendChild(newRoleItem);
+  
+  // Add new director section
   const newDirector = document.createElement('div');
   newDirector.className = 'dynamic-section';
   newDirector.innerHTML = `
     <button type="button" class="remove-btn" onclick="removeEntry(this, 'directors')">×</button>
     <h4>Director ${newCount}</h4>
-    <div class="director-roles">
-      <div class="checkbox-group">
-        <label class="checkbox-label">
-          <input type="checkbox" name="isSubscriber" onchange="toggleSharePercent(this, ${currentCount})">
-          <span>Is also a Subscriber</span>
-        </label>
-        <div class="share-percent-container" style="display: none;">
-          <label>Share Percentage</label>
-          <input type="number" name="sharePercent" min="0" max="100" step="0.01">
-        </div>
-        <label class="checkbox-label ${selectedSecretaryIndex !== -1 ? 'disabled' : ''}">
-          <input type="checkbox" name="isSecretary" onchange="handleSecretarySelection(this, ${currentCount})" ${selectedSecretaryIndex !== -1 ? 'disabled' : ''}>
-          <span>Is also the Secretary</span>
-        </label>
-      </div>
-    </div>
     <div class="two-column">
       <div class="form-group"><label>First Name</label><input name="First Name"></div>
       <div class="form-group"><label>Middle Name</label><input name="Middle Name"></div>
@@ -1216,20 +1252,26 @@ function removeEntry(button, type) {
   setTimeout(() => {
     section.remove();
     
-    // Check if this director was selected as secretary
+    // Also remove the corresponding role item if it's a director
     if (type === 'directors') {
-      const secretaryCheckbox = section.querySelector('input[name="isSecretary"]');
-      if (secretaryCheckbox && secretaryCheckbox.checked) {
-        // Reset secretary selection
-        selectedSecretaryIndex = -1;
-        // Show secretary details section
-        document.getElementById('secretaryDetails').style.display = 'block';
-        // Enable all secretary checkboxes
-        const allSecretaryCheckboxes = document.querySelectorAll('input[name="isSecretary"]');
-        allSecretaryCheckboxes.forEach(cb => {
-          cb.disabled = false;
-          cb.closest('.checkbox-label').classList.remove('disabled');
-        });
+      const roleItems = document.querySelectorAll('#directorRolesContainer .director-role-item');
+      if (roleItems[index]) {
+        // Check if this director was selected as secretary
+        const secretaryCheckbox = roleItems[index].querySelector('input[name="isSecretary"]');
+        if (secretaryCheckbox && secretaryCheckbox.checked) {
+          // Reset secretary selection
+          selectedSecretaryIndex = -1;
+          // Show secretary details section
+          document.getElementById('secretaryDetails').style.display = 'block';
+          // Enable all secretary checkboxes
+          const allSecretaryCheckboxes = document.querySelectorAll('input[name="isSecretary"]');
+          allSecretaryCheckboxes.forEach(cb => {
+            cb.disabled = false;
+            cb.closest('.checkbox-label').classList.remove('disabled');
+          });
+        }
+        
+        roleItems[index].remove();
       }
     }
     
@@ -1252,15 +1294,25 @@ function updateDirectorNumbers() {
     if (h4) {
       h4.textContent = `Director ${newNumber}`;
     }
+  });
+  
+  // Update role items
+  const roleItems = document.querySelectorAll('#directorRolesContainer .director-role-item');
+  roleItems.forEach((roleItem, index) => {
+    const newNumber = index + 1;
+    const h5 = roleItem.querySelector('h5');
+    if (h5) {
+      h5.textContent = `Director ${newNumber}`;
+    }
     
     // Update the onchange handler for the subscriber checkbox
-    const subscriberCheckbox = director.querySelector('input[name="isSubscriber"]');
+    const subscriberCheckbox = roleItem.querySelector('input[name="isSubscriber"]');
     if (subscriberCheckbox) {
       subscriberCheckbox.setAttribute('onchange', `toggleSharePercent(this, ${index})`);
     }
     
     // Update the onchange handler for the secretary checkbox
-    const secretaryCheckbox = director.querySelector('input[name="isSecretary"]');
+    const secretaryCheckbox = roleItem.querySelector('input[name="isSecretary"]');
     if (secretaryCheckbox) {
       secretaryCheckbox.setAttribute('onchange', `handleSecretarySelection(this, ${index})`);
     }
