@@ -98,7 +98,8 @@
         <div class="form-group"><label>Gender:</label><select id="idirector${index}_gender">${genderOptions}</select></div>
         <div class="form-group"><label>Date of Birth:</label><input id="idirector${index}_dob" type="text"></div>
         <div class="form-group"><label>Place of Birth:</label><input id="idirector${index}_pob" type="text"></div>
-        <div class="form-group"><label>Nationality:</label><select id="idirector${index}_nation">${nationalityOptions}</select></div>
+         <div class="form-group"><label>Nationality:</label><input id="idirector${index}_nation" type="text"></div>
+       
         <div class="form-group"><label>Occupation:</label><input id="idirector${index}_occupation" type="text"></div>
         <div class="form-group"><label>Contact 1:</label><input id="idirector${index}_contact1" type="text"></div>
         <div class="form-group"><label>Contact 2:</label><input id="idirector${index}_contact2" type="text"></div>
@@ -156,7 +157,8 @@
         <div class="form-group"><label>Gender:</label><select id="isecGender">${genderOptions}</select></div>
         <div class="form-group"><label>Date of Birth:</label><input id="isecDob" type="text"></div>
         <div class="form-group"><label>Place of Birth:</label><input id="isecPob" type="text"></div>
-        <div class="form-group"><label>Nationality:</label><select id="isecNation">${nationalityOptions}</select></div>
+         <div class="form-group"><label>Nationality:</label><input id="isecNation" type="text"></div>
+        
         <div class="form-group"><label>Occupation:</label><input id="isecOccupation" type="text"></div>
         <div class="form-group"><label>Contact 1:</label><input id="isecContact1" type="text"></div>
         <div class="form-group"><label>Contact 2:</label><input id="isecContact2" type="text"></div>
@@ -195,7 +197,8 @@
       <div class="form-group"><label>Gender:</label><select id="isubscriber${index}_gender">${genderOptions}</select></div>
       <div class="form-group"><label>Date of Birth:</label><input id="isubscriber${index}_dob" type="text"></div>
       <div class="form-group"><label>Place of Birth:</label><input id="isubscriber${index}_pob" type="text"></div>
-      <div class="form-group"><label>Nationality:</label><select id="isubscriber${index}_nation">${nationalityOptions}</select></div>
+      <div class="form-group"><label>Nationality:</label><input id="isubscriber${index}_nation" type="text"></div>
+      
       <div class="form-group"><label>Occupation:</label><input id="isubscriber${index}_occupation" type="text"></div>
       <div class="form-group"><label>Contact 1:</label><input id="isubscriber${index}_contact1" type="text"></div>
       <div class="form-group"><label>Contact 2:</label><input id="isubscriber${index}_contact2" type="text"></div>
@@ -252,7 +255,8 @@ function createOwnerBlock(index) {
     <div class="form-group"><label>Gender:</label><select id="iowner${index}_gender">${genderOptions}</select></div>
     <div class="form-group"><label>Date of Birth:</label><input id="iowner${index}_dob" type="text"></div>
     <div class="form-group"><label>Place of Birth:</label><input id="iowner${index}_pob" type="text"></div>
-    <div class="form-group"><label>Nationality:</label><select id="iowner${index}_nation">${nationalityOptions}</select></div>
+    <div class="form-group"><label>Nationality:</label><input id="iowner${index}_nation" type="text"></div>
+   
     <div class="form-group"><label>Occupation:</label><input id="iowner${index}_occupation" type="text"></div>
     <div class="form-group"><label>Contact 1:</label><input id="iowner${index}_contact1" type="text"></div>
     <div class="form-group"><label>Contact 2:</label><input id="iowner${index}_contact2" type="text"></div>
@@ -321,10 +325,10 @@ document.addEventListener('paste', function (event) {
     const pasteData = (event.clipboardData || window.clipboardData).getData('text');
 
     // Split by tab, comma, or newline (handles Excel/Sheets/CSV copy)
+    // Keep empty values to maintain field positions
     const values = pasteData
       .split(/\t|,|\n/)
-      .map(v => v.trim())
-      .filter(v => v !== '');
+      .map(v => v.trim());
 
     // Get ALL visible, enabled inputs in document order
     const inputs = Array.from(document.querySelectorAll('input:not([disabled]):not([hidden])'));
@@ -346,7 +350,6 @@ document.addEventListener('paste', function (event) {
     }
   }
 });
-
 
 
 

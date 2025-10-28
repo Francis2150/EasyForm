@@ -464,6 +464,37 @@
   color: var(--dark-color);
 }
 
+/* Copy Format Notification */
+.copy-format-notification {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  padding: 15px 20px;
+  background: #28a745;
+  color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transform: translateX(120%);
+  transition: transform 0.3s ease;
+  z-index: 1000;
+  max-width: 300px;
+}
+
+.copy-format-notification.show {
+  transform: translateX(0);
+}
+
+.copy-format-notification h4 {
+  margin: 0 0 10px 0;
+  font-size: 16px;
+}
+
+.copy-format-notification p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
 @media (max-width: 768px) {
   .section-header {
     flex-direction: column;
@@ -494,6 +525,13 @@
   .role-badges {
     flex-direction: column;
     gap: 5px;
+  }
+  
+  .copy-format-notification {
+    top: 20px;
+    right: 10px;
+    left: 10px;
+    max-width: none;
   }
 }
 </style>
@@ -691,7 +729,12 @@ function renderClientDetail(client) {
         <table>
           <tr><th>Field Label</th><th>Submitted Data</th></tr>`;
       
-      director.forEach(field => {
+      // Filter out role-related fields from the table
+      const filteredDirectorData = director.filter(field => 
+        !['isSubscriber', 'isSecretary', 'sharePercent'].includes(field.label)
+      );
+      
+      filteredDirectorData.forEach(field => {
         html += `<tr data-field="${field.label}">
           <td>${field.label}</td>
           <td class="value-cell">${field.value}</td>
@@ -869,16 +912,47 @@ function copySection(sectionId) {
   const rows = section.querySelectorAll('tr:not(:first-child)');
   const values = [];
   
-  rows.forEach(row => {
-    const value = row.querySelector('.value-cell').textContent;
-    if (value.trim() !== '') {
-      values.push(value);
-    }
-  });
+  // Get all field labels to maintain order
+  const fieldLabels = Array.from(rows).map(row => 
+    row.querySelector('td:first-child').textContent
+  );
   
-  navigator.clipboard.writeText(values.join('\n')).then(() => {
-    showNotification('Section data copied to clipboard!');
+  // Get all values (including empty ones)
+  const fieldValues = Array.from(rows).map(row => 
+    row.querySelector('.value-cell').textContent
+  );
+  
+  // Create tab-separated values for spreadsheet compatibility
+  const tabSeparatedValues = fieldValues.join('\t');
+  
+  // Copy to clipboard
+  navigator.clipboard.writeText(tabSeparatedValues).then(() => {
+    // Show notification about the format
+    showCopyFormatNotification();
   });
+}
+
+function showCopyFormatNotification() {
+  // Create notification element if it doesn't exist
+  let notification = document.getElementById('copyFormatNotification');
+  if (!notification) {
+    notification = document.createElement('div');
+    notification.id = 'copyFormatNotification';
+    notification.className = 'copy-format-notification';
+    document.body.appendChild(notification);
+  }
+  
+  notification.innerHTML = `
+    <h4>Data Copied!</h4>
+    <p>Data has been copied as tab-separated values for spreadsheet compatibility.</p>
+    <p>Empty fields are included to maintain cell positions when pasted.</p>
+  `;
+  
+  notification.classList.add('show');
+  
+  setTimeout(() => {
+    notification.classList.remove('show');
+  }, 4000);
 }
 
 function updateClientSectionData(sectionId, updatedData) {
