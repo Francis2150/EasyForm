@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Limited Company Registration - Ghana Business Registration</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="data.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-building me-2"></i>Ghana Business Registration
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="logoutLink">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <div class="row">
+            <!-- Registration Form Column -->
+            <div class="col-lg-7">
+                <div class="card">
+                    <div class="card-header">
+                        <h4><i class="fas fa-building me-2"></i>Limited Company Registration (10 GHS)</h4>
+                    </div>
+                    <div class="card-body">
+                        <form id="limitedCompanyForm">
+                            <!-- Business Details -->
+                            <h5 class="mb-3">Company Details</h5>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="companyName" class="form-label">Company Name</label>
+                                    <input type="text" class="form-control" id="companyName" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="companyEmail" class="form-label">Company Email</label>
+                                    <input type="email" class="form-control" id="companyEmail" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="companyPhone" class="form-label">Company Phone</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">+233</span>
+                                        <input type="tel" class="form-control" id="companyPhone" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="companyAddress" class="form-label">Company Address</label>
+                                    <input type="text" class="form-control" id="companyAddress" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="companyCity" class="form-label">City</label>
+                                    <input type="text" class="form-control" id="companyCity" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="companyRegion" class="form-label">Region</label>
+                                    <select class="form-select" id="companyRegion" required>
+                                        <option value="">Select Region</option>
+                                        <option value="ashanti">Ashanti</option>
+                                        <option value="brong-ahafo">Brong-Ahafo</option>
+                                        <option value="central">Central</option>
+                                        <option value="eastern">Eastern</option>
+                                        <option value="greater-accra">Greater Accra</option>
+                                        <option value="northern">Northern</option>
+                                        <option value="upper-east">Upper East</option>
+                                        <option value="upper-west">Upper West</option>
+                                        <option value="volta">Volta</option>
+                                        <option value="western">Western</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="companyCategory" class="form-label">Business Category</label>
+                                    <select class="form-select" id="companyCategory" required>
+                                        <option value="">Select Category</option>
+                                        <option value="agriculture">Agriculture</option>
+                                        <option value="manufacturing">Manufacturing</option>
+                                        <option value="services">Services</option>
+                                        <option value="technology">Technology</option>
+                                        <option value="retail">Retail</option>
+                                        <option value="construction">Construction</option>
+                                        <option value="education">Education</option>
+                                        <option value="healthcare">Healthcare</option>
+                                        <option value="hospitality">Hospitality</option>
+                                        <option value="transportation">Transportation</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="companyDescription" class="form-label">Business Description</label>
+                                    <textarea class="form-control" id="companyDescription" rows="3"></textarea>
+                                </div>
+                            </div>
+
+                            <!-- Directors Section -->
+                            <h5 class="mb-3 mt-4">Directors Information</h5>
+                            <div id="directorsList">
+                                <!-- Directors will be added dynamically -->
+                            </div>
+                            <button type="button" class="add-btn" id="addDirectorBtn">
+                                <i class="fas fa-plus me-2"></i>Add Director
+                            </button>
+
+                            <!-- Share Capital -->
+                            <h5 class="mb-3 mt-4">Share Capital</h5>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="authorizedCapital" class="form-label">Authorized Capital (GHS)</label>
+                                    <input type="number" class="form-control" id="authorizedCapital" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="issuedCapital" class="form-label">Issued Capital (GHS)</label>
+                                    <input type="number" class="form-control" id="issuedCapital" required>
+                                </div>
+                            </div>
+
+                            <!-- Review Section -->
+                            <div class="alert alert-info mt-4">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <span id="submissionCostInfo">This submission will cost 10 GHS.</span>
+                            </div>
+
+                            <div class="d-flex justify-content-between mt-4">
+                                <a href="index.html" class="btn btn-secondary">Back to Dashboard</a>
+                                <button type="submit" class="btn btn-primary">Submit Registration</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Table Column -->
+            <div class="col-lg-5">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Client Data Collection</h5>
+                        <button class="btn btn-sm btn-outline-primary" id="refreshDataBtn">
+                            <i class="fas fa-sync-alt me-1"></i>Refresh
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div id="dataCollectionLinkContainer" class="mb-3">
+                            <label class="form-label">Your Data Collection Link</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="dataCollectionLink" readonly>
+                                <button class="btn btn-outline-secondary" type="button" id="copyLinkBtn">
+                                    <i class="fas fa-copy me-1"></i>Copy
+                                </button>
+                            </div>
+                            <div class="form-text">Share this link with clients to collect their data.</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h6 class="mb-0">Collected Client Data</h6>
+                                <span class="badge bg-primary" id="clientCount">0</span>
+                            </div>
+                        </div>
+                        
+                        <div id="clientDataContainer">
+                            <div class="text-center py-4">
+                                <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">No client data collected yet</p>
+                                <p class="text-muted small">Share your data collection link to start receiving client data</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div class="loading-spinner" id="loadingSpinner">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2">Processing...</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="form.js"></script>
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBzSHkVxRiLC5gsq04LTTDnXaGdoF7eJ2c",
+            authDomain: "easyregistrationforms.firebaseapp.com",
+            projectId: "easyregistrationforms",
+            storageBucket: "easyregistrationforms.firebasestorage.app",
+            messagingSenderId: "589421628989",
+            appId: "1:589421628989:web:d9f6e9dbe372ab7acd6454",
+            measurementId: "G-GVCPBN8VB5"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // Set form type
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof window.setFormType === 'function') {
+                window.setFormType('limited', 10);
+            }
+            
+            // Check if user is logged in
+            auth.onAuthStateChanged(user => {
+                if (!user) {
+                    window.location.href = 'authenticate.html';
+                } else {
+                    // Load data collection link and client data
+                    loadDataCollectionLink();
+                    loadClientData();
+                }
+            });
+            
+            // Add event listeners
+            document.getElementById('copyLinkBtn').addEventListener('click', copyDataCollectionLink);
+            document.getElementById('refreshDataBtn').addEventListener('click', loadClientData);
+            document.getElementById('logoutLink').addEventListener('click', (e) => {
+                e.preventDefault();
+                auth.signOut();
+            });
+        });
+        
+        // Generate unique link function
+        function generateUniqueLink(firstName) {
+            const uniqueId = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+            return `${firstName}_LIMITED_DATA_COLLECTION_FORM_${uniqueId}`;
+        }
+        
+        // Load data collection link
+        function loadDataCollectionLink() {
+            const user = auth.currentUser;
+            if (!user) return;
+            
+            showLoading(true);
+            
+            db.collection('users').doc(user.uid).get()
+                .then((doc) => {
+                    if (doc.exists) {
+                        const userData = doc.data();
+                        
+                        if (userData.dataCollectionLink) {
+                            // Link exists, display it
+                            const link = userData.dataCollectionLink;
+                            document.getElementById('dataCollectionLink').value = `${window.location.origin}/data-collection.html?link=${link}`;
+                            console.log('Data collection link loaded:', link);
+                        } else {
+                            // Link doesn't exist, generate one
+                            console.log('No data collection link found, generating one...');
+                            const firstName = userData.firstName || userData.email.split('@')[0] || 'User';
+                            const newLink = generateUniqueLink(firstName);
+                            
+                            // Update the user document with the new link
+                            db.collection('users').doc(user.uid).update({
+                                dataCollectionLink: newLink
+                            })
+                            .then(() => {
+                                // Display the new link
+                                document.getElementById('dataCollectionLink').value = `${window.location.origin}/data-collection.html?link=${newLink}`;
+                                console.log('New data collection link generated:', newLink);
+                                
+                                // Show notification
+                                showNotification('Data collection link generated successfully!', 'success');
+                            })
+                            .catch((error) => {
+                                console.error('Error generating data collection link:', error);
+                                showNotification('Error generating data collection link', 'error');
+                            });
+                        }
+                    } else {
+                        console.error('User document not found');
+                        showNotification('User data not found', 'error');
+                    }
+                    showLoading(false);
+                })
+                .catch((error) => {
+                    console.error('Error loading data collection link:', error);
+                    showNotification('Error loading data collection link', 'error');
+                    showLoading(false);
+                });
+        }
+        
+        // Copy data collection link
+        function copyDataCollectionLink() {
+            const linkInput = document.getElementById('dataCollectionLink');
+            if (!linkInput.value) {
+                showNotification('No link to copy', 'error');
+                return;
+            }
+            
+            linkInput.select();
+            document.execCommand('copy');
+            
+            // Show notification
+            showNotification('Link copied to clipboard!', 'success');
+        }
+        
+        // Load client data
+        function loadClientData() {
+            const user = auth.currentUser;
+            if (!user) return;
+            
+            showLoading(true);
+            
+            db.collection('users').doc(user.uid).get()
+                .then((doc) => {
+                    if (doc.exists && doc.data().clientData) {
+                        const clientData = doc.data().clientData;
+                        displayClientData(clientData);
+                    } else {
+                        // Check localStorage as fallback
+                        const localData = localStorage.getItem(`clientData_${user.uid}`);
+                        if (localData) {
+                            displayClientData(JSON.parse(localData));
+                        } else {
+                            showEmptyState();
+                        }
+                    }
+                    showLoading(false);
+                })
+                .catch((error) => {
+                    console.error('Error loading client data:', error);
+                    showEmptyState();
+                    showLoading(false);
+                });
+        }
+        
+        // Display client data
+        function displayClientData(clientData) {
+            const container = document.getElementById('clientDataContainer');
+            const countElement = document.getElementById('clientCount');
+            
+            if (!clientData || clientData.length === 0) {
+                showEmptyState();
+                return;
+            }
+            
+            countElement.textContent = clientData.length;
+            
+            let html = '<div class="list-group">';
+            
+            clientData.forEach((client, index) => {
+                const companyName = client.formData.find(field => field.label === 'Company Name')?.value || 'Unknown Company';
+                const submittedDate = new Date(client.submittedAt).toLocaleDateString();
+                
+                html += `
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">${companyName}</h6>
+                            <small>${submittedDate}</small>
+                        </div>
+                        <p class="mb-1">Directors: ${client.directors?.length || 0} | Subscribers: ${client.subscribers?.length || 0}</p>
+                        <div class="d-flex justify-content-end">
+                            <button class="btn btn-sm btn-outline-primary me-2" onclick="viewClientData('${client.id}')">
+                                <i class="fas fa-eye me-1"></i>View
+                            </button>
+                            <button class="btn btn-sm btn-outline-success" onclick="useClientData('${client.id}')">
+                                <i class="fas fa-check me-1"></i>Use
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+        
+        // Show empty state
+        function showEmptyState() {
+            const container = document.getElementById('clientDataContainer');
+            const countElement = document.getElementById('clientCount');
+            
+            countElement.textContent = '0';
+            
+            container.innerHTML = `
+                <div class="text-center py-4">
+                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">No client data collected yet</p>
+                    <p class="text-muted small">Share your data collection link to start receiving client data</p>
+                </div>
+            `;
+        }
+        
+        // View client data
+        function viewClientData(clientId) {
+            const user = auth.currentUser;
+            if (!user) return;
+            
+            db.collection('users').doc(user.uid).get()
+                .then((doc) => {
+                    if (doc.exists && doc.data().clientData) {
+                        const clientData = doc.data().clientData;
+                        const client = clientData.find(c => c.id === clientId);
+                        
+                        if (client) {
+                            // Open data collection page with the client data
+                            const url = `data-collection.html?link=${doc.data().dataCollectionLink}&view=${clientId}`;
+                            window.open(url, '_blank');
+                        }
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error viewing client data:', error);
+                });
+        }
+        
+        // Use client data in the form
+        function useClientData(clientId) {
+            const user = auth.currentUser;
+            if (!user) return;
+            
+            db.collection('users').doc(user.uid).get()
+                .then((doc) => {
+                    if (doc.exists && doc.data().clientData) {
+                        const clientData = doc.data().clientData;
+                        const client = clientData.find(c => c.id === clientId);
+                        
+                        if (client) {
+                            // Populate the form with client data
+                            populateFormWithClientData(client);
+                            
+                            // Show notification
+                            showNotification('Client data loaded into form!', 'success');
+                        }
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error using client data:', error);
+                });
+        }
+        
+        // Populate form with client data
+        function populateFormWithClientData(client) {
+            // Company Information
+            const companyName = client.formData.find(field => field.label === 'Company Name')?.value;
+            if (companyName) document.getElementById('companyName').value = companyName;
+            
+            const companyEmail = client.formData.find(field => field.label === 'Email')?.value;
+            if (companyEmail) document.getElementById('companyEmail').value = companyEmail;
+            
+            const companyPhone = client.formData.find(field => field.label === 'Contact 1')?.value;
+            if (companyPhone) document.getElementById('companyPhone').value = companyPhone;
+            
+            const companyAddress = client.formData.find(field => field.label === 'Building No.')?.value;
+            if (companyAddress) document.getElementById('companyAddress').value = companyAddress;
+            
+            const companyCity = client.formData.find(field => field.label === 'City')?.value;
+            if (companyCity) document.getElementById('companyCity').value = companyCity;
+            
+            const companyRegion = client.formData.find(field => field.label === 'Region')?.value;
+            if (companyRegion) document.getElementById('companyRegion').value = companyRegion;
+            
+            // Directors
+            const directorsList = document.getElementById('directorsList');
+            directorsList.innerHTML = '';
+            
+            if (client.directors && client.directors.length > 0) {
+                client.directors.forEach((director, index) => {
+                    const directorId = Date.now() + index;
+                    const directorItem = document.createElement('div');
+                    directorItem.className = 'director-item';
+                    directorItem.id = `director-${directorId}`;
+                    
+                    const firstName = director.find(field => field.label === 'First Name')?.value || '';
+                    const phone = director.find(field => field.label === 'Contact 1')?.value || '';
+                    const email = director.find(field => field.label === 'Email')?.value || '';
+                    const address = director.find(field => field.label === 'House No.')?.value || '';
+                    
+                    directorItem.innerHTML = `
+                        <button class="remove-btn" onclick="removeDirector(${directorId})">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Full Name</label>
+                                <input type="text" class="form-control director-name" value="${firstName}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Phone Number</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">+233</span>
+                                    <input type="tel" class="form-control director-phone" value="${phone}" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control director-email" value="${email}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Address</label>
+                                <input type="text" class="form-control director-address" value="${address}" required>
+                            </div>
+                        </div>
+                    `;
+                    
+                    directorsList.appendChild(directorItem);
+                    
+                    // Add to directors array
+                    if (typeof window.directors !== 'undefined') {
+                        window.directors.push({
+                            id: directorId,
+                            name: firstName,
+                            phone: phone,
+                            email: email,
+                            address: address
+                        });
+                    }
+                });
+            }
+            
+            // Share Capital
+            const authorizedCapital = client.formData.find(field => field.label === 'Authorized Capital')?.value;
+            if (authorizedCapital) document.getElementById('authorizedCapital').value = authorizedCapital;
+            
+            const issuedCapital = client.formData.find(field => field.label === 'Issued Capital')?.value;
+            if (issuedCapital) document.getElementById('issuedCapital').value = issuedCapital;
+        }
+        
+        // Show notification
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+        
+        // Show loading
+        function showLoading(show) {
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            if (show) {
+                loadingSpinner.classList.add('active');
+            } else {
+                loadingSpinner.classList.remove('active');
+            }
+        }
+        
+        // Add director function
+        function addDirector() {
+            const directorId = Date.now();
+            const directorItem = document.createElement('div');
+            directorItem.className = 'director-item';
+            directorItem.id = `director-${directorId}`;
+            
+            directorItem.innerHTML = `
+                <button class="remove-btn" onclick="removeDirector(${directorId})">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-control director-name" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Phone Number</label>
+                        <div class="input-group">
+                            <span class="input-group-text">+233</span>
+                            <input type="tel" class="form-control director-phone" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control director-email" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Address</label>
+                        <input type="text" class="form-control director-address" required>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('directorsList').appendChild(directorItem);
+            
+            // Add to directors array
+            if (typeof window.directors !== 'undefined') {
+                window.directors.push({
+                    id: directorId,
+                    name: '',
+                    phone: '',
+                    email: '',
+                    address: ''
+                });
+            }
+        }
+        
+        // Remove director function
+        function removeDirector(directorId) {
+            document.getElementById(`director-${directorId}`).remove();
+            
+            // Remove from directors array
+            if (typeof window.directors !== 'undefined') {
+                window.directors = window.directors.filter(d => d.id !== directorId);
+            }
+        }
+        
+        // Add event listener for the add director button
+        document.getElementById('addDirectorBtn').addEventListener('click', addDirector);
+    </script>
+</body>
+</html>

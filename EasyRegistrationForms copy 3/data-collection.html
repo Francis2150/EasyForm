@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Company Data Collection System</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="data.css">
+</head>
+<body>
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+        <div class="form-container">
+          <h2 id="mainTitle">Company Data Collection Form</h2>
+          
+          <!-- User Info -->
+          <div class="alert alert-info mb-4">
+            <i class="fas fa-info-circle me-2"></i>
+            <span id="userInfo">Please fill out this form to provide your company information.</span>
+          </div>
+
+          <!-- Form View -->
+          <div id="formView">
+            <form id="mainForm">
+
+              <!-- 1. Company Information -->
+              <fieldset id="companyInfo">
+                <legend>Company Information</legend>
+                <div class="form-group"><label>Company Name</label><input name="Company Name" required></div>
+              
+                <div class="form-group"><label>Presented By</label><input name="Presented By" required></div>
+                <div class="form-group"><label>Presenter TIN</label><input name="Presenter TIN" required></div>
+                <div class="form-group"><label>Activities</label><input name="Activities"></div>
+                <div class="form-group"><label>Stated Capital</label><input type="number" name="Stated Capital"></div>
+                <div class="form-group"><label>Estimated Revenue</label><input type="number" name="Estimated Revenue"></div>
+                <div class="form-group"><label>Number of Employees</label><input type="number" name="Number of Employees"></div>
+              </fieldset>
+
+              <!-- 2. Office Details -->
+              <fieldset id="officeDetails">
+                <legend>Office Details</legend>
+                <div class="form-group"><label>GPS Address</label><input name="GPS Address"></div>
+                <div class="form-group"><label>Landmark</label><input name="Landmark"></div>
+                <div class="form-group"><label>Building No.</label><input name="Building No."></div>
+                <div class="form-group"><label>Town</label><input name="Town"></div>
+                <div class="form-group"><label>Street Name</label><input name="Street Name"></div>
+                <div class="form-group"><label>City</label><input name="City"></div>
+                <div class="form-group"><label>District</label><input name="District"></div>
+                <div class="form-group"><label>Region</label><input name="Region"></div>
+
+                <div class="form-group"><label>Postal Number</label><input name="Postal Number"></div>
+                <div class="form-group"><label>Postal Town</label><input name="Postal Town"></div>
+                <div class="form-group"><label>Postal Region</label><input name="Postal Region"></div>
+                <div class="form-group"><label>Contact 1</label><input name="Contact 1"></div>
+                <div class="form-group"><label>Contact 2</label><input name="Contact 2"></div>
+                <div class="form-group"><label>Email</label><input name="Email" type="email"></div>
+              </fieldset>
+
+              <!-- 3. Directors -->
+              <fieldset id="directors">
+                <legend>Directors</legend>
+                <div id="directorsContainer">
+                  <div class="dynamic-section">
+                    <h4>Director 1</h4>
+                    <div class="director-roles">
+                      <div class="checkbox-group">
+                        <label class="checkbox-label">
+                          <input type="checkbox" name="isSubscriber" onchange="toggleSharePercent(this, 0)">
+                          <span>Is also a Subscriber</span>
+                        </label>
+                        <div class="share-percent-container" style="display: none;">
+                          <label>Share Percentage</label>
+                          <input type="number" name="sharePercent" min="0" max="100" step="0.01">
+                        </div>
+                        <label class="checkbox-label">
+                          <input type="checkbox" name="isSecretary" onchange="handleSecretarySelection(this, 0)">
+                          <span>Is also the Secretary</span>
+                        </label>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                        <div class="form-group"><label>First Name</label><input name="First Name"></div>
+                      </div>
+                      <div class="col-md-6 mb-3">
+                        <div class="form-group"><label>Middle Name</label><input name="Middle Name"></div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                        <div class="form-group"><label>Surname</label><input name="Surname"></div>
+                      </div>
+                      <div class="col-md-6 mb-3">
+                        <div class="form-group"><label>Former Name</label><input name="Former Name"></div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                        <div class="form-group"><label>Date of Birth</label><input name="Date of Birth" type="text"></div>
+                      </div>
+                      <div class="col-md-6 mb-3">
+                        <div class="form-group"><label>Place of Birth</label><input name="Place of Birth"></div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                        <div class="form-group"><label>Nationality</label><input name="Nationality" type="text"></div>
+                      </div>
+                      <div class="col-md-6 mb-3">
+                        <div class="form-group"><label>Occupation</label><input name="Occupation"></div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                        <div class="form-group"><label>Contact 1</label><input name="Contact 1"></div>
+                      </div>
+                      <div class="col-md-6 mb-3">
+                        <div class="form-group"><label>Contact 2</label><input name="Contact 2"></div>
+                      </div>
+                    </div>
+                    <div class="form-group"><label>Email</label><input name="Email" type="email"></div>
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                        <div class="form-group"><label>TIN</label><input name="TIN"></div>
+                      </div>
+                      <div class="col-md-6 mb-3">
+                        <div class="form-group"><label>Ghana Card</label><input name="Ghana Card"></div>
+                      </div>
+                    </div>
+                    <div class="address-group">
+                      <h5>Residential Address</h5>
+                      <div class="row">
+                        <div class="col-md-6 mb-3">
+                          <div class="form-group"><label>GPS</label><input name="GPS"></div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                          <div class="form-group"><label>House No.</label><input name="House No."></div>
+                        </div>
+                      </div>
+                      <div class="form-group"><label>Landmark</label><input name="Landmark"></div>
+                      <div class="form-group"><label>Street</label><input name="Street"></div>
+                      <div class="row">
+                        <div class="col-md-6 mb-3">
+                          <div class="form-group"><label>City</label><input name="City"></div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                          <div class="form-group"><label>Town</label><input name="Town"></div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-6 mb-3">
+                          <div class="form-group"><label>District</label><input name="District"></div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                          <div class="form-group"><label>Region</label><input name="Region"></div>
+                        </div>
+                      </div>
+                      <div class="form-group"><label>Country</label><input name="Country"></div>
+                    </div>
+                  </div>
+                </div>
+                <button type="button" class="btn btn-primary" onclick="addDirector()">Add Director</button>
+              </fieldset>
+
+              <!-- 4. Secretary Details -->
+              <fieldset id="secretaryDetails">
+                <legend>Secretary Details</legend>
+                <div class="form-group"><label>Qualification</label><input name="Qualification"></div>
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <div class="form-group"><label>First Name</label><input name="First Name"></div>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <div class="form-group"><label>Middle Name</label><input name="Middle Name"></div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <div class="form-group"><label>Surname</label><input name="Surname"></div>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <div class="form-group"><label>Former Name</label><input name="Former Name"></div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <div class="form-group"><label>Date of Birth</label><input name="Date of Birth" type="text"></div>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <div class="form-group"><label>Place of Birth</label><input name="Place of Birth"></div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <div class="form-group"><label>Nationality</label><input name="Nationality" type="text"></div>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <div class="form-group"><label>Occupation</label><input name="Occupation"></div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <div class="form-group"><label>Contact 1</label><input name="Contact 1"></div>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <div class="form-group"><label>Contact 2</label><input name="Contact 2"></div>
+                  </div>
+                </div>
+                <div class="form-group"><label>Email</label><input name="Email" type="email"></div>
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <div class="form-group"><label>TIN</label><input name="TIN"></div>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <div class="form-group"><label>Ghana Card</label><input name="Ghana Card"></div>
+                  </div>
+                </div>
+                <div class="address-group">
+                  <h5>Residential Address</h5>
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <div class="form-group"><label>GPS</label><input name="GPS"></div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <div class="form-group"><label>House No.</label><input name="House No."></div>
+                    </div>
+                  </div>
+                  <div class="form-group"><label>Landmark</label><input name="Landmark"></div>
+                  <div class="form-group"><label>Street</label><input name="Street"></div>
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <div class="form-group"><label>City</label><input name="City"></div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <div class="form-group"><label>Town</label><input name="Town"></div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <div class="form-group"><label>District</label><input name="District"></div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <div class="form-group"><label>Region</label><input name="Region"></div>
+                    </div>
+                  </div>
+                  <div class="form-group"><label>Country</label><input name="Country"></div>
+                </div>
+              </fieldset>
+
+              <!-- 5. Subscribers -->
+              <fieldset id="subscribers">
+                <legend>Subscribers</legend>
+                <div id="subscribersContainer">
+                  <div class="dynamic-section">
+                    <h4>Subscriber 1</h4>
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                        <div class="form-group"><label>First Name</label><input name="First Name"></div>
+                      </div>
+                      <div class="col-md-6 mb-3">
+                        <div class="form-group"><label>Middle Name</label><input name="Middle Name"></div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                        <div class="form-group"><label>Surname</label><input name="Surname"></div>
+                      </div>
+                      <div class="col-md-6 mb-3">
+                        <div class="form-group"><label>Former Name</label><input name="Former Name"></div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                        <div class="form-group"><label>Date of Birth</label><input name="Date of Birth" type="text"></div>
+                      </div>
+                      <div class="col-md-6 mb-3">
+                        <div class="form-group"><label>Place of Birth</label><input name="Place of Birth"></div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                        <div class="form-group"><label>Nationality</label><input name="Nationality" type="text"></div>
+                      </div>
+                      <div class="col-md-6 mb-3">
+                        <div class="form-group"><label>Occupation</label><input name="Occupation"></div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                        <div class="form-group"><label>Contact 1</label><input name="Contact 1"></div>
+                      </div>
+                      <div class="col-md-6 mb-3">
+                        <div class="form-group"><label>Contact 2</label><input name="Contact 2"></div>
+                      </div>
+                    </div>
+                    <div class="form-group"><label>Email</label><input name="Email" type="email"></div>
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                        <div class="form-group"><label>TIN</label><input name="TIN"></div>
+                      </div>
+                      <div class="col-md-6 mb-3">
+                        <div class="form-group"><label>Ghana Card</label><input name="Ghana Card"></div>
+                      </div>
+                    </div>
+                    <div class="address-group">
+                      <h5>Residential Address</h5>
+                      <div class="row">
+                        <div class="col-md-6 mb-3">
+                          <div class="form-group"><label>GPS</label><input name="GPS"></div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                          <div class="form-group"><label>House No.</label><input name="House No."></div>
+                        </div>
+                      </div>
+                      <div class="form-group"><label>Landmark</label><input name="Landmark"></div>
+                      <div class="form-group"><label>Street</label><input name="Street"></div>
+                      <div class="row">
+                        <div class="col-md-6 mb-3">
+                          <div class="form-group"><label>City</label><input name="City"></div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                          <div class="form-group"><label>Town</label><input name="Town"></div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-6 mb-3">
+                          <div class="form-group"><label>District</label><input name="District"></div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                          <div class="form-group"><label>Region</label><input name="Region"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <button type="button" class="btn btn-primary" onclick="addSubscriber()">Add Subscriber</button>
+              </fieldset>
+
+              <button type="submit" class="btn btn-success w-100">Submit Form</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification element -->
+  <div id="notification" class="notification"></div>
+
+  <!-- Loading Spinner -->
+  <div class="loading-spinner" id="loadingSpinner">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-2">Processing...</p>
+  </div>
+
+  <!-- Success Modal -->
+  <div class="modal fade" id="successModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Submission Successful</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <p>Your information has been successfully submitted. Thank you!</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <script>
+    // Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBzSHkVxRiLC5gsq04LTTDnXaGdoF7eJ2c",
+      authDomain: "easyregistrationforms.firebaseapp.com",
+      projectId: "easyregistrationforms",
+      storageBucket: "easyregistrationforms.firebasestorage.app",
+      messagingSenderId: "589421628989",
+      appId: "1:589421628989:web:d9f6e9dbe372ab7acd6454",
+      measurementId: "G-GVCPBN8VB5"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // Global Variables
+    let uniqueId = null;
+    let selectedSecretaryIndex = -1; // Track which director is selected as secretary
+
+    // Initialize the system
+    document.addEventListener('DOMContentLoaded', function() {
+      // Get the unique ID from URL parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      uniqueId = urlParams.get('id');
+      
+      if (!uniqueId) {
+        showNotification('Invalid data collection link. Please contact the person who shared this link with you.', 'error');
+        document.getElementById('mainForm').style.display = 'none';
+        return;
+      }
+      
+      // Find the user associated with this unique ID
+      db.collection('users').where('uniqueId', '==', uniqueId).get()
+        .then((querySnapshot) => {
+          if (querySnapshot.empty) {
+            showNotification('Invalid data collection link. Please contact the person who shared this link with you.', 'error');
+            document.getElementById('mainForm').style.display = 'none';
+            return;
+          }
+          
+          // Get the user data
+          const userDoc = querySnapshot.docs[0];
+          const userData = userDoc.data();
+          
+          // Update the user info
+          document.getElementById('userInfo').textContent = `Please fill out this form for ${userData.firstName || userData.email}.`;
+        })
+        .catch((error) => {
+          console.error('Error finding user:', error);
+          showNotification('An error occurred. Please try again later.', 'error');
+        });
+    });
+
+    // Form submission handler
+    document.getElementById('mainForm').addEventListener('submit', function(e){
+      e.preventDefault();
+      
+      showLoading(true);
+      
+      const clientId = 'client_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      const submittedAt = new Date().toISOString();
+      
+      // Collect all form data
+      const formData = [];
+      
+      // Company Information
+      const companyInfo = document.getElementById('companyInfo');
+      companyInfo.querySelectorAll('input, select').forEach(inp => {
+        formData.push({
+          label: inp.name,
+          value: inp.value.trim(),
+          section: 'companyInfo'
+        });
+      });
+      
+      // Office Details
+      const officeDetails = document.getElementById('officeDetails');
+      officeDetails.querySelectorAll('input, select').forEach(inp => {
+        formData.push({
+          label: inp.name,
+          value: inp.value.trim(),
+          section: 'officeDetails'
+        });
+      });
+      
+      // Directors
+      const directors = [];
+      document.querySelectorAll('#directorsContainer .dynamic-section').forEach(section => {
+        const directorData = [];
+        section.querySelectorAll('input, select').forEach(inp => {
+          directorData.push({
+            label: inp.name,
+            value: inp.value.trim()
+          });
+        });
+        directors.push(directorData);
+      });
+      
+      // Director Roles
+      const directorRoles = [];
+      document.querySelectorAll('#directorsContainer .dynamic-section').forEach((section, index) => {
+        const isSubscriber = section.querySelector('input[name="isSubscriber"]').checked;
+        const isSecretary = section.querySelector('input[name="isSecretary"]').checked;
+        const sharePercent = isSubscriber ? section.querySelector('input[name="sharePercent"]').value : '';
+        
+        directorRoles.push({
+          isSubscriber: isSubscriber,
+          isSecretary: isSecretary,
+          sharePercent: sharePercent
+        });
+      });
+      
+      // Secretary - only collect if no director is selected as secretary
+      let secretary = [];
+      if (selectedSecretaryIndex === -1) {
+        document.querySelectorAll('#secretaryDetails input, #secretaryDetails select').forEach(inp => {
+          secretary.push({
+            label: inp.name,
+            value: inp.value.trim()
+          });
+        });
+      }
+      
+      // Subscribers
+      const subscribers = [];
+      document.querySelectorAll('#subscribersContainer .dynamic-section').forEach(section => {
+        const subscriberData = [];
+        section.querySelectorAll('input, select').forEach(inp => {
+          subscriberData.push({
+            label: inp.name,
+            value: inp.value.trim()
+          });
+        });
+        subscribers.push(subscriberData);
+      });
+      
+      // Create client data object
+      const clientData = {
+        id: clientId,
+        uniqueId: uniqueId,
+        submittedAt: submittedAt,
+        formData: formData,
+        directors: directors,
+        directorRoles: directorRoles,
+        secretary: secretary,
+        subscribers: subscribers
+      };
+      
+      // Save to Firestore
+      db.collection('clientData').add(clientData)
+        .then(() => {
+          showLoading(false);
+          
+          // Show success modal
+          const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+          successModal.show();
+          
+          // Reset form after modal is closed
+          document.getElementById('successModal').addEventListener('hidden.bs.modal', function () {
+            document.getElementById('mainForm').reset();
+          });
+        })
+        .catch((error) => {
+          showLoading(false);
+          console.error('Error submitting data:', error);
+          showNotification('An error occurred while submitting your data. Please try again.', 'error');
+        });
+    });
+
+    // Toggle Share Percentage input based on Subscriber checkbox
+    function toggleSharePercent(checkbox, directorIndex) {
+      const sharePercentContainer = checkbox.closest('.director-roles').querySelector('.share-percent-container');
+      sharePercentContainer.style.display = checkbox.checked ? 'block' : 'none';
+    }
+
+    // Handle Secretary selection
+    function handleSecretarySelection(checkbox, directorIndex) {
+      if (checkbox.checked) {
+        // Set this director as the secretary
+        selectedSecretaryIndex = directorIndex;
+        
+        // Hide the Secretary Details fieldset
+        document.getElementById('secretaryDetails').style.display = 'none';
+        
+        // Disable all other secretary checkboxes
+        const allSecretaryCheckboxes = document.querySelectorAll('input[name="isSecretary"]');
+        allSecretaryCheckboxes.forEach((cb, index) => {
+          if (index !== directorIndex) {
+            cb.checked = false;
+            cb.disabled = true;
+            cb.closest('.checkbox-label').classList.add('disabled');
+          }
+        });
+      } else {
+        // Unset this director as secretary
+        selectedSecretaryIndex = -1;
+        
+        // Show the Secretary Details fieldset
+        document.getElementById('secretaryDetails').style.display = 'block';
+        
+        // Enable all secretary checkboxes
+        const allSecretaryCheckboxes = document.querySelectorAll('input[name="isSecretary"]');
+        allSecretaryCheckboxes.forEach(cb => {
+          cb.disabled = false;
+          cb.closest('.checkbox-label').classList.remove('disabled');
+        });
+      }
+    }
+
+    // Dynamic section functions
+    function addDirector() {
+      const container = document.getElementById('directorsContainer');
+      const currentCount = container.querySelectorAll('.dynamic-section').length;
+      const newCount = currentCount + 1;
+      
+      // Add new director section with roles
+      const newDirector = document.createElement('div');
+      newDirector.className = 'dynamic-section';
+      newDirector.innerHTML = `
+        <button type="button" class="btn btn-sm btn-danger float-end" onclick="removeEntry(this, 'directors')">×</button>
+        <h4>Director ${newCount}</h4>
+        <div class="director-roles">
+          <div class="checkbox-group">
+            <label class="checkbox-label">
+              <input type="checkbox" name="isSubscriber" onchange="toggleSharePercent(this, ${currentCount})">
+              <span>Is also a Subscriber</span>
+            </label>
+            <div class="share-percent-container" style="display: none;">
+              <label>Share Percentage</label>
+              <input type="number" name="sharePercent" min="0" max="100" step="0.01">
+            </div>
+            <label class="checkbox-label ${selectedSecretaryIndex !== -1 ? 'disabled' : ''}">
+              <input type="checkbox" name="isSecretary" onchange="handleSecretarySelection(this, ${currentCount})" ${selectedSecretaryIndex !== -1 ? 'disabled' : ''}>
+              <span>Is also the Secretary</span>
+            </label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <div class="form-group"><label>First Name</label><input name="First Name"></div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <div class="form-group"><label>Middle Name</label><input name="Middle Name"></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <div class="form-group"><label>Surname</label><input name="Surname"></div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <div class="form-group"><label>Former Name</label><input name="Former Name"></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <div class="form-group"><label>Date of Birth</label><input name="Date of Birth" type="text"></div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <div class="form-group"><label>Place of Birth</label><input name="Place of Birth"></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <div class="form-group"><label>Nationality</label><input name="Nationality" type="text"></div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <div class="form-group"><label>Occupation</label><input name="Occupation"></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <div class="form-group"><label>Contact 1</label><input name="Contact 1"></div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <div class="form-group"><label>Contact 2</label><input name="Contact 2"></div>
+          </div>
+        </div>
+        <div class="form-group"><label>Email</label><input name="Email" type="email"></div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <div class="form-group"><label>TIN</label><input name="TIN"></div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <div class="form-group"><label>Ghana Card</label><input name="Ghana Card"></div>
+          </div>
+        </div>
+        <div class="address-group">
+          <h5>Residential Address</h5>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <div class="form-group"><label>GPS</label><input name="GPS"></div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <div class="form-group"><label>House No.</label><input name="House No."></div>
+            </div>
+          </div>
+          <div class="form-group"><label>Landmark</label><input name="Landmark"></div>
+          <div class="form-group"><label>Street</label><input name="Street"></div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <div class="form-group"><label>City</label><input name="City"></div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <div class="form-group"><label>Town</label><input name="Town"></div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <div class="form-group"><label>District</label><input name="District"></div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <div class="form-group"><label>Region</label><input name="Region"></div>
+            </div>
+          </div>
+          <div class="form-group"><label>Country</label><input name="Country"></div>
+        </div>
+      `;
+      container.appendChild(newDirector);
+    }
+
+    function addSubscriber() {
+      const container = document.getElementById('subscribersContainer');
+      const currentCount = container.querySelectorAll('.dynamic-section').length;
+      const newCount = currentCount + 1;
+      
+      const newSubscriber = document.createElement('div');
+      newSubscriber.className = 'dynamic-section';
+      newSubscriber.innerHTML = `
+        <button type="button" class="btn btn-sm btn-danger float-end" onclick="removeEntry(this, 'subscribers')">×</button>
+        <h4>Subscriber ${newCount}</h4>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <div class="form-group"><label>First Name</label><input name="First Name"></div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <div class="form-group"><label>Middle Name</label><input name="Middle Name"></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <div class="form-group"><label>Surname</label><input name="Surname"></div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <div class="form-group"><label>Former Name</label><input name="Former Name"></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <div class="form-group"><label>Date of Birth</label><input name="Date of Birth" type="text"></div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <div class="form-group"><label>Place of Birth</label><input name="Place of Birth"></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <div class="form-group"><label>Nationality</label><input name="Nationality" type="text"></div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <div class="form-group"><label>Occupation</label><input name="Occupation"></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <div class="form-group"><label>Contact 1</label><input name="Contact 1"></div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <div class="form-group"><label>Contact 2</label><input name="Contact 2"></div>
+          </div>
+        </div>
+        <div class="form-group"><label>Email</label><input name="Email" type="email"></div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <div class="form-group"><label>TIN</label><input name="TIN"></div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <div class="form-group"><label>Ghana Card</label><input name="Ghana Card"></div>
+          </div>
+        </div>
+        <div class="address-group">
+          <h5>Residential Address</h5>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <div class="form-group"><label>GPS</label><input name="GPS"></div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <div class="form-group"><label>House No.</label><input name="House No."></div>
+            </div>
+          </div>
+          <div class="form-group"><label>Landmark</label><input name="Landmark"></div>
+          <div class="form-group"><label>Street</label><input name="Street"></div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <div class="form-group"><label>City</label><input name="City"></div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <div class="form-group"><label>Town</label><input name="Town"></div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <div class="form-group"><label>District</label><input name="District"></div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <div class="form-group"><label>Region</label><input name="Region"></div>
+            </div>
+          </div>
+        </div>
+      `;
+      container.appendChild(newSubscriber);
+    }
+
+    function removeEntry(button, type) {
+      const section = button.closest('.dynamic-section');
+      const index = Array.from(section.parentNode.querySelectorAll('.dynamic-section')).indexOf(section);
+      
+      section.style.animation = 'fadeOut 0.3s ease-out';
+      
+      setTimeout(() => {
+        section.remove();
+        
+        // Check if this director was selected as secretary
+        if (type === 'directors') {
+          const secretaryCheckbox = section.querySelector('input[name="isSecretary"]');
+          if (secretaryCheckbox && secretaryCheckbox.checked) {
+            // Reset secretary selection
+            selectedSecretaryIndex = -1;
+            // Show secretary details section
+            document.getElementById('secretaryDetails').style.display = 'block';
+            // Enable all secretary checkboxes
+            const allSecretaryCheckboxes = document.querySelectorAll('input[name="isSecretary"]');
+            allSecretaryCheckboxes.forEach(cb => {
+              cb.disabled = false;
+              cb.closest('.checkbox-label').classList.remove('disabled');
+            });
+          }
+        }
+        
+        // Renumber the remaining entries
+        if (type === 'directors') {
+          updateDirectorNumbers();
+        } else if (type === 'subscribers') {
+          updateSubscriberNumbers();
+        }
+      }, 300);
+    }
+
+    function updateDirectorNumbers() {
+      const container = document.getElementById('directorsContainer');
+      const directors = container.querySelectorAll('.dynamic-section');
+      
+      directors.forEach((director, index) => {
+        const newNumber = index + 1;
+        const h4 = director.querySelector('h4');
+        if (h4) {
+          h4.textContent = `Director ${newNumber}`;
+        }
+        
+        // Update the onchange handler for the subscriber checkbox
+        const subscriberCheckbox = director.querySelector('input[name="isSubscriber"]');
+        if (subscriberCheckbox) {
+          subscriberCheckbox.setAttribute('onchange', `toggleSharePercent(this, ${index})`);
+        }
+        
+        // Update the onchange handler for the secretary checkbox
+        const secretaryCheckbox = director.querySelector('input[name="isSecretary"]');
+        if (secretaryCheckbox) {
+          secretaryCheckbox.setAttribute('onchange', `handleSecretarySelection(this, ${index})`);
+        }
+      });
+    }
+
+    function updateSubscriberNumbers() {
+      const container = document.getElementById('subscribersContainer');
+      const subscribers = container.querySelectorAll('.dynamic-section');
+      
+      subscribers.forEach((subscriber, index) => {
+        const newNumber = index + 1;
+        const h4 = subscriber.querySelector('h4');
+        if (h4) {
+          h4.textContent = `Subscriber ${newNumber}`;
+        }
+      });
+    }
+
+    function showNotification(message, type = 'success') {
+      const notification = document.getElementById('notification');
+      notification.textContent = message;
+      notification.className = `notification ${type}`;
+      notification.classList.add('show');
+      
+      setTimeout(() => {
+        notification.classList.remove('show');
+      }, 3000);
+    }
+
+    function showLoading(show) {
+      if (show) {
+        document.getElementById('loadingSpinner').style.display = 'flex';
+      } else {
+        document.getElementById('loadingSpinner').style.display = 'none';
+      }
+    }
+
+    // Add fade out animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes fadeOut {
+        from {
+          opacity: 1;
+          transform: scale(1);
+        }
+        to {
+          opacity: 0;
+          transform: scale(0.9);
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
+</body>
+</html>
