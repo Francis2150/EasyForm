@@ -24,7 +24,7 @@
                         <a class="nav-link" href="index.html">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#" id="logoutLink">Logout</a>
+                        <a class="nav-link" href="#" id="logoutLink" style="display: none;">Logout</a>
                     </li>
                 </ul>
             </div>
@@ -42,12 +42,58 @@
                 <div class="col-md-6">
                     <div class="card">
                         <div class="card-header text-center">
-                            <h4>Account Login</h4>
+                            <h4 id="authTitle">Account Login</h4>
                         </div>
                         <div class="card-body">
-                            <div class="text-center mb-4">
-                                <p>Please login to access the registration platform</p>
-                                <a href="authenticate.html" class="btn btn-primary">Login / Sign Up</a>
+                            <!-- Login Form -->
+                            <div id="loginForm">
+                                <div class="mb-3">
+                                    <label for="loginEmail" class="form-label">Email Address</label>
+                                    <input type="email" class="form-control" id="loginEmail" placeholder="your@email.com" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="loginPhone" class="form-label">Phone Number (Password)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">+233</span>
+                                        <input type="tel" class="form-control" id="loginPhone" placeholder="241234567" required>
+                                    </div>
+                                    <div class="form-text">Your phone number is used as your password</div>
+                                </div>
+                                <button type="button" class="btn btn-primary w-100" id="loginBtn">Login</button>
+                                <div class="text-center mt-3">
+                                    <p>Don't have an account? <a href="#" id="showSignupLink">Sign up</a></p>
+                                </div>
+                            </div>
+                            
+                            <!-- Signup Form -->
+                            <div id="signupForm" style="display: none;">
+                                <div class="mb-3">
+                                    <label for="firstName" class="form-label">First Name</label>
+                                    <input type="text" class="form-control" id="firstName" placeholder="Enter your first name" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="signupEmail" class="form-label">Email Address</label>
+                                    <input type="email" class="form-control" id="signupEmail" placeholder="your@email.com" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="signupPhone" class="form-label">Phone Number (Password)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">+233</span>
+                                        <input type="tel" class="form-control" id="signupPhone" placeholder="241234567" required>
+                                    </div>
+                                    <div class="form-text">Your phone number will be used as your password</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="confirmPhone" class="form-label">Confirm Phone Number</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">+233</span>
+                                        <input type="tel" class="form-control" id="confirmPhone" placeholder="241234567" required>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-primary w-100" id="signupBtn">Create Account</button>
+                                <div class="text-center mt-3">
+                                    <p>Already have an account? <a href="#" id="showLoginLink">Login</a></p>
+                                </div>
                             </div>
                         </div>
                     </div>

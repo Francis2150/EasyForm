@@ -25,6 +25,9 @@ let transactionsVisible = false;
 // DOM Elements
 const authSection = document.getElementById('authSection');
 const dashboardSection = document.getElementById('dashboardSection');
+const loginForm = document.getElementById('loginForm');
+const signupForm = document.getElementById('signupForm');
+const authTitle = document.getElementById('authTitle');
 const notification = document.getElementById('notification');
 const loadingSpinner = document.getElementById('loadingSpinner');
 const topUpModal = new bootstrap.Modal(document.getElementById('topUpModal'));
@@ -41,6 +44,27 @@ document.addEventListener('DOMContentLoaded', () => {
             showSection('auth');
         }
     });
+
+    // Auth Navigation
+    document.getElementById('showSignupLink')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        loginForm.style.display = 'none';
+        signupForm.style.display = 'block';
+        authTitle.textContent = 'Create Account';
+    });
+
+    document.getElementById('showLoginLink')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        signupForm.style.display = 'none';
+        loginForm.style.display = 'block';
+        authTitle.textContent = 'Account Login';
+    });
+
+    // Login
+    document.getElementById('loginBtn')?.addEventListener('click', login);
+
+    // Signup
+    document.getElementById('signupBtn')?.addEventListener('click', signup);
 
     // Logout - Multiple event listeners for both logout links/buttons
     document.getElementById('logoutLink')?.addEventListener('click', (e) => {
@@ -96,8 +120,12 @@ function showSection(section) {
 
     if (section === 'auth') {
         authSection?.classList.add('active');
+        // Hide logout link in auth section
+        document.getElementById('logoutLink').style.display = 'none';
     } else if (section === 'dashboard') {
         dashboardSection?.classList.add('active');
+        // Show logout link in dashboard section
+        document.getElementById('logoutLink').style.display = 'block';
     }
 }
 
@@ -130,6 +158,130 @@ function logout() {
         .catch((error) => {
             showLoading(false);
             showNotification('Error logging out: ' + error.message, 'error');
+        });
+}
+
+function generateUniqueLink(firstName) {
+    const uniqueId = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    return `${firstName}_LIMITED_DATA_COLLECTION_FORM_${uniqueId}`;
+}
+
+function login() {
+    const email = document.getElementById('loginEmail').value;
+    const phone = document.getElementById('loginPhone').value;
+    
+    if (!email || !phone) {
+        showNotification('Please enter both email and phone number', 'error');
+        return;
+    }
+
+    showLoading(true);
+    
+    // Try to sign in with Firebase Auth first
+    auth.signInWithEmailAndPassword(email, phone)
+        .then((userCredential) => {
+            // Signed in
+            showLoading(false);
+            showNotification('Login successful!', 'success');
+        })
+        .catch((error) => {
+            // If sign in fails, check if user exists in Firestore
+            if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+                // Check if user exists in Firestore with matching email and phone
+                db.collection('users').where('email', '==', email).where('phone', '==', phone).get()
+                    .then((querySnapshot) => {
+                        if (querySnapshot.empty) {
+                            showLoading(false);
+                            showNotification('Invalid email or phone number', 'error');
+                            return;
+                        }
+                        
+                        // User found in Firestore, create Firebase Auth account
+                        auth.createUserWithEmailAndPassword(email, phone)
+                            .then((userCredential) => {
+                                showLoading(false);
+                                showNotification('Login successful!', 'success');
+                            })
+                            .catch((createError) => {
+                                showLoading(false);
+                                showNotification(createError.message, 'error');
+                            });
+                    })
+                    .catch((checkError) => {
+                        showLoading(false);
+                        showNotification('Error checking credentials. Please try again.', 'error');
+                    });
+            } else {
+                showLoading(false);
+                showNotification(error.message, 'error');
+            }
+        });
+}
+
+function signup() {
+    const firstName = document.getElementById('firstName').value;
+    const email = document.getElementById('signupEmail').value;
+    const phone = document.getElementById('signupPhone').value;
+    const confirmPhone = document.getElementById('confirmPhone').value;
+    
+    if (!firstName || !email || !phone || !confirmPhone) {
+        showNotification('Please fill all fields', 'error');
+        return;
+    }
+    
+    if (phone !== confirmPhone) {
+        showNotification('Phone numbers do not match', 'error');
+        return;
+    }
+    
+    showLoading(true);
+    
+    // Create user in Firebase Auth first
+    auth.createUserWithEmailAndPassword(email, phone)
+        .then((userCredential) => {
+            const user = userCredential.user;
+            
+            // Generate unique data collection link
+            const uniqueLink = generateUniqueLink(firstName);
+            
+            // Get the base URL for the data collection form
+            const baseUrl = window.location.origin + '/EasyForm/EasyRegistrationForms/data-collection.html';
+            const fullLink = baseUrl + '?link=' + uniqueLink;
+            
+            // Create user record in Firestore
+            const userData = {
+                firstName: firstName,
+                email: email,
+                phone: phone,
+                credit_balance: 0,
+                usage_count: 0,
+                transactions: [],
+                dataCollectionLink: uniqueLink,
+                dataCollectionFullUrl: fullLink,
+                created_at: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            db.collection('users').doc(user.uid).set(userData)
+                .then(() => {
+                    showLoading(false);
+                    showNotification(`Account created successfully! Your data collection link: ${fullLink}`, 'success');
+                    
+                    // Store the link in localStorage for immediate use
+                    localStorage.setItem('dataCollectionLink', uniqueLink);
+                    localStorage.setItem('dataCollectionFullUrl', fullLink);
+                    
+                    setTimeout(() => {
+                        showSection('dashboard');
+                    }, 2000);
+                })
+                .catch((error) => {
+                    showLoading(false);
+                    showNotification(error.message, 'error');
+                });
+        })
+        .catch((error) => {
+            showLoading(false);
+            showNotification(error.message, 'error');
         });
 }
 
