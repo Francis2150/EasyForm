@@ -307,6 +307,16 @@
       transform: translateX(0);
     }
 
+    .notification.error {
+      background: linear-gradient(135deg, var(--danger-color), #ff6b35);
+      color: white;
+    }
+
+    .notification.info {
+      background: linear-gradient(135deg, var(--info-color), #00b4d8);
+      color: white;
+    }
+
     /* Director Roles Section Styles */
     .director-roles {
       background: #f8f9fa;
@@ -430,6 +440,26 @@
       color: var(--primary-color);
     }
 
+    /* Error State */
+    .error-container {
+      background: rgba(251, 86, 7, 0.1);
+      border: 2px solid var(--danger-color);
+      border-radius: var(--border-radius);
+      padding: 20px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .error-container h3 {
+      color: var(--danger-color);
+      margin-bottom: 10px;
+    }
+
+    .error-container p {
+      color: var(--dark-color);
+      margin-bottom: 15px;
+    }
+
     /* Responsive Design */
     @media (max-width: 768px) {
       body {
@@ -512,6 +542,14 @@
       <a href="authenticate.html" class="nav-btn">Owner Login</a>
     </div>
 
+    <!-- Error Container -->
+    <div id="errorContainer" class="error-container" style="display: none;">
+      <i class="fas fa-exclamation-triangle" style="font-size: 48px; color: var(--danger-color); margin-bottom: 15px;"></i>
+      <h3>Invalid Link</h3>
+      <p id="errorMessage">The link you're using is not valid. Please contact the person who shared this link with you.</p>
+      <a href="authenticate.html" class="btn btn-primary">Go to Login Page</a>
+    </div>
+
     <!-- Owner Information -->
     <div id="ownerInfo" class="owner-info" style="display: none;">
       <i class="fas fa-user-circle"></i>
@@ -522,7 +560,7 @@
     </div>
 
     <!-- Form View -->
-    <div id="formView">
+    <div id="formView" style="display: none;">
       <div class="form-container">
         <form id="mainForm">
 
@@ -775,16 +813,20 @@
         // Fetch owner data
         fetchOwnerData(ownerID);
       } else {
-        // No owner ID in URL, show generic form
-        document.getElementById('mainTitle').textContent = 'Company Data Collection Form';
+        // No owner ID in URL, show error
+        showError('No owner ID provided in the link. Please contact the person who shared this link with you.');
       }
     });
 
     function fetchOwnerData(ownerId) {
+      console.log('Fetching owner data for ID:', ownerId);
+      
+      // Try to find the owner by uniqueId
       db.collection('users').where('uniqueId', '==', ownerId).get()
         .then((querySnapshot) => {
           if (querySnapshot.empty) {
-            showNotification('Invalid owner link. Please contact the person who shared this link with you.', 'error');
+            console.log('No owner found with uniqueId:', ownerId);
+            showError('The owner ID in your link is not valid. Please contact the person who shared this link with you.');
             return;
           }
           
@@ -792,16 +834,29 @@
           const doc = querySnapshot.docs[0];
           ownerData = doc.data();
           
+          console.log('Owner data found:', ownerData);
+          
           // Display owner information
           document.getElementById('ownerInfo').style.display = 'flex';
           document.getElementById('ownerName').textContent = ownerData.firstName || 'Unknown';
           document.getElementById('ownerId').textContent = ownerId;
           document.getElementById('mainTitle').textContent = `Company Data Collection Form - ${ownerData.firstName || 'Unknown'}`;
+          
+          // Show the form
+          document.getElementById('formView').style.display = 'block';
+          document.getElementById('errorContainer').style.display = 'none';
         })
         .catch((error) => {
           console.error("Error getting owner data:", error);
-          showNotification('Error loading owner information. Please try again later.', 'error');
+          showError('Error loading owner information. Please try again later or contact support.');
         });
+    }
+
+    function showError(message) {
+      document.getElementById('errorMessage').textContent = message;
+      document.getElementById('errorContainer').style.display = 'block';
+      document.getElementById('formView').style.display = 'none';
+      document.getElementById('ownerInfo').style.display = 'none';
     }
 
     // Form submission handler
