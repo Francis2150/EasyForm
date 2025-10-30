@@ -211,10 +211,31 @@ function updateDashboard(userData) {
         freeSubmissionsElement.textContent = freeSubmissions;
     }
     
-    // Update shareable link
+    // Update shareable link - This is the key part
     const shareableLinkElement = document.getElementById('shareableLink');
     if (shareableLinkElement) {
-        shareableLinkElement.value = userData.shareableLink || '';
+        // Check if shareableLink exists in userData
+        if (userData.shareableLink) {
+            shareableLinkElement.value = userData.shareableLink;
+            console.log('Shareable link set to:', userData.shareableLink);
+        } else if (userData.uniqueId) {
+            // If shareableLink doesn't exist but uniqueId does, create the link
+            const shareableLink = `https://francis2150.github.io/EasyForm/EasyRegistrationForms/llc-input-form.html?owner=${userData.uniqueId}`;
+            shareableLinkElement.value = shareableLink;
+            
+            // Update the user document with the shareable link
+            db.collection('users').doc(currentUser.uid).update({
+                shareableLink: shareableLink
+            }).then(() => {
+                console.log('Shareable link updated in Firestore');
+            }).catch(error => {
+                console.error('Error updating shareable link:', error);
+            });
+        } else {
+            // If neither exists, show a placeholder
+            shareableLinkElement.value = 'Generating link...';
+            console.warn('No uniqueId found for user');
+        }
     }
     
     // Update transactions list
@@ -347,3 +368,26 @@ function processPayment() {
 
     handler.openIframe();
 }
+// Add this function to app.js for debugging
+function debugUserData() {
+    if (currentUser) {
+        db.collection('users').doc(currentUser.uid).get()
+            .then((doc) => {
+                if (doc.exists) {
+                    console.log('User data from Firestore:', doc.data());
+                    console.log('Shareable link:', doc.data().shareableLink);
+                    console.log('Unique ID:', doc.data().uniqueId);
+                } else {
+                    console.log('No user document found');
+                }
+            })
+            .catch((error) => {
+                console.error('Error getting user data:', error);
+            });
+    } else {
+        console.log('No current user');
+    }
+}
+
+// Call this function in the browser console to debug
+window.debugUserData = debugUserData;
