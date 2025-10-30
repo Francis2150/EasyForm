@@ -125,6 +125,7 @@ function login() {
         });
 }
 
+// In auth.js, modify the signup function
 function signup() {
     const firstName = document.getElementById('firstName').value;
     const email = document.getElementById('signupEmail').value;
@@ -173,7 +174,7 @@ function signup() {
                     showLoading(false);
                     showNotification(`Account created successfully! Your data collection link: ${fullLink}`, 'success');
                     
-                    // Store the link in localStorage for display on dashboard
+                    // Store the link in localStorage for immediate use
                     localStorage.setItem('dataCollectionLink', uniqueLink);
                     localStorage.setItem('dataCollectionFullUrl', fullLink);
                     

@@ -148,6 +148,7 @@ function toggleTransactions() {
 }
 
 // Real-time Firestore listener
+// In app.js, modify the loadUserData function
 function loadUserData() {
     console.log('Setting up real-time listener for user:', currentUser.uid);
     showLoading(true);
@@ -168,6 +169,11 @@ function loadUserData() {
                 updateDashboard(doc.data());
             } else {
                 console.log('User document not found, creating new one.');
+                
+                // Check if we have data in localStorage from the signup process
+                const localLink = localStorage.getItem('dataCollectionLink');
+                const localFullUrl = localStorage.getItem('dataCollectionFullUrl');
+                
                 const userData = {
                     email: currentUser.email,
                     credit_balance: 0,
@@ -175,6 +181,13 @@ function loadUserData() {
                     transactions: [],
                     created_at: firebase.firestore.FieldValue.serverTimestamp()
                 };
+                
+                // Add data collection link if available in localStorage
+                if (localLink && localFullUrl) {
+                    userData.dataCollectionLink = localLink;
+                    userData.dataCollectionFullUrl = localFullUrl;
+                }
+                
                 userDocRef.set(userData)
                     .then(() => {
                         console.log('New user document created.');
@@ -193,7 +206,7 @@ function loadUserData() {
         }
     );
 }
-
+// In app.js, modify the updateDashboard function
 function updateDashboard(userData) {
     console.log('Updating dashboard with data:', userData);
     
@@ -259,11 +272,28 @@ function updateDashboard(userData) {
     // Display data collection link if available
     if (userData.dataCollectionLink) {
         displayDataCollectionLink(userData.dataCollectionLink, userData.dataCollectionFullUrl);
+    } else {
+        // If no link in Firestore, check localStorage
+        const localLink = localStorage.getItem('dataCollectionLink');
+        const localFullUrl = localStorage.getItem('dataCollectionFullUrl');
+        
+        if (localLink && localFullUrl) {
+            displayDataCollectionLink(localLink, localFullUrl);
+            
+            // Also update Firestore with the localStorage values
+            db.collection('users').doc(currentUser.uid).update({
+                dataCollectionLink: localLink,
+                dataCollectionFullUrl: localFullUrl
+            }).catch(error => {
+                console.error('Error updating data collection link in Firestore:', error);
+            });
+        }
     }
     
     console.log('Dashboard updated successfully');
 }
 
+// Update the displayDataCollectionLink function
 function displayDataCollectionLink(link, fullUrl) {
     // Get the base URL for GitHub Pages
     const baseUrl = window.location.origin + '/EasyForm/EasyRegistrationForms/data-collection.html';
@@ -295,7 +325,55 @@ function displayDataCollectionLink(link, fullUrl) {
             document.execCommand('copy');
             showNotification('Link copied to clipboard!', 'success');
         });
+    } else {
+        console.error('Data collection link container not found in the DOM');
     }
+}
+function displayDataCollectionLink(link, fullUrl) {
+    // Get the base URL for GitHub Pages
+    const baseUrl = window.location.origin + '/EasyForm/EasyRegistrationForms/data-collection.html';
+    const dataCollectionUrl = fullUrl || `${baseUrl}?link=${link}`;
+    
+    // Show the data collection link container
+    const linkContainer = document.getElementById('dataCollectionLinkContainer');
+    if (linkContainer) {
+        linkContainer.style.display = 'block';
+        
+        // Update the content of the link container
+        linkContainer.innerHTML = `
+            <h5 class="mb-3">
+                <i class="fas fa-link me-2"></i>Data Collection Link
+            </h5>
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" id="dataCollectionLinkInput" value="${dataCollectionUrl}" readonly>
+                <button class="btn btn-outline-secondary" type="button" id="copyLinkBtn">
+                    <i class="fas fa-copy me-1"></i>Copy
+                </button>
+            </div>
+            <p class="text-muted small">Share this link with clients to collect their data for Limited Company registration.</p>
+        `;
+        
+        // Add event listener to the copy button
+      // Update the copy button event listener
+document.getElementById('copyLinkBtn').addEventListener('click', () => {
+    const linkInput = document.getElementById('dataCollectionLinkInput');
+    linkInput.select();
+    
+    try {
+        const successful = document.execCommand('copy');
+        if (successful) {
+            showNotification('Link copied to clipboard!', 'success');
+        } else {
+            showNotification('Unable to copy link', 'error');
+        }
+    } catch (err) {
+        console.error('Failed to copy text: ', err);
+        showNotification('Failed to copy link', 'error');
+    }
+});
+
+    // Add this to the displayDataCollectionLink function
+console.log('Displaying data collection link:', { link, fullUrl });
 }
 
 // Process Payment
@@ -391,3 +469,9 @@ function processPayment() {
 
     handler.openIframe();
 }
+
+
+// In app.js, add event listener for the refresh button
+document.getElementById('refreshDataBtn')?.addEventListener('click', () => {
+    loadUserData();
+});
