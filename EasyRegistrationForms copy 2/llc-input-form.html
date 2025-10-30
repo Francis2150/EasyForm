@@ -872,31 +872,42 @@
       const submittedAt = new Date().toISOString();
       
       // Collect all form data
-      const formData = {};
+      const formData = [];
       
       // Company Information
       const companyInfo = document.getElementById('companyInfo');
       companyInfo.querySelectorAll('input, select').forEach(inp => {
-        formData[`company_${inp.name}`] = inp.value.trim();
+        formData.push({
+          label: inp.name,
+          value: inp.value.trim(),
+          section: 'companyInfo'
+        });
       });
       
       // Office Details
       const officeDetails = document.getElementById('officeDetails');
       officeDetails.querySelectorAll('input, select').forEach(inp => {
-        formData[`office_${inp.name}`] = inp.value.trim();
+        formData.push({
+          label: inp.name,
+          value: inp.value.trim(),
+          section: 'officeDetails'
+        });
       });
       
-      // Directors - Flatten the structure
+      // Directors
       const directors = [];
-      document.querySelectorAll('#directorsContainer .dynamic-section').forEach((section, index) => {
-        const directorData = {};
+      document.querySelectorAll('#directorsContainer .dynamic-section').forEach(section => {
+        const directorData = [];
         section.querySelectorAll('input, select').forEach(inp => {
-          directorData[`director${index}_${inp.name}`] = inp.value.trim();
+          directorData.push({
+            label: inp.name,
+            value: inp.value.trim()
+          });
         });
         directors.push(directorData);
       });
       
-      // Director Roles - Flatten the structure
+      // Director Roles
       const directorRoles = [];
       document.querySelectorAll('#directorsContainer .dynamic-section').forEach((section, index) => {
         const isSubscriber = section.querySelector('input[name="isSubscriber"]').checked;
@@ -904,46 +915,48 @@
         const sharePercent = isSubscriber ? section.querySelector('input[name="sharePercent"]').value : '';
         
         directorRoles.push({
-          [`director${index}_isSubscriber`]: isSubscriber,
-          [`director${index}_isSecretary`]: isSecretary,
-          [`director${index}_sharePercent`]: sharePercent
+          isSubscriber: isSubscriber,
+          isSecretary: isSecretary,
+          sharePercent: sharePercent
         });
       });
       
-      // Secretary - Flatten the structure
-      const secretary = {};
+      // Secretary - only collect if no director is selected as secretary
+      let secretary = [];
       if (selectedSecretaryIndex === -1) {
         document.querySelectorAll('#secretaryDetails input, #secretaryDetails select').forEach(inp => {
-          secretary[`secretary_${inp.name}`] = inp.value.trim();
+          secretary.push({
+            label: inp.name,
+            value: inp.value.trim()
+          });
         });
       }
       
-      // Subscribers - Flatten the structure
+      // Subscribers
       const subscribers = [];
-      document.querySelectorAll('#subscribersContainer .dynamic-section').forEach((section, index) => {
-        const subscriberData = {};
+      document.querySelectorAll('#subscribersContainer .dynamic-section').forEach(section => {
+        const subscriberData = [];
         section.querySelectorAll('input, select').forEach(inp => {
-          subscriberData[`subscriber${index}_${inp.name}`] = inp.value.trim();
+          subscriberData.push({
+            label: inp.name,
+            value: inp.value.trim()
+          });
         });
         subscribers.push(subscriberData);
       });
       
-      // Create client data object with flattened structure
+      // Create client data object
       const clientData = {
         id: clientId,
         submittedAt: submittedAt,
-        ...formData,
-        directorsCount: directors.length,
-        subscribersCount: subscribers.length,
-        ...directorRoles.reduce((acc, role) => ({...acc, ...role}), {}),
-        ...secretary,
-        ...directors.reduce((acc, director) => ({...acc, ...director}), {}),
-        ...subscribers.reduce((acc, subscriber) => ({...acc, ...subscriber}), {}),
+        formData: formData,
+        directors: directors,
+        directorRoles: directorRoles,
+        secretary: secretary,
+        subscribers: subscribers,
         ownerId: ownerID,
         ownerName: ownerData ? ownerData.firstName : 'Unknown'
       };
-      
-      console.log('Client data to save:', clientData);
       
       // Save to Firestore under the owner's collection
       saveClientToFirestore(clientData);
