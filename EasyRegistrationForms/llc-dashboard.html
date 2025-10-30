@@ -433,6 +433,33 @@
       box-shadow: var(--box-shadow-hover);
     }
 
+    /* User Info */
+    .user-info {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: var(--border-radius);
+      padding: 15px;
+      margin-bottom: 20px;
+      box-shadow: var(--box-shadow);
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .user-info i {
+      font-size: 24px;
+      color: var(--primary-color);
+    }
+
+    .user-info p {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .user-info .user-name {
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+
     /* Responsive Design */
     @media (max-width: 768px) {
       body {
@@ -495,6 +522,11 @@
         flex-direction: column;
         gap: 10px;
       }
+      
+      .user-info {
+        flex-direction: column;
+        text-align: center;
+      }
     }
 
     /* Animations */
@@ -537,7 +569,16 @@
   <div class="container">
     <div class="nav-container">
       <h2 id="mainTitle">Client Data Management Dashboard</h2>
-      <a href="llc-input-form.html" class="nav-btn">Add New Client</a>
+      <a href="index.html" class="nav-btn">Back to Dashboard</a>
+    </div>
+
+    <!-- User Information -->
+    <div id="userInfo" class="user-info">
+      <i class="fas fa-user-circle"></i>
+      <div>
+        <p>Welcome, <span class="user-name" id="userName">User</span></p>
+        <p>Your Unique ID: <span id="userUniqueId"></span></p>
+      </div>
     </div>
 
     <!-- Client List View -->
@@ -570,37 +611,95 @@
   <!-- Notification element -->
   <div id="notification" class="notification"></div>
 
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  
   <script>
-    // Initialize the system
-    let currentClientId = null;
+    // Firebase Configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyBzSHkVxRiLC5gsq04LTTDnXaGdoF7eJ2c",
+        authDomain: "easyregistrationforms.firebaseapp.com",
+        projectId: "easyregistrationforms",
+        storageBucket: "easyregistrationforms.firebasestorage.app",
+        messagingSenderId: "589421628989",
+        appId: "1:589421628989:web:d9f6e9dbe372ab7acd6454",
+        measurementId: "G-GVCPBN8VB5"
+    };
 
-    // Check if there are existing clients on page load
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // Initialize the system
+    let currentUser = null;
+    let currentClientId = null;
+    let ownerUniqueId = null;
+
+    // Check if user is logged in
     document.addEventListener('DOMContentLoaded', function() {
-      const clients = getClientsFromStorage();
-      if (clients.length > 0) {
-        showClientList();
-      } else {
-        showEmptyState();
-      }
+      auth.onAuthStateChanged(user => {
+        if (user) {
+          currentUser = user;
+          loadUserData();
+        } else {
+          // Redirect to login page if not logged in
+          window.location.href = 'authenticate.html';
+        }
+      });
     });
 
-    function getClientsFromStorage() {
-      const clients = localStorage.getItem('clientData');
-      return clients ? JSON.parse(clients) : [];
+    function loadUserData() {
+      db.collection('users').doc(currentUser.uid).get()
+        .then((doc) => {
+          if (doc.exists) {
+            const userData = doc.data();
+            ownerUniqueId = userData.uniqueId;
+            
+            // Update user info display
+            document.getElementById('userName').textContent = userData.firstName || 'User';
+            document.getElementById('userUniqueId').textContent = ownerUniqueId;
+            
+            // Load client data
+            loadClientData();
+          } else {
+            showNotification('User data not found. Please contact support.', 'error');
+          }
+        })
+        .catch((error) => {
+          console.error("Error getting user data:", error);
+          showNotification('Error loading user data. Please try again.', 'error');
+        });
     }
 
-    function deleteClientFromStorage(clientId) {
-      const clients = getClientsFromStorage();
-      const filteredClients = clients.filter(client => client.id !== clientId);
-      localStorage.setItem('clientData', JSON.stringify(filteredClients));
-    }
-
-    function showClientList() {
-      document.getElementById('clientDetailView').style.display = 'none';
-      document.getElementById('clientListView').style.display = 'block';
-      document.getElementById('mainTitle').textContent = 'Client Data Management Dashboard';
+    function loadClientData() {
+      showNotification('Loading client data...', 'info');
       
-      renderClientList();
+      // Query the owner's collection
+      db.collection('owners').doc(ownerUniqueId).collection('clients')
+        .orderBy('submittedAt', 'desc')
+        .get()
+        .then((querySnapshot) => {
+          const clients = [];
+          querySnapshot.forEach((doc) => {
+            clients.push({
+              id: doc.id,
+              ...doc.data()
+            });
+          });
+          
+          if (clients.length === 0) {
+            showEmptyState();
+          } else {
+            renderClientList(clients);
+          }
+        })
+        .catch((error) => {
+          console.error("Error getting client data:", error);
+          showNotification('Error loading client data. Please try again.', 'error');
+        });
     }
 
     function showEmptyState() {
@@ -608,19 +707,14 @@
       container.innerHTML = `
         <div class="empty-state">
           <h3>No Client Data Found</h3>
-          <p>Click "Add New Client" to start collecting data</p>
+          <p>No clients have submitted data through your link yet.</p>
+          <p>Share your unique link with clients to start collecting data.</p>
         </div>
       `;
     }
 
-    function renderClientList() {
+    function renderClientList(clients) {
       const container = document.getElementById('clientListContainer');
-      const clients = getClientsFromStorage();
-      
-      if (clients.length === 0) {
-        showEmptyState();
-        return;
-      }
       
       container.innerHTML = clients.map(client => {
         const companyName = client.formData.find(field => field.label === 'Company Name')?.value || 'Unknown Company';
@@ -645,24 +739,29 @@
     }
 
     function viewClient(clientId) {
-      const clients = getClientsFromStorage();
-      const client = clients.find(c => c.id === clientId);
-      
-      if (!client) {
-        showNotification('Client not found!');
-        return;
-      }
-      
-      currentClientId = clientId;
-      
-      document.getElementById('clientListView').style.display = 'none';
-      document.getElementById('clientDetailView').style.display = 'block';
-      document.getElementById('mainTitle').textContent = 'Client Data Details';
-      
-      const companyName = client.formData.find(field => field.label === 'Company Name')?.value || 'Unknown Company';
-      document.getElementById('clientDetailTitle').textContent = `${companyName} - Submitted ${new Date(client.submittedAt).toLocaleString()}`;
-      
-      renderClientDetail(client);
+      // Get the specific client document
+      db.collection('owners').doc(ownerUniqueId).collection('clients').doc(clientId).get()
+        .then((doc) => {
+          if (doc.exists) {
+            const client = doc.data();
+            currentClientId = clientId;
+            
+            document.getElementById('clientListView').style.display = 'none';
+            document.getElementById('clientDetailView').style.display = 'block';
+            document.getElementById('mainTitle').textContent = 'Client Data Details';
+            
+            const companyName = client.formData.find(field => field.label === 'Company Name')?.value || 'Unknown Company';
+            document.getElementById('clientDetailTitle').textContent = `${companyName} - Submitted ${new Date(client.submittedAt).toLocaleString()}`;
+            
+            renderClientDetail(client);
+          } else {
+            showNotification('Client not found!', 'error');
+          }
+        })
+        .catch((error) => {
+          console.error("Error getting client data:", error);
+          showNotification('Error loading client data. Please try again.', 'error');
+        });
     }
 
     function renderClientDetail(client) {
@@ -836,10 +935,24 @@
 
     function deleteClient(clientId) {
       if (confirm('Are you sure you want to delete this client data?')) {
-        deleteClientFromStorage(clientId);
-        renderClientList();
-        showNotification('Client data deleted successfully!');
+        db.collection('owners').doc(ownerUniqueId).collection('clients').doc(clientId).delete()
+          .then(() => {
+            showNotification('Client data deleted successfully!');
+            loadClientData(); // Reload the client list
+          })
+          .catch((error) => {
+            console.error("Error deleting client data:", error);
+            showNotification('Error deleting client data. Please try again.', 'error');
+          });
       }
+    }
+
+    function showClientList() {
+      document.getElementById('clientDetailView').style.display = 'none';
+      document.getElementById('clientListView').style.display = 'block';
+      document.getElementById('mainTitle').textContent = 'Client Data Management Dashboard';
+      
+      loadClientData(); // Reload the client list
     }
 
     function editSection(sectionId) {
@@ -895,7 +1008,7 @@
         }
       });
       
-      // Update the client data in storage
+      // Update the client data in Firestore
       updateClientSectionData(sectionId, updatedData);
       
       table.classList.remove('edit-mode');
@@ -972,60 +1085,70 @@
     }
 
     function updateClientSectionData(sectionId, updatedData) {
-      const clients = getClientsFromStorage();
-      const clientIndex = clients.findIndex(c => c.id === currentClientId);
-      
-      if (clientIndex === -1) return;
-      
-      const client = clients[clientIndex];
-      
-      if (sectionId === 'business') {
-        // Update business fields
-        updatedData.forEach(field => {
-          const existingIndex = client.formData.findIndex(f => f.label === field.label);
-          if (existingIndex !== -1) {
-            client.formData[existingIndex].value = field.value;
+      // Get the current client document
+      db.collection('owners').doc(ownerUniqueId).collection('clients').doc(currentClientId).get()
+        .then((doc) => {
+          if (doc.exists) {
+            const client = doc.data();
+            
+            if (sectionId === 'business') {
+              // Update business fields
+              updatedData.forEach(field => {
+                const existingIndex = client.formData.findIndex(f => f.label === field.label);
+                if (existingIndex !== -1) {
+                  client.formData[existingIndex].value = field.value;
+                }
+              });
+            } else if (sectionId.startsWith('director-')) {
+              const index = parseInt(sectionId.split('-')[1]);
+              if (client.directors && client.directors[index]) {
+                updatedData.forEach(field => {
+                  const existingIndex = client.directors[index].findIndex(f => f.label === field.label);
+                  if (existingIndex !== -1) {
+                    client.directors[index][existingIndex].value = field.value;
+                  }
+                });
+              }
+            } else if (sectionId === 'secretary') {
+              if (client.secretary) {
+                updatedData.forEach(field => {
+                  const existingIndex = client.secretary.findIndex(f => f.label === field.label);
+                  if (existingIndex !== -1) {
+                    client.secretary[existingIndex].value = field.value;
+                  }
+                });
+              }
+            } else if (sectionId.startsWith('subscriber-')) {
+              const index = parseInt(sectionId.split('-')[1]);
+              if (client.subscribers && client.subscribers[index]) {
+                updatedData.forEach(field => {
+                  const existingIndex = client.subscribers[index].findIndex(f => f.label === field.label);
+                  if (existingIndex !== -1) {
+                    client.subscribers[index][existingIndex].value = field.value;
+                  }
+                });
+              }
+            }
+            
+            // Save updated client data
+            return db.collection('owners').doc(ownerUniqueId).collection('clients').doc(currentClientId).update(client);
+          } else {
+            throw new Error('Client document not found');
           }
+        })
+        .then(() => {
+          showNotification('Client data updated successfully!');
+        })
+        .catch((error) => {
+          console.error("Error updating client data:", error);
+          showNotification('Error updating client data. Please try again.', 'error');
         });
-      } else if (sectionId.startsWith('director-')) {
-        const index = parseInt(sectionId.split('-')[1]);
-        if (client.directors && client.directors[index]) {
-          updatedData.forEach(field => {
-            const existingIndex = client.directors[index].findIndex(f => f.label === field.label);
-            if (existingIndex !== -1) {
-              client.directors[index][existingIndex].value = field.value;
-            }
-          });
-        }
-      } else if (sectionId === 'secretary') {
-        if (client.secretary) {
-          updatedData.forEach(field => {
-            const existingIndex = client.secretary.findIndex(f => f.label === field.label);
-            if (existingIndex !== -1) {
-              client.secretary[existingIndex].value = field.value;
-            }
-          });
-        }
-      } else if (sectionId.startsWith('subscriber-')) {
-        const index = parseInt(sectionId.split('-')[1]);
-        if (client.subscribers && client.subscribers[index]) {
-          updatedData.forEach(field => {
-            const existingIndex = client.subscribers[index].findIndex(f => f.label === field.label);
-            if (existingIndex !== -1) {
-              client.subscribers[index][existingIndex].value = field.value;
-            }
-          });
-        }
-      }
-      
-      // Save updated client data
-      clients[clientIndex] = client;
-      localStorage.setItem('clientData', JSON.stringify(clients));
     }
 
-    function showNotification(message) {
+    function showNotification(message, type) {
       const notification = document.getElementById('notification');
       notification.textContent = message;
+      notification.className = `notification ${type}`;
       notification.classList.add('show');
       
       setTimeout(() => {

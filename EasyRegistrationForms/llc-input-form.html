@@ -415,23 +415,19 @@
       gap: 15px;
     }
 
-    .owner-info img {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      object-fit: cover;
-    }
-
-    .owner-info h3 {
-      margin: 0;
-      font-size: 18px;
+    .owner-info i {
+      font-size: 24px;
       color: var(--primary-color);
     }
 
     .owner-info p {
       margin: 0;
       font-size: 14px;
-      color: var(--gray-color);
+    }
+
+    .owner-info .owner-name {
+      font-weight: 600;
+      color: var(--primary-color);
     }
 
     /* Responsive Design */
@@ -513,17 +509,15 @@
   <div class="container">
     <div class="nav-container">
       <h2 id="mainTitle">Company Data Collection Form</h2>
-      <a href="index.html" class="nav-btn">Back to Dashboard</a>
+      <a href="authenticate.html" class="nav-btn">Owner Login</a>
     </div>
 
-    <!-- Owner Information (will be populated if link parameter is present) -->
-    <div id="ownerInfoContainer" style="display: none;">
-      <div class="owner-info">
-        <img src="https://picsum.photos/seed/owner/50/50.jpg" alt="Owner">
-        <div>
-          <h3 id="ownerName">Loading...</h3>
-          <p id="ownerEmail">Loading...</p>
-        </div>
+    <!-- Owner Information -->
+    <div id="ownerInfo" class="owner-info" style="display: none;">
+      <i class="fas fa-user-circle"></i>
+      <div>
+        <p>Submitting form for: <span class="owner-name" id="ownerName"></span></p>
+        <p>Owner ID: <span id="ownerId"></span></p>
       </div>
     </div>
 
@@ -769,44 +763,44 @@
 
     // Initialize the system
     let selectedSecretaryIndex = -1; // Track which director is selected as secretary
-    let ownerLink = null;
+    let ownerID = null;
     let ownerData = null;
 
-    // Read URL parameters on page load
+    // Get owner ID from URL parameters
     document.addEventListener('DOMContentLoaded', function() {
       const params = new URLSearchParams(window.location.search);
-      ownerLink = params.get("link");
+      ownerID = params.get("owner");
       
-      if (ownerLink) {
-        // Load owner information
-        loadOwnerInfo(ownerLink);
+      if (ownerID) {
+        // Fetch owner data
+        fetchOwnerData(ownerID);
+      } else {
+        // No owner ID in URL, show generic form
+        document.getElementById('mainTitle').textContent = 'Company Data Collection Form';
       }
     });
 
-    function loadOwnerInfo(link) {
-      db.collection('owners').doc(link).get()
-        .then((doc) => {
-          if (doc.exists) {
-            ownerData = doc.data();
-            
-            // Display owner information
-            document.getElementById('ownerInfoContainer').style.display = 'block';
-            document.getElementById('ownerName').textContent = ownerData.firstName;
-            document.getElementById('ownerEmail').textContent = ownerData.email;
-            
-            // Update form title
-            document.getElementById('mainTitle').textContent = `Company Data Collection Form - ${ownerData.firstName}`;
-          } else {
-            showNotification('Invalid form link. Please contact the owner for a valid link.', 'error');
-            // Disable form submission
-            document.querySelector('[type="submit"]').disabled = true;
+    function fetchOwnerData(ownerId) {
+      db.collection('users').where('uniqueId', '==', ownerId).get()
+        .then((querySnapshot) => {
+          if (querySnapshot.empty) {
+            showNotification('Invalid owner link. Please contact the person who shared this link with you.', 'error');
+            return;
           }
+          
+          // Get the first matching document
+          const doc = querySnapshot.docs[0];
+          ownerData = doc.data();
+          
+          // Display owner information
+          document.getElementById('ownerInfo').style.display = 'flex';
+          document.getElementById('ownerName').textContent = ownerData.firstName || 'Unknown';
+          document.getElementById('ownerId').textContent = ownerId;
+          document.getElementById('mainTitle').textContent = `Company Data Collection Form - ${ownerData.firstName || 'Unknown'}`;
         })
         .catch((error) => {
-          console.error("Error loading owner info:", error);
-          showNotification('Error loading form information. Please try again later.', 'error');
-          // Disable form submission
-          document.querySelector('[type="submit"]').disabled = true;
+          console.error("Error getting owner data:", error);
+          showNotification('Error loading owner information. Please try again later.', 'error');
         });
     }
 
@@ -814,8 +808,8 @@
     document.getElementById('mainForm').addEventListener('submit', function(e){
       e.preventDefault();
       
-      if (!ownerLink) {
-        showNotification('Invalid form. Please use the link provided by the owner.', 'error');
+      if (!ownerID) {
+        showNotification('Form submission failed. Invalid owner link.', 'error');
         return;
       }
       
@@ -905,26 +899,47 @@
         directorRoles: directorRoles,
         secretary: secretary,
         subscribers: subscribers,
-        ownerLink: ownerLink
+        ownerId: ownerID,
+        ownerName: ownerData ? ownerData.firstName : 'Unknown'
       };
       
       // Save to Firestore under the owner's collection
-      db.collection('owners').doc(ownerLink).collection('clients').doc(clientId).set(clientData)
-        .then(() => {
-          // Show success message
-          showNotification('Form submitted successfully! The owner has been notified.', 'success');
-          
-          // Reset form
-          resetForm();
-        })
-        .catch((error) => {
-          console.error("Error submitting form:", error);
-          showNotification('Error submitting form. Please try again.', 'error');
-        });
+      saveClientToFirestore(clientData);
     });
 
     function generateClientId() {
       return 'client_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    }
+
+    function saveClientToFirestore(clientData) {
+      showNotification('Submitting your data...', 'info');
+      
+      // Save to the owner's collection
+      db.collection('owners').doc(ownerID).collection('clients').doc(clientData.id).set(clientData)
+        .then(() => {
+          // Also update the owner's usage count
+          return db.collection('users').where('uniqueId', '==', ownerID).get();
+        })
+        .then((querySnapshot) => {
+          if (!querySnapshot.empty) {
+            const ownerDoc = querySnapshot.docs[0];
+            return ownerDoc.ref.update({
+              usage_count: firebase.firestore.FieldValue.increment(1)
+            });
+          }
+        })
+        .then(() => {
+          showNotification('Your data has been submitted successfully! Thank you.', 'success');
+          
+          // Reset form after successful submission
+          setTimeout(() => {
+            resetForm();
+          }, 2000);
+        })
+        .catch((error) => {
+          console.error("Error submitting form:", error);
+          showNotification('Error submitting your data. Please try again.', 'error');
+        });
     }
 
     // Toggle Share Percentage input based on Subscriber checkbox
@@ -1194,9 +1209,10 @@
       }
     }
 
-    function showNotification(message) {
+    function showNotification(message, type) {
       const notification = document.getElementById('notification');
       notification.textContent = message;
+      notification.className = `notification ${type}`;
       notification.classList.add('show');
       
       setTimeout(() => {
