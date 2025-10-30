@@ -258,13 +258,13 @@ function updateDashboard(userData) {
     
     // Display data collection link if available
     if (userData.dataCollectionLink) {
-        displayDataCollectionLink(userData.dataCollectionLink);
+        displayDataCollectionLink(userData.dataCollectionLink, userData.dataCollectionFullUrl);
     }
     
     console.log('Dashboard updated successfully');
 }
 
-function displayDataCollectionLink(link) {
+function displayDataCollectionLink(link, fullUrl) {
     // Check if the link container already exists
     let linkContainer = document.getElementById('dataCollectionLinkContainer');
     
@@ -281,11 +281,14 @@ function displayDataCollectionLink(link) {
         }
     }
     
+    // Use the full URL if available, otherwise construct it
+    const dataCollectionUrl = fullUrl || `${window.location.origin}/EasyForm/EasyRegistrationForms/data-collection.html?link=${link}`;
+    
     // Update the content of the link container
     linkContainer.innerHTML = `
         <h5 class="mb-3">Data Collection Link</h5>
         <div class="input-group mb-3">
-            <input type="text" class="form-control" value="${window.location.origin}/data-collection.html?link=${link}" readonly>
+            <input type="text" class="form-control" value="${dataCollectionUrl}" readonly>
             <button class="btn btn-outline-secondary" type="button" id="copyLinkBtn">
                 <i class="fas fa-copy me-1"></i>Copy
             </button>

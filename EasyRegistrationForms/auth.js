@@ -151,6 +151,10 @@ function signup() {
             // Generate unique data collection link
             const uniqueLink = generateUniqueLink(firstName);
             
+            // Get the base URL for the data collection form
+            const baseUrl = window.location.origin + '/EasyForm/EasyRegistrationForms/data-collection.html';
+            const fullLink = baseUrl + '?link=' + uniqueLink;
+            
             // Create user record in Firestore
             const userData = {
                 firstName: firstName,
@@ -160,16 +164,18 @@ function signup() {
                 usage_count: 0,
                 transactions: [],
                 dataCollectionLink: uniqueLink,
+                dataCollectionFullUrl: fullLink,
                 created_at: firebase.firestore.FieldValue.serverTimestamp()
             };
             
             db.collection('users').doc(user.uid).set(userData)
                 .then(() => {
                     showLoading(false);
-                    showNotification(`Account created successfully! Your data collection link: ${window.location.origin}/data-collection.html?link=${uniqueLink}`, 'success');
+                    showNotification(`Account created successfully! Your data collection link: ${fullLink}`, 'success');
                     
                     // Store the link in localStorage for display on dashboard
                     localStorage.setItem('dataCollectionLink', uniqueLink);
+                    localStorage.setItem('dataCollectionFullUrl', fullLink);
                     
                     setTimeout(() => {
                         window.location.href = 'index.html';

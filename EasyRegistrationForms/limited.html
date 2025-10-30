@@ -234,7 +234,8 @@
                 .then((doc) => {
                     if (doc.exists && doc.data().dataCollectionLink) {
                         const link = doc.data().dataCollectionLink;
-                        document.getElementById('dataCollectionLink').value = `${window.location.origin}/data-collection.html?link=${link}`;
+                        const fullUrl = doc.data().dataCollectionFullUrl || `${window.location.origin}/EasyForm/EasyRegistrationForms/data-collection.html?link=${link}`;
+                        document.getElementById('dataCollectionLink').value = fullUrl;
                     }
                 })
                 .catch((error) => {
@@ -357,7 +358,8 @@
                         
                         if (client) {
                             // Open data collection page with the client data
-                            const url = `data-collection.html?link=${doc.data().dataCollectionLink}&view=${clientId}`;
+                            const link = doc.data().dataCollectionLink;
+                            const url = `${window.location.origin}/EasyForm/EasyRegistrationForms/data-collection.html?link=${link}&view=${clientId}`;
                             window.open(url, '_blank');
                         }
                     }
