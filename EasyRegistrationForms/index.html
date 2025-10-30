@@ -89,20 +89,29 @@
                 </div>
                 
                 <div class="col-md-8">
-                    <!-- Collapsible Recent Transactions -->
-                    <div class="dashboard-card">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h5 class="mb-0">Recent Transactions</h5>
-                            <button class="btn btn-sm btn-outline-primary" id="toggleTransactionsBtn">
-                                <i class="fas fa-chevron-down me-1" id="toggleIcon"></i>
-                                <span id="toggleText">Show</span>
+                    <!-- Data Collection Link Card -->
+                    <div id="dataCollectionLinkContainer" class="dashboard-card" style="display: none;">
+                        <h5 class="mb-3">
+                            <i class="fas fa-link me-2"></i>Data Collection Link
+                        </h5>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" id="dataCollectionLinkInput" readonly>
+                            <button class="btn btn-outline-secondary" type="button" id="copyLinkBtn">
+                                <i class="fas fa-copy me-1"></i>Copy
                             </button>
                         </div>
+                        <p class="text-muted small">Share this link with clients to collect their data for Limited Company registration.</p>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <h5 class="mb-3">Recent Transactions</h5>
                         <div id="transactionsContainer" style="display: none;">
-                            <div id="transactionsList">
-                                <p class="text-muted">No transactions yet</p>
-                            </div>
+                            <p class="text-muted">No transactions yet</p>
                         </div>
+                        <button class="btn btn-sm btn-outline-primary" id="toggleTransactionsBtn">
+                            <i class="fas fa-chevron-down me-1" id="toggleIcon"></i>
+                            <span id="toggleText">Show</span>
+                        </button>
                     </div>
                     
                     <div class="dashboard-card">

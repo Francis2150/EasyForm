@@ -265,44 +265,37 @@ function updateDashboard(userData) {
 }
 
 function displayDataCollectionLink(link, fullUrl) {
-    // Check if the link container already exists
-    let linkContainer = document.getElementById('dataCollectionLinkContainer');
+    // Get the base URL for GitHub Pages
+    const baseUrl = window.location.origin + '/EasyForm/EasyRegistrationForms/data-collection.html';
+    const dataCollectionUrl = fullUrl || `${baseUrl}?link=${link}`;
     
-    if (!linkContainer) {
-        // Create the link container if it doesn't exist
-        linkContainer = document.createElement('div');
-        linkContainer.id = 'dataCollectionLinkContainer';
-        linkContainer.className = 'dashboard-card';
+    // Show the data collection link container
+    const linkContainer = document.getElementById('dataCollectionLinkContainer');
+    if (linkContainer) {
+        linkContainer.style.display = 'block';
         
-        // Find where to insert the link container (after the usage statistics card)
-        const usageStatsCard = document.querySelector('.dashboard-card:nth-child(2)');
-        if (usageStatsCard && usageStatsCard.parentNode) {
-            usageStatsCard.parentNode.insertBefore(linkContainer, usageStatsCard.nextSibling);
-        }
+        // Update the content of the link container
+        linkContainer.innerHTML = `
+            <h5 class="mb-3">
+                <i class="fas fa-link me-2"></i>Data Collection Link
+            </h5>
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" id="dataCollectionLinkInput" value="${dataCollectionUrl}" readonly>
+                <button class="btn btn-outline-secondary" type="button" id="copyLinkBtn">
+                    <i class="fas fa-copy me-1"></i>Copy
+                </button>
+            </div>
+            <p class="text-muted small">Share this link with clients to collect their data for Limited Company registration.</p>
+        `;
+        
+        // Add event listener to the copy button
+        document.getElementById('copyLinkBtn').addEventListener('click', () => {
+            const linkInput = document.getElementById('dataCollectionLinkInput');
+            linkInput.select();
+            document.execCommand('copy');
+            showNotification('Link copied to clipboard!', 'success');
+        });
     }
-    
-    // Use the full URL if available, otherwise construct it
-    const dataCollectionUrl = fullUrl || `${window.location.origin}/EasyForm/EasyRegistrationForms/data-collection.html?link=${link}`;
-    
-    // Update the content of the link container
-    linkContainer.innerHTML = `
-        <h5 class="mb-3">Data Collection Link</h5>
-        <div class="input-group mb-3">
-            <input type="text" class="form-control" value="${dataCollectionUrl}" readonly>
-            <button class="btn btn-outline-secondary" type="button" id="copyLinkBtn">
-                <i class="fas fa-copy me-1"></i>Copy
-            </button>
-        </div>
-        <p class="text-muted small">Share this link with clients to collect their data for Limited Company registration.</p>
-    `;
-    
-    // Add event listener to the copy button
-    document.getElementById('copyLinkBtn').addEventListener('click', () => {
-        const linkInput = linkContainer.querySelector('input');
-        linkInput.select();
-        document.execCommand('copy');
-        showNotification('Link copied to clipboard!', 'success');
-    });
 }
 
 // Process Payment
