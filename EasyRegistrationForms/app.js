@@ -136,6 +136,19 @@ function logout() {
         });
 }
 
+// Generate unique ID function
+function generateUniqueId(firstName, email) {
+    // Get last 3 letters of email (before @)
+    const emailPart = email.split('@')[0];
+    const emailSuffix = emailPart.substring(emailPart.length - 3);
+    
+    // Generate a random 4-digit number
+    const randomDigits = Math.floor(1000 + Math.random() * 9000);
+    
+    // Combine first name (lowercase) + random digits + email suffix
+    return `${firstName.toLowerCase()}${randomDigits}${emailSuffix}`;
+}
+
 // Real-time Firestore listener
 function loadUserData() {
     console.log('Setting up real-time listener for user:', currentUser.uid);
@@ -157,13 +170,26 @@ function loadUserData() {
                 updateDashboard(doc.data());
             } else {
                 console.log('User document not found, creating new one.');
+                
+                // Generate unique ID and shareable link for new users
+                const email = currentUser.email;
+                const firstName = email.split('@')[0]; // Use email prefix as default first name
+                const uniqueId = generateUniqueId(firstName, email);
+                const shareableLink = `https://francis2150.github.io/EasyForm/EasyRegistrationForms/llc-input-form.html?owner=${uniqueId}`;
+                
                 const userData = {
-                    email: currentUser.email,
+                    email: email,
+                    firstName: firstName,
+                    uniqueId: uniqueId,
+                    shareableLink: shareableLink,
                     credit_balance: 0,
                     usage_count: 0,
                     transactions: [],
                     created_at: firebase.firestore.FieldValue.serverTimestamp()
                 };
+                
+                console.log('Creating new user with data:', userData);
+                
                 userDocRef.set(userData)
                     .then(() => {
                         console.log('New user document created.');
@@ -368,7 +394,8 @@ function processPayment() {
 
     handler.openIframe();
 }
-// Add this function to app.js for debugging
+
+// Debug function
 function debugUserData() {
     if (currentUser) {
         db.collection('users').doc(currentUser.uid).get()
@@ -389,5 +416,5 @@ function debugUserData() {
     }
 }
 
-// Call this function in the browser console to debug
+// Make the debug function available globally
 window.debugUserData = debugUserData;

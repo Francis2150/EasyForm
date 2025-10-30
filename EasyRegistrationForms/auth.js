@@ -158,30 +158,41 @@ function signup() {
             // Generate unique ID for the owner
             const uniqueId = generateUniqueId(firstName, email);
             
+            // Create shareable link
+            const shareableLink = `https://francis2150.github.io/EasyForm/EasyRegistrationForms/llc-input-form.html?owner=${uniqueId}`;
+            
             // Create user record in Firestore
             const userData = {
                 firstName: firstName,
                 email: email,
                 phone: phone,
                 uniqueId: uniqueId,
-                shareableLink: `https://francis2150.github.io/EasyForm/EasyRegistrationForms/llc-input-form.html?owner=${uniqueId}`,
+                shareableLink: shareableLink,
                 credit_balance: 0,
                 usage_count: 0,
                 transactions: [],
                 created_at: firebase.firestore.FieldValue.serverTimestamp()
             };
             
+            console.log('Creating user with data:', userData);
+            
             db.collection('users').doc(user.uid).set(userData)
                 .then(() => {
+                    console.log('User created successfully');
                     showLoading(false);
-                    window.location.href = 'index.html';
+                    showNotification('Account created successfully!', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1500);
                 })
                 .catch((error) => {
+                    console.error('Error creating user document:', error);
                     showLoading(false);
                     showNotification(error.message, 'error');
                 });
         })
         .catch((error) => {
+            console.error('Error creating user account:', error);
             showLoading(false);
             showNotification(error.message, 'error');
         });
