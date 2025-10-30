@@ -589,4 +589,4 @@ function processPayment() {
     });
 
     handler.openIframe();
-}
+}  
