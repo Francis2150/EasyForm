@@ -302,6 +302,7 @@
         let selectedSecretaryIndex = -1; // Track which director is selected as secretary
         let dataCollectionLink = null;
         let userUid = null;
+        let isLinkValid = false;
 
         // Check if there's a valid data collection link in the URL
         document.addEventListener('DOMContentLoaded', function() {
@@ -313,10 +314,23 @@
                 // Find the user with this data collection link
                 findUserByDataCollectionLink(link);
             } else {
-                // No valid link, redirect to home
-                window.location.href = 'index.html';
+                // No valid link, show error message
+                showErrorState();
             }
         });
+
+        function showErrorState() {
+            document.getElementById('mainTitle').textContent = 'Invalid Data Collection Link';
+            document.getElementById('formView').innerHTML = `
+                <div class="text-center py-5">
+                    <i class="fas fa-exclamation-triangle fa-4x text-warning mb-4"></i>
+                    <h3>Invalid Data Collection Link</h3>
+                    <p class="text-muted">The data collection link you've used is invalid or has expired.</p>
+                    <p class="text-muted">Please contact the person who shared this link with you to get a new one.</p>
+                    <a href="index.html" class="btn btn-primary mt-3">Go to Homepage</a>
+                </div>
+            `;
+        }
 
         function findUserByDataCollectionLink(link) {
             showLoading(true);
@@ -327,10 +341,7 @@
                     showLoading(false);
                     
                     if (querySnapshot.empty) {
-                        showNotification('Invalid data collection link!', 'error');
-                        setTimeout(() => {
-                            window.location.href = 'index.html';
-                        }, 3000);
+                        showErrorState();
                         return;
                     }
                     
@@ -338,6 +349,9 @@
                     const userDoc = querySnapshot.docs[0];
                     userUid = userDoc.id;
                     const userData = userDoc.data();
+                    
+                    // Mark the link as valid
+                    isLinkValid = true;
                     
                     // Update the title with the user's name
                     document.getElementById('mainTitle').textContent = `${userData.firstName}'s Company Data Collection Form`;
@@ -348,10 +362,7 @@
                 .catch((error) => {
                     showLoading(false);
                     console.error('Error finding user:', error);
-                    showNotification('Error validating data collection link!', 'error');
-                    setTimeout(() => {
-                        window.location.href = 'index.html';
-                    }, 3000);
+                    showErrorState();
                 });
         }
 
@@ -882,6 +893,12 @@
         // Form submission handler
         document.getElementById('mainForm').addEventListener('submit', function(e){
             e.preventDefault();
+            
+            // Only allow form submission if the link is valid
+            if (!isLinkValid) {
+                showNotification('Invalid data collection link!', 'error');
+                return;
+            }
             
             const clientId = generateClientId();
             const submittedAt = new Date().toISOString();
