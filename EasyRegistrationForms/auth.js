@@ -68,6 +68,20 @@ function showLoading(show) {
     }
 }
 
+function generateUniqueLink(firstName, email) {
+    // Extract last 3 letters of email (before @)
+    const emailDomain = email.split('@')[0];
+    const emailSuffix = emailDomain.slice(-3);
+    
+    // Generate a random 4-digit number
+    const randomDigits = Math.floor(1000 + Math.random() * 9000);
+    
+    // Create unique link ID
+    const linkId = firstName.toLowerCase() + emailSuffix + randomDigits;
+    
+    return linkId;
+}
+
 function login() {
     const email = document.getElementById('loginEmail').value;
     const phone = document.getElementById('loginPhone').value;
@@ -143,6 +157,9 @@ function signup() {
         .then((userCredential) => {
             const user = userCredential.user;
             
+            // Generate unique link
+            const uniqueLink = generateUniqueLink(firstName, email);
+            
             // Create user record in Firestore
             const userData = {
                 firstName: firstName,
@@ -151,12 +168,24 @@ function signup() {
                 credit_balance: 0,
                 usage_count: 0,
                 transactions: [],
+                uniqueLink: uniqueLink,
                 created_at: firebase.firestore.FieldValue.serverTimestamp()
             };
             
+            // Save to users collection
             db.collection('users').doc(user.uid).set(userData)
                 .then(() => {
+                    // Also save to owners collection with the unique link as document ID
+                    return db.collection('owners').doc(uniqueLink).set({
+                        uid: user.uid,
+                        firstName: firstName,
+                        email: email,
+                        created_at: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                })
+                .then(() => {
                     showLoading(false);
+                    showNotification('Account created successfully! Your unique link has been generated.', 'success');
                     window.location.href = 'index.html';
                 })
                 .catch((error) => {

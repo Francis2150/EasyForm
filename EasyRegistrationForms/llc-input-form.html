@@ -403,6 +403,37 @@
       box-shadow: var(--box-shadow-hover);
     }
 
+    /* Owner Info */
+    .owner-info {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: var(--border-radius);
+      padding: 15px;
+      margin-bottom: 20px;
+      box-shadow: var(--box-shadow);
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .owner-info img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .owner-info h3 {
+      margin: 0;
+      font-size: 18px;
+      color: var(--primary-color);
+    }
+
+    .owner-info p {
+      margin: 0;
+      font-size: 14px;
+      color: var(--gray-color);
+    }
+
     /* Responsive Design */
     @media (max-width: 768px) {
       body {
@@ -438,6 +469,11 @@
       
       .share-percent-container input {
         width: 100%;
+      }
+      
+      .owner-info {
+        flex-direction: column;
+        text-align: center;
       }
     }
 
@@ -477,7 +513,18 @@
   <div class="container">
     <div class="nav-container">
       <h2 id="mainTitle">Company Data Collection Form</h2>
-      <a href="llc-dashboard.html" class="nav-btn">View Dashboard</a>
+      <a href="index.html" class="nav-btn">Back to Dashboard</a>
+    </div>
+
+    <!-- Owner Information (will be populated if link parameter is present) -->
+    <div id="ownerInfoContainer" style="display: none;">
+      <div class="owner-info">
+        <img src="https://picsum.photos/seed/owner/50/50.jpg" alt="Owner">
+        <div>
+          <h3 id="ownerName">Loading...</h3>
+          <p id="ownerEmail">Loading...</p>
+        </div>
+      </div>
     </div>
 
     <!-- Form View -->
@@ -700,13 +747,77 @@
   <!-- Notification element -->
   <div id="notification" class="notification"></div>
 
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  
   <script>
+    // Firebase Configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyBzSHkVxRiLC5gsq04LTTDnXaGdoF7eJ2c",
+        authDomain: "easyregistrationforms.firebaseapp.com",
+        projectId: "easyregistrationforms",
+        storageBucket: "easyregistrationforms.firebasestorage.app",
+        messagingSenderId: "589421628989",
+        appId: "1:589421628989:web:d9f6e9dbe372ab7acd6454",
+        measurementId: "G-GVCPBN8VB5"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
     // Initialize the system
     let selectedSecretaryIndex = -1; // Track which director is selected as secretary
+    let ownerLink = null;
+    let ownerData = null;
+
+    // Read URL parameters on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      const params = new URLSearchParams(window.location.search);
+      ownerLink = params.get("link");
+      
+      if (ownerLink) {
+        // Load owner information
+        loadOwnerInfo(ownerLink);
+      }
+    });
+
+    function loadOwnerInfo(link) {
+      db.collection('owners').doc(link).get()
+        .then((doc) => {
+          if (doc.exists) {
+            ownerData = doc.data();
+            
+            // Display owner information
+            document.getElementById('ownerInfoContainer').style.display = 'block';
+            document.getElementById('ownerName').textContent = ownerData.firstName;
+            document.getElementById('ownerEmail').textContent = ownerData.email;
+            
+            // Update form title
+            document.getElementById('mainTitle').textContent = `Company Data Collection Form - ${ownerData.firstName}`;
+          } else {
+            showNotification('Invalid form link. Please contact the owner for a valid link.', 'error');
+            // Disable form submission
+            document.querySelector('[type="submit"]').disabled = true;
+          }
+        })
+        .catch((error) => {
+          console.error("Error loading owner info:", error);
+          showNotification('Error loading form information. Please try again later.', 'error');
+          // Disable form submission
+          document.querySelector('[type="submit"]').disabled = true;
+        });
+    }
 
     // Form submission handler
     document.getElementById('mainForm').addEventListener('submit', function(e){
       e.preventDefault();
+      
+      if (!ownerLink) {
+        showNotification('Invalid form. Please use the link provided by the owner.', 'error');
+        return;
+      }
       
       const clientId = generateClientId();
       const submittedAt = new Date().toISOString();
@@ -793,33 +904,27 @@
         directors: directors,
         directorRoles: directorRoles,
         secretary: secretary,
-        subscribers: subscribers
+        subscribers: subscribers,
+        ownerLink: ownerLink
       };
       
-      // Save to storage
-      saveClientToStorage(clientData);
-      
-      // Show success message and redirect to dashboard
-      showNotification('Client data submitted successfully! Redirecting to dashboard...');
-      
-      setTimeout(() => {
-        window.location.href = 'llc-dashboard.html';
-      }, 1500);
+      // Save to Firestore under the owner's collection
+      db.collection('owners').doc(ownerLink).collection('clients').doc(clientId).set(clientData)
+        .then(() => {
+          // Show success message
+          showNotification('Form submitted successfully! The owner has been notified.', 'success');
+          
+          // Reset form
+          resetForm();
+        })
+        .catch((error) => {
+          console.error("Error submitting form:", error);
+          showNotification('Error submitting form. Please try again.', 'error');
+        });
     });
 
     function generateClientId() {
       return 'client_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-    }
-
-    function saveClientToStorage(clientData) {
-      const clients = getClientsFromStorage();
-      clients.push(clientData);
-      localStorage.setItem('clientData', JSON.stringify(clients));
-    }
-
-    function getClientsFromStorage() {
-      const clients = localStorage.getItem('clientData');
-      return clients ? JSON.parse(clients) : [];
     }
 
     // Toggle Share Percentage input based on Subscriber checkbox

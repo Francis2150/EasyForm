@@ -20,6 +20,7 @@ const paystackKey = "pk_live_4126067326a4ff0fbdac73d10db5474b483a824d";
 // Global Variables
 let currentUser = null;
 let userListener = null;
+let ownerData = null;
 
 // DOM Elements
 const authSection = document.getElementById('authSection');
@@ -58,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.getElementById('viewSubmissionsBtn')?.addEventListener('click', () => {
-        showNotification('This feature is coming soon!', 'info');
+        viewSubmissions();
     });
 
     // Top Up Modal
@@ -143,6 +144,11 @@ function loadUserData() {
             if (doc.exists) {
                 console.log('User data updated in real-time:', doc.data());
                 updateDashboard(doc.data());
+                
+                // Load owner data using uniqueLink
+                if (doc.data().uniqueLink) {
+                    loadOwnerData(doc.data().uniqueLink);
+                }
             } else {
                 console.log('User document not found, creating new one.');
                 const userData = {
@@ -169,6 +175,62 @@ function loadUserData() {
             showNotification('Error loading user data: ' + error.message, 'error');
         }
     );
+}
+
+function loadOwnerData(uniqueLink) {
+    db.collection('owners').doc(uniqueLink).get()
+        .then((doc) => {
+            if (doc.exists) {
+                ownerData = doc.data();
+                displayUniqueLink(uniqueLink);
+            } else {
+                console.error('Owner data not found for unique link:', uniqueLink);
+            }
+        })
+        .catch((error) => {
+            console.error('Error loading owner data:', error);
+        });
+}
+
+function displayUniqueLink(uniqueLink) {
+    // Create or update the unique link display
+    let linkContainer = document.getElementById('uniqueLinkContainer');
+    
+    if (!linkContainer) {
+        // Create the container if it doesn't exist
+        linkContainer = document.createElement('div');
+        linkContainer.id = 'uniqueLinkContainer';
+        linkContainer.className = 'dashboard-card';
+        
+        // Find where to insert it (after the usage statistics card)
+        const usageCard = document.querySelector('#dashboardSection .col-md-4 .dashboard-card:nth-child(2)');
+        if (usageCard && usageCard.parentNode) {
+            usageCard.parentNode.insertBefore(linkContainer, usageCard.nextSibling);
+        }
+    }
+    
+    // Update the content
+    const baseUrl = window.location.origin + window.location.pathname.replace('index.html', '');
+    const formUrl = `${baseUrl}llc-input-form.html?link=${uniqueLink}`;
+    
+    linkContainer.innerHTML = `
+        <h5 class="mb-3">Your Unique Form Link</h5>
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" value="${formUrl}" id="uniqueLinkInput" readonly>
+            <button class="btn btn-outline-primary" type="button" id="copyLinkBtn">
+                <i class="fas fa-copy"></i> Copy
+            </button>
+        </div>
+        <p class="text-muted small">Share this link with clients to collect their data directly to your account.</p>
+    `;
+    
+    // Add copy functionality
+    document.getElementById('copyLinkBtn').addEventListener('click', () => {
+        const linkInput = document.getElementById('uniqueLinkInput');
+        linkInput.select();
+        document.execCommand('copy');
+        showNotification('Link copied to clipboard!', 'success');
+    });
 }
 
 function updateDashboard(userData) {
@@ -234,6 +296,272 @@ function updateDashboard(userData) {
     }
     
     console.log('Dashboard updated successfully');
+}
+
+function viewSubmissions() {
+    if (!ownerData || !ownerData.uid) {
+        showNotification('Owner data not available', 'error');
+        return;
+    }
+    
+    showLoading(true);
+    
+    // Query clients for this owner
+    db.collection('owners').doc(ownerData.uid).collection('clients').get()
+        .then((querySnapshot) => {
+            showLoading(false);
+            
+            if (querySnapshot.empty) {
+                showNotification('No client submissions yet', 'info');
+                return;
+            }
+            
+            // Create a modal to display submissions
+            const modal = document.createElement('div');
+            modal.className = 'modal fade';
+            modal.id = 'submissionsModal';
+            modal.innerHTML = `
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Client Submissions</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Company Name</th>
+                                            <th>Submitted Date</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${querySnapshot.docs.map(doc => {
+                                            const data = doc.data();
+                                            const companyName = data.formData?.find(field => field.label === 'Company Name')?.value || 'N/A';
+                                            const submittedDate = data.submittedAt ? 
+                                                (data.submittedAt.toDate ? new Date(data.submittedAt.toDate()).toLocaleDateString() : new Date(data.submittedAt).toLocaleDateString()) : 
+                                                'N/A';
+                                            
+                                            return `
+                                                <tr>
+                                                    <td>${companyName}</td>
+                                                    <td>${submittedDate}</td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-primary view-client-btn" data-id="${doc.id}">
+                                                            View Details
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            `;
+                                        }).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            const submissionsModal = new bootstrap.Modal(modal);
+            submissionsModal.show();
+            
+            // Add event listeners for view details buttons
+            modal.querySelectorAll('.view-client-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const clientId = e.target.getAttribute('data-id');
+                    viewClientDetails(clientId);
+                });
+            });
+            
+            // Clean up modal when hidden
+            modal.addEventListener('hidden.bs.modal', () => {
+                document.body.removeChild(modal);
+            });
+        })
+        .catch((error) => {
+            showLoading(false);
+            console.error('Error fetching submissions:', error);
+            showNotification('Error fetching submissions: ' + error.message, 'error');
+        });
+}
+
+function viewClientDetails(clientId) {
+    showLoading(true);
+    
+    db.collection('owners').doc(ownerData.uid).collection('clients').doc(clientId).get()
+        .then((doc) => {
+            showLoading(false);
+            
+            if (!doc.exists) {
+                showNotification('Client data not found', 'error');
+                return;
+            }
+            
+            const clientData = doc.data();
+            
+            // Create a modal to display client details
+            const modal = document.createElement('div');
+            modal.className = 'modal fade';
+            modal.id = 'clientDetailsModal';
+            modal.innerHTML = `
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Client Details</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            ${renderClientDetails(clientData)}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            const clientDetailsModal = new bootstrap.Modal(modal);
+            clientDetailsModal.show();
+            
+            // Clean up modal when hidden
+            modal.addEventListener('hidden.bs.modal', () => {
+                document.body.removeChild(modal);
+            });
+        })
+        .catch((error) => {
+            showLoading(false);
+            console.error('Error fetching client details:', error);
+            showNotification('Error fetching client details: ' + error.message, 'error');
+        });
+}
+
+function renderClientDetails(clientData) {
+    let html = '';
+    
+    // Company Information
+    const companyFields = clientData.formData?.filter(field => 
+        field.section === 'companyInfo'
+    );
+    
+    if (companyFields && companyFields.length > 0) {
+        html += `
+            <div class="mb-4">
+                <h5>Company Information</h5>
+                <table class="table table-bordered">
+                    <tbody>
+                        ${companyFields.map(field => `
+                            <tr>
+                                <th>${field.label}</th>
+                                <td>${field.value}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+    }
+    
+    // Office Details
+    const officeFields = clientData.formData?.filter(field => 
+        field.section === 'officeDetails'
+    );
+    
+    if (officeFields && officeFields.length > 0) {
+        html += `
+            <div class="mb-4">
+                <h5>Office Details</h5>
+                <table class="table table-bordered">
+                    <tbody>
+                        ${officeFields.map(field => `
+                            <tr>
+                                <th>${field.label}</th>
+                                <td>${field.value}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+    }
+    
+    // Directors
+    if (clientData.directors && clientData.directors.length > 0) {
+        html += '<div class="mb-4"><h5>Directors</h5>';
+        
+        clientData.directors.forEach((director, index) => {
+            html += `
+                <div class="mb-3">
+                    <h6>Director ${index + 1}</h6>
+                    <table class="table table-bordered">
+                        <tbody>
+                            ${director.map(field => `
+                                <tr>
+                                    <th>${field.label}</th>
+                                    <td>${field.value}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        });
+        
+        html += '</div>';
+    }
+    
+    // Secretary
+    if (clientData.secretary && clientData.secretary.length > 0) {
+        html += `
+            <div class="mb-4">
+                <h5>Secretary Details</h5>
+                <table class="table table-bordered">
+                    <tbody>
+                        ${clientData.secretary.map(field => `
+                            <tr>
+                                <th>${field.label}</th>
+                                <td>${field.value}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+    }
+    
+    // Subscribers
+    if (clientData.subscribers && clientData.subscribers.length > 0) {
+        html += '<div class="mb-4"><h5>Subscribers</h5>';
+        
+        clientData.subscribers.forEach((subscriber, index) => {
+            html += `
+                <div class="mb-3">
+                    <h6>Subscriber ${index + 1}</h6>
+                    <table class="table table-bordered">
+                        <tbody>
+                            ${subscriber.map(field => `
+                                <tr>
+                                    <th>${field.label}</th>
+                                    <td>${field.value}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        });
+        
+        html += '</div>';
+    }
+    
+    return html;
 }
 
 // Process Payment
