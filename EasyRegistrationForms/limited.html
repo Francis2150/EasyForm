@@ -209,129 +209,62 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
     <script src="form.js"></script>
     <script>
-        // Firebase Configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyBzSHkVxRiLC5gsq04LTTDnXaGdoF7eJ2c",
-            authDomain: "easyregistrationforms.firebaseapp.com",
-            projectId: "easyregistrationforms",
-            storageBucket: "easyregistrationforms.firebasestorage.app",
-            messagingSenderId: "589421628989",
-            appId: "1:589421628989:web:d9f6e9dbe372ab7acd6454",
-            measurementId: "G-GVCPBN8VB5"
-        };
-
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-
         // Set form type
         document.addEventListener('DOMContentLoaded', () => {
             if (typeof window.setFormType === 'function') {
                 window.setFormType('limited', 10);
             }
             
-            // Check if user is logged in
-            auth.onAuthStateChanged(user => {
-                if (!user) {
-                    window.location.href = 'authenticate.html';
-                } else {
-                    // Load data collection link and client data
-                    loadDataCollectionLink();
-                    loadClientData();
-                }
-            });
+            // Load data collection link and client data
+            loadDataCollectionLink();
+            loadClientData();
             
             // Add event listeners
             document.getElementById('copyLinkBtn').addEventListener('click', copyDataCollectionLink);
             document.getElementById('refreshDataBtn').addEventListener('click', loadClientData);
-            document.getElementById('logoutLink').addEventListener('click', (e) => {
-                e.preventDefault();
-                auth.signOut();
-            });
         });
-        
-        // Generate unique link function
-        function generateUniqueLink(firstName) {
-            const uniqueId = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-            return `${firstName}_LIMITED_DATA_COLLECTION_FORM_${uniqueId}`;
-        }
         
         // Load data collection link
         function loadDataCollectionLink() {
-            const user = auth.currentUser;
+            const user = firebase.auth().currentUser;
             if (!user) return;
             
-            showLoading(true);
-            
+            const db = firebase.firestore();
             db.collection('users').doc(user.uid).get()
                 .then((doc) => {
-                    if (doc.exists) {
-                        const userData = doc.data();
-                        
-                        if (userData.dataCollectionLink) {
-                            // Link exists, display it
-                            const link = userData.dataCollectionLink;
-                            document.getElementById('dataCollectionLink').value = `${window.location.origin}/data-collection.html?link=${link}`;
-                            console.log('Data collection link loaded:', link);
-                        } else {
-                            // Link doesn't exist, generate one
-                            console.log('No data collection link found, generating one...');
-                            const firstName = userData.firstName || userData.email.split('@')[0] || 'User';
-                            const newLink = generateUniqueLink(firstName);
-                            
-                            // Update the user document with the new link
-                            db.collection('users').doc(user.uid).update({
-                                dataCollectionLink: newLink
-                            })
-                            .then(() => {
-                                // Display the new link
-                                document.getElementById('dataCollectionLink').value = `${window.location.origin}/data-collection.html?link=${newLink}`;
-                                console.log('New data collection link generated:', newLink);
-                                
-                                // Show notification
-                                showNotification('Data collection link generated successfully!', 'success');
-                            })
-                            .catch((error) => {
-                                console.error('Error generating data collection link:', error);
-                                showNotification('Error generating data collection link', 'error');
-                            });
-                        }
-                    } else {
-                        console.error('User document not found');
-                        showNotification('User data not found', 'error');
+                    if (doc.exists && doc.data().dataCollectionLink) {
+                        const link = doc.data().dataCollectionLink;
+                        document.getElementById('dataCollectionLink').value = `${window.location.origin}/data-collection.html?link=${link}`;
                     }
-                    showLoading(false);
                 })
                 .catch((error) => {
                     console.error('Error loading data collection link:', error);
-                    showNotification('Error loading data collection link', 'error');
-                    showLoading(false);
                 });
         }
         
         // Copy data collection link
         function copyDataCollectionLink() {
             const linkInput = document.getElementById('dataCollectionLink');
-            if (!linkInput.value) {
-                showNotification('No link to copy', 'error');
-                return;
-            }
-            
             linkInput.select();
             document.execCommand('copy');
             
             // Show notification
-            showNotification('Link copied to clipboard!', 'success');
+            const notification = document.getElementById('notification');
+            notification.textContent = 'Link copied to clipboard!';
+            notification.className = 'notification success';
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
         }
         
         // Load client data
         function loadClientData() {
-            const user = auth.currentUser;
+            const user = firebase.auth().currentUser;
             if (!user) return;
             
-            showLoading(true);
-            
+            const db = firebase.firestore();
             db.collection('users').doc(user.uid).get()
                 .then((doc) => {
                     if (doc.exists && doc.data().clientData) {
@@ -346,12 +279,10 @@
                             showEmptyState();
                         }
                     }
-                    showLoading(false);
                 })
                 .catch((error) => {
                     console.error('Error loading client data:', error);
                     showEmptyState();
-                    showLoading(false);
                 });
         }
         
@@ -414,9 +345,10 @@
         
         // View client data
         function viewClientData(clientId) {
-            const user = auth.currentUser;
+            const user = firebase.auth().currentUser;
             if (!user) return;
             
+            const db = firebase.firestore();
             db.collection('users').doc(user.uid).get()
                 .then((doc) => {
                     if (doc.exists && doc.data().clientData) {
@@ -437,9 +369,10 @@
         
         // Use client data in the form
         function useClientData(clientId) {
-            const user = auth.currentUser;
+            const user = firebase.auth().currentUser;
             if (!user) return;
             
+            const db = firebase.firestore();
             db.collection('users').doc(user.uid).get()
                 .then((doc) => {
                     if (doc.exists && doc.data().clientData) {
@@ -451,7 +384,14 @@
                             populateFormWithClientData(client);
                             
                             // Show notification
-                            showNotification('Client data loaded into form!', 'success');
+                            const notification = document.getElementById('notification');
+                            notification.textContent = 'Client data loaded into form!';
+                            notification.className = 'notification success';
+                            notification.style.display = 'block';
+                            
+                            setTimeout(() => {
+                                notification.style.display = 'none';
+                            }, 3000);
                         }
                     }
                 })
@@ -546,89 +486,6 @@
             const issuedCapital = client.formData.find(field => field.label === 'Issued Capital')?.value;
             if (issuedCapital) document.getElementById('issuedCapital').value = issuedCapital;
         }
-        
-        // Show notification
-        function showNotification(message, type) {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.className = `notification ${type}`;
-            notification.style.display = 'block';
-            
-            setTimeout(() => {
-                notification.style.display = 'none';
-            }, 3000);
-        }
-        
-        // Show loading
-        function showLoading(show) {
-            const loadingSpinner = document.getElementById('loadingSpinner');
-            if (show) {
-                loadingSpinner.classList.add('active');
-            } else {
-                loadingSpinner.classList.remove('active');
-            }
-        }
-        
-        // Add director function
-        function addDirector() {
-            const directorId = Date.now();
-            const directorItem = document.createElement('div');
-            directorItem.className = 'director-item';
-            directorItem.id = `director-${directorId}`;
-            
-            directorItem.innerHTML = `
-                <button class="remove-btn" onclick="removeDirector(${directorId})">
-                    <i class="fas fa-times"></i>
-                </button>
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Full Name</label>
-                        <input type="text" class="form-control director-name" required>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Phone Number</label>
-                        <div class="input-group">
-                            <span class="input-group-text">+233</span>
-                            <input type="tel" class="form-control director-phone" required>
-                        </div>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Email</label>
-                        <input type="email" class="form-control director-email" required>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Address</label>
-                        <input type="text" class="form-control director-address" required>
-                    </div>
-                </div>
-            `;
-            
-            document.getElementById('directorsList').appendChild(directorItem);
-            
-            // Add to directors array
-            if (typeof window.directors !== 'undefined') {
-                window.directors.push({
-                    id: directorId,
-                    name: '',
-                    phone: '',
-                    email: '',
-                    address: ''
-                });
-            }
-        }
-        
-        // Remove director function
-        function removeDirector(directorId) {
-            document.getElementById(`director-${directorId}`).remove();
-            
-            // Remove from directors array
-            if (typeof window.directors !== 'undefined') {
-                window.directors = window.directors.filter(d => d.id !== directorId);
-            }
-        }
-        
-        // Add event listener for the add director button
-        document.getElementById('addDirectorBtn').addEventListener('click', addDirector);
     </script>
 </body>
 </html>

@@ -147,12 +147,6 @@ function toggleTransactions() {
     }
 }
 
-// Generate unique link function
-function generateUniqueLink(firstName) {
-    const uniqueId = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-    return `${firstName}_LIMITED_DATA_COLLECTION_FORM_${uniqueId}`;
-}
-
 // Real-time Firestore listener
 function loadUserData() {
     console.log('Setting up real-time listener for user:', currentUser.uid);
@@ -171,29 +165,7 @@ function loadUserData() {
             showLoading(false);
             if (doc.exists) {
                 console.log('User data updated in real-time:', doc.data());
-                const userData = doc.data();
-                
-                // Check if user has a data collection link, generate one if not
-                if (!userData.dataCollectionLink) {
-                    console.log('No data collection link found, generating one...');
-                    const firstName = userData.firstName || userData.email.split('@')[0] || 'User';
-                    const newLink = generateUniqueLink(firstName);
-                    
-                    // Update the user document with the new link
-                    userDocRef.update({
-                        dataCollectionLink: newLink
-                    })
-                    .then(() => {
-                        console.log('New data collection link generated:', newLink);
-                        userData.dataCollectionLink = newLink;
-                        updateDashboard(userData);
-                    })
-                    .catch((error) => {
-                        console.error('Error generating data collection link:', error);
-                    });
-                } else {
-                    updateDashboard(userData);
-                }
+                updateDashboard(doc.data());
             } else {
                 console.log('User document not found, creating new one.');
                 const userData = {
