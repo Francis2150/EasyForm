@@ -1,4 +1,4 @@
-// Firebase Configuration (same as app.js)
+// Firebase Configuration
 const firebaseConfig = {
     apiKey: "AIzaSyBzSHkVxRiLC5gsq04LTTDnXaGdoF7eJ2c",
     authDomain: "easyregistrationforms.firebaseapp.com",
@@ -125,7 +125,6 @@ function login() {
         });
 }
 
-// In auth.js, modify the signup function
 function signup() {
     const firstName = document.getElementById('firstName').value;
     const email = document.getElementById('signupEmail').value;

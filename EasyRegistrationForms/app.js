@@ -65,6 +65,11 @@ document.addEventListener('DOMContentLoaded', () => {
         showNotification('This feature is coming soon!', 'info');
     });
 
+    // Refresh button
+    document.getElementById('refreshDataBtn')?.addEventListener('click', () => {
+        loadUserData();
+    });
+
     // Top Up Modal
     document.querySelectorAll('.amount-btn').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -148,7 +153,6 @@ function toggleTransactions() {
 }
 
 // Real-time Firestore listener
-// In app.js, modify the loadUserData function
 function loadUserData() {
     console.log('Setting up real-time listener for user:', currentUser.uid);
     showLoading(true);
@@ -206,7 +210,7 @@ function loadUserData() {
         }
     );
 }
-// In app.js, modify the updateDashboard function
+
 function updateDashboard(userData) {
     console.log('Updating dashboard with data:', userData);
     
@@ -293,11 +297,12 @@ function updateDashboard(userData) {
     console.log('Dashboard updated successfully');
 }
 
-// Update the displayDataCollectionLink function
 function displayDataCollectionLink(link, fullUrl) {
     // Get the base URL for GitHub Pages
     const baseUrl = window.location.origin + '/EasyForm/EasyRegistrationForms/data-collection.html';
     const dataCollectionUrl = fullUrl || `${baseUrl}?link=${link}`;
+    
+    console.log('Displaying data collection link:', { link, fullUrl, dataCollectionUrl });
     
     // Show the data collection link container
     const linkContainer = document.getElementById('dataCollectionLinkContainer');
@@ -322,58 +327,22 @@ function displayDataCollectionLink(link, fullUrl) {
         document.getElementById('copyLinkBtn').addEventListener('click', () => {
             const linkInput = document.getElementById('dataCollectionLinkInput');
             linkInput.select();
-            document.execCommand('copy');
-            showNotification('Link copied to clipboard!', 'success');
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showNotification('Link copied to clipboard!', 'success');
+                } else {
+                    showNotification('Unable to copy link', 'error');
+                }
+            } catch (err) {
+                console.error('Failed to copy text: ', err);
+                showNotification('Failed to copy link', 'error');
+            }
         });
     } else {
         console.error('Data collection link container not found in the DOM');
     }
-}
-function displayDataCollectionLink(link, fullUrl) {
-    // Get the base URL for GitHub Pages
-    const baseUrl = window.location.origin + '/EasyForm/EasyRegistrationForms/data-collection.html';
-    const dataCollectionUrl = fullUrl || `${baseUrl}?link=${link}`;
-    
-    // Show the data collection link container
-    const linkContainer = document.getElementById('dataCollectionLinkContainer');
-    if (linkContainer) {
-        linkContainer.style.display = 'block';
-        
-        // Update the content of the link container
-        linkContainer.innerHTML = `
-            <h5 class="mb-3">
-                <i class="fas fa-link me-2"></i>Data Collection Link
-            </h5>
-            <div class="input-group mb-3">
-                <input type="text" class="form-control" id="dataCollectionLinkInput" value="${dataCollectionUrl}" readonly>
-                <button class="btn btn-outline-secondary" type="button" id="copyLinkBtn">
-                    <i class="fas fa-copy me-1"></i>Copy
-                </button>
-            </div>
-            <p class="text-muted small">Share this link with clients to collect their data for Limited Company registration.</p>
-        `;
-        
-        // Add event listener to the copy button
-      // Update the copy button event listener
-document.getElementById('copyLinkBtn').addEventListener('click', () => {
-    const linkInput = document.getElementById('dataCollectionLinkInput');
-    linkInput.select();
-    
-    try {
-        const successful = document.execCommand('copy');
-        if (successful) {
-            showNotification('Link copied to clipboard!', 'success');
-        } else {
-            showNotification('Unable to copy link', 'error');
-        }
-    } catch (err) {
-        console.error('Failed to copy text: ', err);
-        showNotification('Failed to copy link', 'error');
-    }
-});
-
-    // Add this to the displayDataCollectionLink function
-console.log('Displaying data collection link:', { link, fullUrl });
 }
 
 // Process Payment
@@ -469,9 +438,3 @@ function processPayment() {
 
     handler.openIframe();
 }
-
-
-// In app.js, add event listener for the refresh button
-document.getElementById('refreshDataBtn')?.addEventListener('click', () => {
-    loadUserData();
-});
