@@ -1324,6 +1324,10 @@ function saveClientToFirestore(clientData) {
         notification.classList.remove('show');
       }, 3000);
     }
+
+    await getFirestore(app);
+console.log("Connected to Firestore");
+
 </script>
 </body>
 </html>

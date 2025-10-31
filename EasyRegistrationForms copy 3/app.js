@@ -136,20 +136,23 @@ function logout() {
         });
 }
 
-// Generate unique ID function
+// FIXED: Consistent unique ID generation (same as auth.js)
 function generateUniqueId(firstName, email) {
-    // Get last 3 letters of email (before @)
+    // Clean the first name - remove spaces and special characters
+    const cleanFirstName = firstName.toLowerCase().replace(/[^a-z0-9]/g, '');
+    
+    // Get first 6 characters of email (before @)
     const emailPart = email.split('@')[0];
-    const emailSuffix = emailPart.substring(emailPart.length - 3);
+    const emailPrefix = emailPart.substring(0, 6);
     
     // Generate a random 4-digit number
     const randomDigits = Math.floor(1000 + Math.random() * 9000);
     
-    // Combine first name (lowercase) + random digits + email suffix
-    return `${firstName.toLowerCase()}${randomDigits}${emailSuffix}`;
+    // Combine clean first name + email prefix + random digits
+    return `${cleanFirstName}${emailPrefix}${randomDigits}`;
 }
 
-// Real-time Firestore listener
+// Real-time Firestore listener with improved error handling
 function loadUserData() {
     console.log('Setting up real-time listener for user:', currentUser.uid);
     showLoading(true);
@@ -175,13 +178,12 @@ function loadUserData() {
                 const email = currentUser.email;
                 const firstName = email.split('@')[0]; // Use email prefix as default first name
                 const uniqueId = generateUniqueId(firstName, email);
-                const shareableLink = `https://francis2150.github.io/EasyForm/EasyRegistrationForms/llc-input-form.html?owner=${uniqueId}`;
                 
                 const userData = {
                     email: email,
                     firstName: firstName,
                     uniqueId: uniqueId,
-                    shareableLink: shareableLink,
+                    shareableLink: 'Generating link...', // IMPORTANT: Placeholder first
                     credit_balance: 0,
                     usage_count: 0,
                     transactions: [],
@@ -190,23 +192,81 @@ function loadUserData() {
                 
                 console.log('Creating new user with data:', userData);
                 
+                // Update the UI with the placeholder first
+                updateDashboard(userData);
+                
+                // Now, create the shareable link and save everything to Firestore
+                const shareableLink = `https://francis2150.github.io/EasyForm/EasyRegistrationForms/llc-input-form.html?owner=${uniqueId}`;
+                userData.shareableLink = shareableLink; // Update the object with the real link
+
                 userDocRef.set(userData)
                     .then(() => {
-                        console.log('New user document created.');
+                        console.log('New user document created with link.');
+                        // Update the dashboard AGAIN now that the link is real and saved
                         updateDashboard(userData);
                     })
                     .catch((error) => {
                         console.error('Error creating user document:', error);
-                        showNotification(error.message, 'error');
+                        showNotification('Error creating user profile: ' + error.message, 'error');
                     });
             }
         },
         (error) => {
             showLoading(false);
             console.error('Real-time listener error:', error);
-            showNotification('Error loading user data: ' + error.message, 'error');
+            
+            // Handle permission errors specifically
+            if (error.code === 'permission-denied') {
+                showNotification('Permission denied. Please try logging out and logging back in.', 'error');
+                loadUserDataOnce();
+            } else {
+                showNotification('Error loading user data: ' + error.message, 'error');
+            }
         }
     );
+}
+
+// Fallback function to load user data once instead of using a real-time listener
+function loadUserDataOnce() {
+    console.log('Attempting to load user data with one-time query');
+    showLoading(true);
+    
+    db.collection('users').doc(currentUser.uid).get()
+        .then((doc) => {
+            showLoading(false);
+            if (doc.exists) {
+                console.log('User data loaded with one-time query:', doc.data());
+                updateDashboard(doc.data());
+            } else {
+                console.log('User document not found even with one-time query');
+                showNotification('User profile not found. Please contact support.', 'error');
+            }
+        })
+        .catch((error) => {
+            showLoading(false);
+            console.error('Error with one-time user data query:', error);
+            showNotification('Error loading user data. Please try refreshing the page.', 'error');
+        });
+}
+
+// Fallback function to create user document with a different approach
+function createUserWithFallback(userData) {
+    console.log('Attempting to create user document with fallback method');
+    
+    // Try using a batched write
+    const batch = db.batch();
+    const userDocRef = db.collection('users').doc(currentUser.uid);
+    batch.set(userDocRef, userData);
+    
+    batch.commit()
+        .then(() => {
+            console.log('User document created with batch write');
+            updateDashboard(userData);
+        })
+        .catch((error) => {
+            console.error('Error with batch write:', error);
+            showNotification('Unable to create user profile. Please try again later.', 'error');
+        });
 }
 
 function updateDashboard(userData) {

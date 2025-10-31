@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Client Data Management Dashboard</title>
+  <!-- Keeping the same styles as before -->
   <style>
     /* Google Fonts Import */
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
@@ -677,7 +678,7 @@
     function loadClientData() {
       showNotification('Loading client data...', 'info');
       
-      // Query the owner's collection
+      // FIXED: Query the owners collection with the owner's unique ID and then the clients subcollection
       db.collection('owners').doc(ownerUniqueId).collection('clients')
         .orderBy('submittedAt', 'desc')
         .get()
@@ -689,6 +690,8 @@
               ...doc.data()
             });
           });
+          
+          console.log('Loaded clients:', clients);
           
           if (clients.length === 0) {
             showEmptyState();
@@ -717,15 +720,16 @@
       const container = document.getElementById('clientListContainer');
       
       container.innerHTML = clients.map(client => {
-        const companyName = client.formData.find(field => field.label === 'Company Name')?.value || 'Unknown Company';
+        // FIXED: Extract company name from the flattened data structure
+        const companyName = client['company_Company Name'] || 'Unknown Company';
         const submittedDate = new Date(client.submittedAt).toLocaleString();
         
         return `
           <div class="client-item">
             <h4>${companyName}</h4>
             <p><strong>Submitted:</strong> ${submittedDate}</p>
-            <p><strong>Directors:</strong> ${client.directors?.length || 0}</p>
-            <p><strong>Subscribers:</strong> ${client.subscribers?.length || 0}</p>
+            <p><strong>Directors:</strong> ${client.directorsCount || 0}</p>
+            <p><strong>Subscribers:</strong> ${client.subscribersCount || 0}</p>
             <div class="client-meta">
               <span class="client-id">ID: ${client.id}</span>
               <div>
@@ -739,7 +743,7 @@
     }
 
     function viewClient(clientId) {
-      // Get the specific client document
+      // FIXED: Get the specific client document from the correct path
       db.collection('owners').doc(ownerUniqueId).collection('clients').doc(clientId).get()
         .then((doc) => {
           if (doc.exists) {
@@ -750,7 +754,8 @@
             document.getElementById('clientDetailView').style.display = 'block';
             document.getElementById('mainTitle').textContent = 'Client Data Details';
             
-            const companyName = client.formData.find(field => field.label === 'Company Name')?.value || 'Unknown Company';
+            // FIXED: Extract company name from the flattened data structure
+            const companyName = client['company_Company Name'] || 'Unknown Company';
             document.getElementById('clientDetailTitle').textContent = `${companyName} - Submitted ${new Date(client.submittedAt).toLocaleString()}`;
             
             renderClientDetail(client);
@@ -768,18 +773,120 @@
       const container = document.getElementById('clientDetailContainer');
       container.innerHTML = '';
       
-      // Render Business Information (Combined Company and Office Details)
-      const businessFields = client.formData.filter(field => 
-        field.section === 'companyInfo' || field.section === 'officeDetails'
-      );
+      // FIXED: Render Business Information from the flattened data structure
+      const businessFields = [
+        { label: 'Company Name', value: client['company_Company Name'] || '' },
+        { label: 'Presented By', value: client['company_Presented By'] || '' },
+        { label: 'Presenter TIN', value: client['company_Presenter TIN'] || '' },
+        { label: 'Activities', value: client['company_Activities'] || '' },
+        { label: 'Stated Capital', value: client['company_Stated Capital'] || '' },
+        { label: 'Estimated Revenue', value: client['company_Estimated Revenue'] || '' },
+        { label: 'Number of Employees', value: client['company_Number of Employees'] || '' },
+        { label: 'GPS Address', value: client['office_GPS Address'] || '' },
+        { label: 'Landmark', value: client['office_Landmark'] || '' },
+        { label: 'Building No.', value: client['office_Building No.'] || '' },
+        { label: 'Town', value: client['office_Town'] || '' },
+        { label: 'Street Name', value: client['office_Street Name'] || '' },
+        { label: 'City', value: client['office_City'] || '' },
+        { label: 'District', value: client['office_District'] || '' },
+        { label: 'Region', value: client['office_Region'] || '' },
+        { label: 'Postal Number', value: client['office_Postal Number'] || '' },
+        { label: 'Postal Town', value: client['office_Postal Town'] || '' },
+        { label: 'Postal Region', value: client['office_Postal Region'] || '' },
+        { label: 'Contact 1', value: client['office_Contact 1'] || '' },
+        { label: 'Contact 2', value: client['office_Contact 2'] || '' },
+        { label: 'Email', value: client['office_Email'] || '' }
+      ];
       
-      if (businessFields.length > 0) {
-        let html = `<div class="section-container">
-          <h3>Business Information</h3>
+      let html = `<div class="section-container">
+        <h3>Business Information</h3>
+        <table>
+          <tr><th>Field Label</th><th>Submitted Data</th></tr>`;
+      
+      businessFields.forEach(field => {
+        html += `<tr data-field="${field.label}">
+          <td>${field.label}</td>
+          <td class="value-cell">${field.value}</td>
+        </tr>`;
+      });
+      
+      html += `</table>
+        <div class="button-group">
+          <button class="btn-edit" onclick="editSection('business')">Edit Section</button>
+          <button class="btn-save" style="display:none;" onclick="saveSection('business')">Save Section</button>
+          <button class="btn-cancel" style="display:none;" onclick="cancelEdit('business')">Cancel</button>
+          <button class="btn-copy" onclick="copySection('business')">Copy Section</button>
+        </div>
+      </div>`;
+      
+      const sectionDiv = document.createElement('div');
+      sectionDiv.innerHTML = html;
+      sectionDiv.id = 'business-section';
+      container.appendChild(sectionDiv);
+      
+      // Check if any director is selected as secretary
+      let hasDirectorAsSecretary = false;
+      for (let i = 0; i < (client.directorsCount || 0); i++) {
+        if (client[`director${i}_isSecretary`]) {
+          hasDirectorAsSecretary = true;
+          break;
+        }
+      }
+      
+      // Render Directors
+      for (let i = 0; i < (client.directorsCount || 0); i++) {
+        // Create director role display
+        let roleHtml = '';
+        let badges = [];
+        
+        if (client[`director${i}_isSubscriber`]) {
+          badges.push('<span class="role-badge subscriber">Subscriber</span>');
+        }
+        if (client[`director${i}_isSecretary`]) {
+          badges.push('<span class="role-badge secretary">Secretary</span>');
+        }
+        
+        roleHtml = `
+          <div class="director-role-display">
+            <h3>
+              Directors - Entry ${i + 1}
+              ${badges.length > 0 ? `<div class="role-badges">${badges.join('')}</div>` : ''}
+            </h3>
+            ${client[`director${i}_isSubscriber`] && client[`director${i}_sharePercent`] ? 
+              `<div class="share-percent-display"><strong>Share Percentage:</strong> ${client[`director${i}_sharePercent`]}%</div>` : ''}
+          </div>`;
+        
+        const directorFields = [
+          { label: 'First Name', value: client[`director${i}_First Name`] || '' },
+          { label: 'Middle Name', value: client[`director${i}_Middle Name`] || '' },
+          { label: 'Surname', value: client[`director${i}_Surname`] || '' },
+          { label: 'Former Name', value: client[`director${i}_Former Name`] || '' },
+          { label: 'Date of Birth', value: client[`director${i}_Date of Birth`] || '' },
+          { label: 'Place of Birth', value: client[`director${i}_Place of Birth`] || '' },
+          { label: 'Nationality', value: client[`director${i}_Nationality`] || '' },
+          { label: 'Occupation', value: client[`director${i}_Occupation`] || '' },
+          { label: 'Contact 1', value: client[`director${i}_Contact 1`] || '' },
+          { label: 'Contact 2', value: client[`director${i}_Contact 2`] || '' },
+          { label: 'Email', value: client[`director${i}_Email`] || '' },
+          { label: 'TIN', value: client[`director${i}_TIN`] || '' },
+          { label: 'Ghana Card', value: client[`director${i}_Ghana Card`] || '' },
+          { label: 'GPS', value: client[`director${i}_GPS`] || '' },
+          { label: 'House No.', value: client[`director${i}_House No.`] || '' },
+          { label: 'Landmark', value: client[`director${i}_Landmark`] || '' },
+          { label: 'Street', value: client[`director${i}_Street`] || '' },
+          { label: 'City', value: client[`director${i}_City`] || '' },
+          { label: 'Town', value: client[`director${i}_Town`] || '' },
+          { label: 'District', value: client[`director${i}_District`] || '' },
+          { label: 'Region', value: client[`director${i}_Region`] || '' },
+          { label: 'Country', value: client[`director${i}_Country`] || '' }
+        ];
+        
+        html = `<div class="section-container">
+          ${roleHtml}
           <table>
             <tr><th>Field Label</th><th>Submitted Data</th></tr>`;
         
-        businessFields.forEach(field => {
+        directorFields.forEach(field => {
           html += `<tr data-field="${field.label}">
             <td>${field.label}</td>
             <td class="value-cell">${field.value}</td>
@@ -788,98 +895,53 @@
         
         html += `</table>
           <div class="button-group">
-            <button class="btn-edit" onclick="editSection('business')">Edit Section</button>
-            <button class="btn-save" style="display:none;" onclick="saveSection('business')">Save Section</button>
-            <button class="btn-cancel" style="display:none;" onclick="cancelEdit('business')">Cancel</button>
-            <button class="btn-copy" onclick="copySection('business')">Copy Section</button>
+            <button class="btn-edit" onclick="editSection('director-${i}')">Edit Section</button>
+            <button class="btn-save" style="display:none;" onclick="saveSection('director-${i}')">Save Section</button>
+            <button class="btn-cancel" style="display:none;" onclick="cancelEdit('director-${i}')">Cancel</button>
+            <button class="btn-copy" onclick="copySection('director-${i}')">Copy Section</button>
           </div>
         </div>`;
         
-        const sectionDiv = document.createElement('div');
-        sectionDiv.innerHTML = html;
-        sectionDiv.id = 'business-section';
-        container.appendChild(sectionDiv);
-      }
-      
-      // Check if any director is selected as secretary
-      let hasDirectorAsSecretary = false;
-      if (client.directorRoles) {
-        for (let i = 0; i < client.directorRoles.length; i++) {
-          if (client.directorRoles[i] && client.directorRoles[i].isSecretary) {
-            hasDirectorAsSecretary = true;
-            break;
-          }
-        }
-      }
-      
-      // Render Directors
-      if (client.directors && client.directors.length > 0) {
-        client.directors.forEach((director, index) => {
-          // Create director role display
-          let roleHtml = '';
-          if (client.directorRoles && client.directorRoles[index]) {
-            const role = client.directorRoles[index];
-            let badges = [];
-            
-            if (role.isSubscriber) {
-              badges.push('<span class="role-badge subscriber">Subscriber</span>');
-            }
-            if (role.isSecretary) {
-              badges.push('<span class="role-badge secretary">Secretary</span>');
-            }
-            
-            roleHtml = `
-              <div class="director-role-display">
-                <h3>
-                  Directors - Entry ${index + 1}
-                  ${badges.length > 0 ? `<div class="role-badges">${badges.join('')}</div>` : ''}
-                </h3>
-                ${role.isSubscriber && role.sharePercent ? 
-                  `<div class="share-percent-display"><strong>Share Percentage:</strong> ${role.sharePercent}%</div>` : ''}
-              </div>`;
-          }
-          
-          let html = `<div class="section-container">
-            ${roleHtml}
-            <table>
-              <tr><th>Field Label</th><th>Submitted Data</th></tr>`;
-          
-          // Filter out role-related fields from the table
-          const filteredDirectorData = director.filter(field => 
-            !['isSubscriber', 'isSecretary', 'sharePercent'].includes(field.label)
-          );
-          
-          filteredDirectorData.forEach(field => {
-            html += `<tr data-field="${field.label}">
-              <td>${field.label}</td>
-              <td class="value-cell">${field.value}</td>
-            </tr>`;
-          });
-          
-          html += `</table>
-            <div class="button-group">
-              <button class="btn-edit" onclick="editSection('director-${index}')">Edit Section</button>
-              <button class="btn-save" style="display:none;" onclick="saveSection('director-${index}')">Save Section</button>
-              <button class="btn-cancel" style="display:none;" onclick="cancelEdit('director-${index}')">Cancel</button>
-              <button class="btn-copy" onclick="copySection('director-${index}')">Copy Section</button>
-            </div>
-          </div>`;
-          
-          const sectionDiv = document.createElement('div');
-          sectionDiv.innerHTML = html;
-          sectionDiv.id = `director-${index}-section`;
-          container.appendChild(sectionDiv);
-        });
+        const directorSectionDiv = document.createElement('div');
+        directorSectionDiv.innerHTML = html;
+        directorSectionDiv.id = `director-${i}-section`;
+        container.appendChild(directorSectionDiv);
       }
       
       // Render Secretary only if no director is selected as secretary
-      if (!hasDirectorAsSecretary && client.secretary && client.secretary.length > 0) {
-        let html = `<div class="section-container">
+      if (!hasDirectorAsSecretary) {
+        const secretaryFields = [
+          { label: 'Qualification', value: client['secretary_Qualification'] || '' },
+          { label: 'First Name', value: client['secretary_First Name'] || '' },
+          { label: 'Middle Name', value: client['secretary_Middle Name'] || '' },
+          { label: 'Surname', value: client['secretary_Surname'] || '' },
+          { label: 'Former Name', value: client['secretary_Former Name'] || '' },
+          { label: 'Date of Birth', value: client['secretary_Date of Birth'] || '' },
+          { label: 'Place of Birth', value: client['secretary_Place of Birth'] || '' },
+          { label: 'Nationality', value: client['secretary_Nationality'] || '' },
+          { label: 'Occupation', value: client['secretary_Occupation'] || '' },
+          { label: 'Contact 1', value: client['secretary_Contact 1'] || '' },
+          { label: 'Contact 2', value: client['secretary_Contact 2'] || '' },
+          { label: 'Email', value: client['secretary_Email'] || '' },
+          { label: 'TIN', value: client['secretary_TIN'] || '' },
+          { label: 'Ghana Card', value: client['secretary_Ghana Card'] || '' },
+          { label: 'GPS', value: client['secretary_GPS'] || '' },
+          { label: 'House No.', value: client['secretary_House No.'] || '' },
+          { label: 'Landmark', value: client['secretary_Landmark'] || '' },
+          { label: 'Street', value: client['secretary_Street'] || '' },
+          { label: 'City', value: client['secretary_City'] || '' },
+          { label: 'Town', value: client['secretary_Town'] || '' },
+          { label: 'District', value: client['secretary_District'] || '' },
+          { label: 'Region', value: client['secretary_Region'] || '' },
+          { label: 'Country', value: client['secretary_Country'] || '' }
+        ];
+        
+        html = `<div class="section-container">
           <h3>Secretary Details</h3>
           <table>
             <tr><th>Field Label</th><th>Submitted Data</th></tr>`;
         
-        client.secretary.forEach(field => {
+        secretaryFields.forEach(field => {
           html += `<tr data-field="${field.label}">
             <td>${field.label}</td>
             <td class="value-cell">${field.value}</td>
@@ -895,46 +957,69 @@
           </div>
         </div>`;
         
-        const sectionDiv = document.createElement('div');
-        sectionDiv.innerHTML = html;
-        sectionDiv.id = 'secretary-section';
-        container.appendChild(sectionDiv);
+        const secretarySectionDiv = document.createElement('div');
+        secretarySectionDiv.innerHTML = html;
+        secretarySectionDiv.id = 'secretary-section';
+        container.appendChild(secretarySectionDiv);
       }
       
       // Render Subscribers
-      if (client.subscribers && client.subscribers.length > 0) {
-        client.subscribers.forEach((subscriber, index) => {
-          let html = `<div class="section-container">
-            <h3>Subscribers - Entry ${index + 1}</h3>
-            <table>
-              <tr><th>Field Label</th><th>Submitted Data</th></tr>`;
-          
-          subscriber.forEach(field => {
-            html += `<tr data-field="${field.label}">
-              <td>${field.label}</td>
-              <td class="value-cell">${field.value}</td>
-            </tr>`;
-          });
-          
-          html += `</table>
-            <div class="button-group">
-              <button class="btn-edit" onclick="editSection('subscriber-${index}')">Edit Section</button>
-              <button class="btn-save" style="display:none;" onclick="saveSection('subscriber-${index}')">Save Section</button>
-              <button class="btn-cancel" style="display:none;" onclick="cancelEdit('subscriber-${index}')">Cancel</button>
-              <button class="btn-copy" onclick="copySection('subscriber-${index}')">Copy Section</button>
-            </div>
-          </div>`;
-          
-          const sectionDiv = document.createElement('div');
-          sectionDiv.innerHTML = html;
-          sectionDiv.id = `subscriber-${index}-section`;
-          container.appendChild(sectionDiv);
+      for (let i = 0; i < (client.subscribersCount || 0); i++) {
+        const subscriberFields = [
+          { label: 'First Name', value: client[`subscriber${i}_First Name`] || '' },
+          { label: 'Middle Name', value: client[`subscriber${i}_Middle Name`] || '' },
+          { label: 'Surname', value: client[`subscriber${i}_Surname`] || '' },
+          { label: 'Former Name', value: client[`subscriber${i}_Former Name`] || '' },
+          { label: 'Date of Birth', value: client[`subscriber${i}_Date of Birth`] || '' },
+          { label: 'Place of Birth', value: client[`subscriber${i}_Place of Birth`] || '' },
+          { label: 'Nationality', value: client[`subscriber${i}_Nationality`] || '' },
+          { label: 'Occupation', value: client[`subscriber${i}_Occupation`] || '' },
+          { label: 'Contact 1', value: client[`subscriber${i}_Contact 1`] || '' },
+          { label: 'Contact 2', value: client[`subscriber${i}_Contact 2`] || '' },
+          { label: 'Email', value: client[`subscriber${i}_Email`] || '' },
+          { label: 'TIN', value: client[`subscriber${i}_TIN`] || '' },
+          { label: 'Ghana Card', value: client[`subscriber${i}_Ghana Card`] || '' },
+          { label: 'GPS', value: client[`subscriber${i}_GPS`] || '' },
+          { label: 'House No.', value: client[`subscriber${i}_House No.`] || '' },
+          { label: 'Landmark', value: client[`subscriber${i}_Landmark`] || '' },
+          { label: 'Street', value: client[`subscriber${i}_Street`] || '' },
+          { label: 'City', value: client[`subscriber${i}_City`] || '' },
+          { label: 'Town', value: client[`subscriber${i}_Town`] || '' },
+          { label: 'District', value: client[`subscriber${i}_District`] || '' },
+          { label: 'Region', value: client[`subscriber${i}_Region`] || '' }
+        ];
+        
+        html = `<div class="section-container">
+          <h3>Subscribers - Entry ${i + 1}</h3>
+          <table>
+            <tr><th>Field Label</th><th>Submitted Data</th></tr>`;
+        
+        subscriberFields.forEach(field => {
+          html += `<tr data-field="${field.label}">
+            <td>${field.label}</td>
+            <td class="value-cell">${field.value}</td>
+          </tr>`;
         });
+        
+        html += `</table>
+          <div class="button-group">
+            <button class="btn-edit" onclick="editSection('subscriber-${i}')">Edit Section</button>
+            <button class="btn-save" style="display:none;" onclick="saveSection('subscriber-${i}')">Save Section</button>
+            <button class="btn-cancel" style="display:none;" onclick="cancelEdit('subscriber-${i}')">Cancel</button>
+            <button class="btn-copy" onclick="copySection('subscriber-${i}')">Copy Section</button>
+          </div>
+        </div>`;
+        
+        const subscriberSectionDiv = document.createElement('div');
+        subscriberSectionDiv.innerHTML = html;
+        subscriberSectionDiv.id = `subscriber-${i}-section`;
+        container.appendChild(subscriberSectionDiv);
       }
     }
 
     function deleteClient(clientId) {
       if (confirm('Are you sure you want to delete this client data?')) {
+        // FIXED: Delete from the correct path
         db.collection('owners').doc(ownerUniqueId).collection('clients').doc(clientId).delete()
           .then(() => {
             showNotification('Client data deleted successfully!');
@@ -1094,40 +1179,203 @@
             if (sectionId === 'business') {
               // Update business fields
               updatedData.forEach(field => {
-                const existingIndex = client.formData.findIndex(f => f.label === field.label);
-                if (existingIndex !== -1) {
-                  client.formData[existingIndex].value = field.value;
+                // Map field labels to the flattened structure
+                if (field.label === 'Company Name') {
+                  client['company_Company Name'] = field.value;
+                } else if (field.label === 'Presented By') {
+                  client['company_Presented By'] = field.value;
+                } else if (field.label === 'Presenter TIN') {
+                  client['company_Presenter TIN'] = field.value;
+                } else if (field.label === 'Activities') {
+                  client['company_Activities'] = field.value;
+                } else if (field.label === 'Stated Capital') {
+                  client['company_Stated Capital'] = field.value;
+                } else if (field.label === 'Estimated Revenue') {
+                  client['company_Estimated Revenue'] = field.value;
+                } else if (field.label === 'Number of Employees') {
+                  client['company_Number of Employees'] = field.value;
+                } else if (field.label === 'GPS Address') {
+                  client['office_GPS Address'] = field.value;
+                } else if (field.label === 'Landmark') {
+                  client['office_Landmark'] = field.value;
+                } else if (field.label === 'Building No.') {
+                  client['office_Building No.'] = field.value;
+                } else if (field.label === 'Town') {
+                  client['office_Town'] = field.value;
+                } else if (field.label === 'Street Name') {
+                  client['office_Street Name'] = field.value;
+                } else if (field.label === 'City') {
+                  client['office_City'] = field.value;
+                } else if (field.label === 'District') {
+                  client['office_District'] = field.value;
+                } else if (field.label === 'Region') {
+                  client['office_Region'] = field.value;
+                } else if (field.label === 'Postal Number') {
+                  client['office_Postal Number'] = field.value;
+                } else if (field.label === 'Postal Town') {
+                  client['office_Postal Town'] = field.value;
+                } else if (field.label === 'Postal Region') {
+                  client['office_Postal Region'] = field.value;
+                } else if (field.label === 'Contact 1') {
+                  client['office_Contact 1'] = field.value;
+                } else if (field.label === 'Contact 2') {
+                  client['office_Contact 2'] = field.value;
+                } else if (field.label === 'Email') {
+                  client['office_Email'] = field.value;
                 }
               });
             } else if (sectionId.startsWith('director-')) {
               const index = parseInt(sectionId.split('-')[1]);
-              if (client.directors && client.directors[index]) {
-                updatedData.forEach(field => {
-                  const existingIndex = client.directors[index].findIndex(f => f.label === field.label);
-                  if (existingIndex !== -1) {
-                    client.directors[index][existingIndex].value = field.value;
-                  }
-                });
-              }
+              // Update director fields
+              updatedData.forEach(field => {
+                // Map field labels to the flattened structure
+                if (field.label === 'First Name') {
+                  client[`director${index}_First Name`] = field.value;
+                } else if (field.label === 'Middle Name') {
+                  client[`director${index}_Middle Name`] = field.value;
+                } else if (field.label === 'Surname') {
+                  client[`director${index}_Surname`] = field.value;
+                } else if (field.label === 'Former Name') {
+                  client[`director${index}_Former Name`] = field.value;
+                } else if (field.label === 'Date of Birth') {
+                  client[`director${index}_Date of Birth`] = field.value;
+                } else if (field.label === 'Place of Birth') {
+                  client[`director${index}_Place of Birth`] = field.value;
+                } else if (field.label === 'Nationality') {
+                  client[`director${index}_Nationality`] = field.value;
+                } else if (field.label === 'Occupation') {
+                  client[`director${index}_Occupation`] = field.value;
+                } else if (field.label === 'Contact 1') {
+                  client[`director${index}_Contact 1`] = field.value;
+                } else if (field.label === 'Contact 2') {
+                  client[`director${index}_Contact 2`] = field.value;
+                } else if (field.label === 'Email') {
+                  client[`director${index}_Email`] = field.value;
+                } else if (field.label === 'TIN') {
+                  client[`director${index}_TIN`] = field.value;
+                } else if (field.label === 'Ghana Card') {
+                  client[`director${index}_Ghana Card`] = field.value;
+                } else if (field.label === 'GPS') {
+                  client[`director${index}_GPS`] = field.value;
+                } else if (field.label === 'House No.') {
+                  client[`director${index}_House No.`] = field.value;
+                } else if (field.label === 'Landmark') {
+                  client[`director${index}_Landmark`] = field.value;
+                } else if (field.label === 'Street') {
+                  client[`director${index}_Street`] = field.value;
+                } else if (field.label === 'City') {
+                  client[`director${index}_City`] = field.value;
+                } else if (field.label === 'Town') {
+                  client[`director${index}_Town`] = field.value;
+                } else if (field.label === 'District') {
+                  client[`director${index}_District`] = field.value;
+                } else if (field.label === 'Region') {
+                  client[`director${index}_Region`] = field.value;
+                } else if (field.label === 'Country') {
+                  client[`director${index}_Country`] = field.value;
+                }
+              });
             } else if (sectionId === 'secretary') {
-              if (client.secretary) {
-                updatedData.forEach(field => {
-                  const existingIndex = client.secretary.findIndex(f => f.label === field.label);
-                  if (existingIndex !== -1) {
-                    client.secretary[existingIndex].value = field.value;
-                  }
-                });
-              }
+              // Update secretary fields
+              updatedData.forEach(field => {
+                // Map field labels to the flattened structure
+                if (field.label === 'Qualification') {
+                  client['secretary_Qualification'] = field.value;
+                } else if (field.label === 'First Name') {
+                  client['secretary_First Name'] = field.value;
+                } else if (field.label === 'Middle Name') {
+                  client['secretary_Middle Name'] = field.value;
+                } else if (field.label === 'Surname') {
+                  client['secretary_Surname'] = field.value;
+                } else if (field.label === 'Former Name') {
+                  client['secretary_Former Name'] = field.value;
+                } else if (field.label === 'Date of Birth') {
+                  client['secretary_Date of Birth'] = field.value;
+                } else if (field.label === 'Place of Birth') {
+                  client['secretary_Place of Birth'] = field.value;
+                } else if (field.label === 'Nationality') {
+                  client['secretary_Nationality'] = field.value;
+                } else if (field.label === 'Occupation') {
+                  client['secretary_Occupation'] = field.value;
+                } else if (field.label === 'Contact 1') {
+                  client['secretary_Contact 1'] = field.value;
+                } else if (field.label === 'Contact 2') {
+                  client['secretary_Contact 2'] = field.value;
+                } else if (field.label === 'Email') {
+                  client['secretary_Email'] = field.value;
+                } else if (field.label === 'TIN') {
+                  client['secretary_TIN'] = field.value;
+                } else if (field.label === 'Ghana Card') {
+                  client['secretary_Ghana Card'] = field.value;
+                } else if (field.label === 'GPS') {
+                  client['secretary_GPS'] = field.value;
+                } else if (field.label === 'House No.') {
+                  client['secretary_House No.'] = field.value;
+                } else if (field.label === 'Landmark') {
+                  client['secretary_Landmark'] = field.value;
+                } else if (field.label === 'Street') {
+                  client['secretary_Street'] = field.value;
+                } else if (field.label === 'City') {
+                  client['secretary_City'] = field.value;
+                } else if (field.label === 'Town') {
+                  client['secretary_Town'] = field.value;
+                } else if (field.label === 'District') {
+                  client['secretary_District'] = field.value;
+                } else if (field.label === 'Region') {
+                  client['secretary_Region'] = field.value;
+                } else if (field.label === 'Country') {
+                  client['secretary_Country'] = field.value;
+                }
+              });
             } else if (sectionId.startsWith('subscriber-')) {
               const index = parseInt(sectionId.split('-')[1]);
-              if (client.subscribers && client.subscribers[index]) {
-                updatedData.forEach(field => {
-                  const existingIndex = client.subscribers[index].findIndex(f => f.label === field.label);
-                  if (existingIndex !== -1) {
-                    client.subscribers[index][existingIndex].value = field.value;
-                  }
-                });
-              }
+              // Update subscriber fields
+              updatedData.forEach(field => {
+                // Map field labels to the flattened structure
+                if (field.label === 'First Name') {
+                  client[`subscriber${index}_First Name`] = field.value;
+                } else if (field.label === 'Middle Name') {
+                  client[`subscriber${index}_Middle Name`] = field.value;
+                } else if (field.label === 'Surname') {
+                  client[`subscriber${index}_Surname`] = field.value;
+                } else if (field.label === 'Former Name') {
+                  client[`subscriber${index}_Former Name`] = field.value;
+                } else if (field.label === 'Date of Birth') {
+                  client[`subscriber${index}_Date of Birth`] = field.value;
+                } else if (field.label === 'Place of Birth') {
+                  client[`subscriber${index}_Place of Birth`] = field.value;
+                } else if (field.label === 'Nationality') {
+                  client[`subscriber${index}_Nationality`] = field.value;
+                } else if (field.label === 'Occupation') {
+                  client[`subscriber${index}_Occupation`] = field.value;
+                } else if (field.label === 'Contact 1') {
+                  client[`subscriber${index}_Contact 1`] = field.value;
+                } else if (field.label === 'Contact 2') {
+                  client[`subscriber${index}_Contact 2`] = field.value;
+                } else if (field.label === 'Email') {
+                  client[`subscriber${index}_Email`] = field.value;
+                } else if (field.label === 'TIN') {
+                  client[`subscriber${index}_TIN`] = field.value;
+                } else if (field.label === 'Ghana Card') {
+                  client[`subscriber${index}_Ghana Card`] = field.value;
+                } else if (field.label === 'GPS') {
+                  client[`subscriber${index}_GPS`] = field.value;
+                } else if (field.label === 'House No.') {
+                  client[`subscriber${index}_House No.`] = field.value;
+                } else if (field.label === 'Landmark') {
+                  client[`subscriber${index}_Landmark`] = field.value;
+                } else if (field.label === 'Street') {
+                  client[`subscriber${index}_Street`] = field.value;
+                } else if (field.label === 'City') {
+                  client[`subscriber${index}_City`] = field.value;
+                } else if (field.label === 'Town') {
+                  client[`subscriber${index}_Town`] = field.value;
+                } else if (field.label === 'District') {
+                  client[`subscriber${index}_District`] = field.value;
+                } else if (field.label === 'Region') {
+                  client[`subscriber${index}_Region`] = field.value;
+                }
+              });
             }
             
             // Save updated client data
