@@ -953,38 +953,27 @@
       return 'client_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
     }
 
-    function saveClientToFirestore(clientData) {
-  showNotification('Submitting your data...', 'info');
-  
-  console.log('Attempting to save client data:', clientData);
-  
-  // First, check if the owner document exists
+   function saveClientToFirestore(clientData) {
+  // 1️⃣ Check if owner doc exists
   db.collection('owners').doc(ownerID).get()
     .then((doc) => {
       if (!doc.exists) {
-        // Create the owner document if it doesn't exist
-        console.log('Owner document does not exist, creating it');
-        return db.collection('owners').doc(ownerID).set({
-          ownerId: ownerID,
-          ownerName: ownerData ? ownerData.firstName : 'Unknown',
-          createdAt: new Date().toISOString()
-        });
+        return db.collection('owners').doc(ownerID).set({...});
       } else {
-        console.log('Owner document exists');
         return Promise.resolve();
       }
     })
+    // 2️⃣ Create client under that owner
     .then(() => {
-      // Now save the client data
-      console.log('Saving client data to:', `owners/${ownerID}/clients/${clientData.id}`);
-      return db.collection('owners').doc(ownerID).collection('clients').doc(clientData.id).set(clientData);
+      return db.collection('owners').doc(ownerID)
+               .collection('clients').doc(clientData.id)
+               .set(clientData);
     })
+    // 3️⃣ Update the owner's usage count
     .then(() => {
-      console.log('Client data saved successfully');
-      
-      // Also update the owner's usage count
       return db.collection('users').where('uniqueId', '==', ownerID).get();
     })
+    // 🔹 The part you asked about
     .then((querySnapshot) => {
       if (!querySnapshot.empty) {
         const ownerDoc = querySnapshot.docs[0];
@@ -997,19 +986,13 @@
       }
     })
     .then(() => {
-      console.log('Usage count updated successfully');
-      showNotification('Your data has been submitted successfully! Thank you.', 'success');
-      
-      // Reset form after successful submission
-      setTimeout(() => {
-        resetForm();
-      }, 2000);
+      // done!
     })
     .catch((error) => {
       console.error("Error submitting form:", error);
-      showNotification('Error submitting your data. Please try again.', 'error');
     });
 }
+
     // Toggle Share Percentage input based on Subscriber checkbox
     function toggleSharePercent(checkbox, directorIndex) {
       const sharePercentContainer = checkbox.closest('.director-roles').querySelector('.share-percent-container');
