@@ -980,160 +980,73 @@
       return 'client_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
     }
 
-   // Replace the saveClientToFirestore function in llc-input-form.html with this improved version
+    // Replace the saveClientToFirestore function in llc-input-form.html with this improved version
 function saveClientToFirestore(clientData) {
   showNotification('Submitting your data...', 'info');
   
   console.log('Attempting to save client data:', clientData);
   
-  // First, verify the owner ID is valid (this should have already been done)
-  if (!ownerData || !ownerData.uniqueId) {
-    showNotification('Invalid owner. Please refresh the page and try again.', 'error');
-    return;
-  }
-  
-  // Create a batched write to ensure atomicity
-  const batch = db.batch();
-  
-  // Check if owner document exists in owners collection
-  const ownerDocRef = db.collection('owners').doc(ownerID);
-  const clientDocRef = ownerDocRef.collection('clients').doc(clientData.id);
-  
-  // Get the owner document
-  ownerDocRef.get().then((doc) => {
-    if (!doc.exists) {
-      // Create the owner document if it doesn't exist
-      console.log('Owner document does not exist, creating it');
-      const ownerDoc = {
-        ownerId: ownerID,
-        ownerName: ownerData.firstName || 'Unknown',
-        ownerEmail: ownerData.email || 'Unknown',
-        createdAt: new Date().toISOString(),
-        totalSubmissions: 1
-      };
-      batch.set(ownerDocRef, ownerDoc);
-    } else {
-      // Update the owner document to increment submission count
-      batch.update(ownerDocRef, {
-        totalSubmissions: firebase.firestore.FieldValue.increment(1)
-      });
-    }
-    
-    // Add the client data
-    batch.set(clientDocRef, clientData);
-    
-    // Commit the batch
-    return batch.commit();
-  })
-  .then(() => {
-    console.log('Client data saved successfully');
-    
-    // Also update the owner's usage count in the users collection
-    return db.collection('users').where('uniqueId', '==', ownerID).get();
-  })
-  .then((querySnapshot) => {
-    if (!querySnapshot.empty) {
-      const ownerDoc = querySnapshot.docs[0];
-      console.log('Updating usage count for owner:', ownerDoc.id);
-      return ownerDoc.ref.update({
-        usage_count: firebase.firestore.FieldValue.increment(1),
-        lastSubmissionAt: new Date().toISOString()
-      });
-    } else {
-      console.log('No owner found in users collection with uniqueId:', ownerID);
-    }
-  })
-  .then(() => {
-    console.log('Usage count updated successfully');
-    showNotification('Your data has been submitted successfully! Thank you.', 'success');
-    
-    // Reset form after successful submission
-    setTimeout(() => {
-      resetForm();
-    }, 2000);
-  })
-  .catch((error) => {
-    console.error("Error submitting form:", error);
-    
-    // Provide more specific error messages
-    if (error.code === 'permission-denied') {
-      showNotification('Permission denied. The owner link may be invalid. Please contact support.', 'error');
-    } else if (error.code === 'unavailable') {
-      showNotification('Service temporarily unavailable. Please try again in a few moments.', 'error');
-    } else {
-      showNotification('Error submitting your data: ' + error.message + '. Please try again.', 'error');
-    }
-  });
-}
-
-
-
-// Add this function to llc-input-form.html
-function validateOwnerBeforeSubmission() {
-  return new Promise((resolve, reject) => {
-    // Double-check that the owner is valid
-    db.collection('users').where('uniqueId', '==', ownerID).limit(1).get()
-      .then((querySnapshot) => {
-        if (querySnapshot.empty) {
-          reject(new Error('Owner not found'));
-        } else {
-          resolve(querySnapshot.docs[0].data());
-        }
-      })
-      .catch(reject);
-  });
-}
-
-// Then update the form submission handler to use this validation
-document.getElementById('mainForm').addEventListener('submit', function(e){
-  e.preventDefault();
-  
-  if (!ownerID) {
-    showNotification('Form submission failed. Invalid owner link.', 'error');
-    return;
-  }
-  
-  // Validate owner before proceeding
-  validateOwnerBeforeSubmission()
-    .then((validatedOwnerData) => {
-      ownerData = validatedOwnerData;
+  // First, check if the owner document exists
+  db.collection('owners').doc(ownerID).get()
+    .then((doc) => {
+      if (!doc.exists) {
+        // Create the owner document if it doesn't exist
+        console.log('Owner document does not exist, creating it');
+        return db.collection('owners').doc(ownerID).set({
+          ownerId: ownerID,
+          ownerName: ownerData ? ownerData.firstName : 'Unknown',
+          createdAt: new Date().toISOString()
+        });
+      } else {
+        console.log('Owner document exists');
+        return Promise.resolve();
+      }
+    })
+    .then(() => {
+      // Now save the client data
+      console.log('Saving client data to:', `owners/${ownerID}/clients/${clientData.id}`);
+      return db.collection('owners').doc(ownerID).collection('clients').doc(clientData.id).set(clientData);
+    })
+    .then(() => {
+      console.log('Client data saved successfully');
       
-      const clientId = generateClientId();
-      const submittedAt = new Date().toISOString();
+      // Also update the owner's usage count
+      return db.collection('users').where('uniqueId', '==', ownerID).get();
+    })
+    .then((querySnapshot) => {
+      if (!querySnapshot.empty) {
+        const ownerDoc = querySnapshot.docs[0];
+        console.log('Updating usage count for owner:', ownerDoc.id);
+        return ownerDoc.ref.update({
+          usage_count: firebase.firestore.FieldValue.increment(1)
+        });
+      } else {
+        console.log('No owner found in users collection with uniqueId:', ownerID);
+      }
+    })
+    .then(() => {
+      console.log('Usage count updated successfully');
+      showNotification('Your data has been submitted successfully! Thank you.', 'success');
       
-      // ... rest of your form data collection code ...
-      
-      const clientData = {
-        id: clientId,
-        submittedAt: submittedAt,
-        ...formData,
-        directorsCount: directors.length,
-        subscribersCount: subscribers.length,
-        ...directorRoles.reduce((acc, role) => ({...acc, ...role}), {}),
-        ...secretary,
-        ...directors.reduce((acc, director) => ({...acc, ...director}), {}),
-        ...subscribers.reduce((acc, subscriber) => ({...acc, ...subscriber}), {}),
-        ownerId: ownerID,
-        ownerName: ownerData.firstName || 'Unknown',
-        ownerEmail: ownerData.email || 'Unknown'
-      };
-      
-      console.log('Client data to save:', clientData);
-      
-      // Save to Firestore
-      saveClientToFirestore(clientData);
+      // Reset form after successful submission
+      setTimeout(() => {
+        resetForm();
+      }, 2000);
     })
     .catch((error) => {
-      console.error('Owner validation failed:', error);
-      showNotification('Invalid owner link. Please contact the person who shared this link with you.', 'error');
+      console.error("Error submitting form:", error);
+      
+      // Provide more specific error messages based on the error code
+      if (error.code === 'permission-denied') {
+        showNotification('Permission denied. This might be due to security settings. Please contact support.', 'error');
+      } else if (error.code === 'unavailable') {
+        showNotification('Service temporarily unavailable. Please try again in a few moments.', 'error');
+      } else {
+        showNotification('Error submitting your data: ' + error.message + '. Please try again.', 'error');
+      }
     });
-});
-
-
-
-
-
-
+}
+    
     // Toggle Share Percentage input based on Subscriber checkbox
     function toggleSharePercent(checkbox, directorIndex) {
       const sharePercentContainer = checkbox.closest('.director-roles').querySelector('.share-percent-container');
@@ -1411,10 +1324,6 @@ document.getElementById('mainForm').addEventListener('submit', function(e){
         notification.classList.remove('show');
       }, 3000);
     }
-
-    await getFirestore(app);
-console.log("Connected to Firestore");
-
 </script>
 </body>
 </html>
