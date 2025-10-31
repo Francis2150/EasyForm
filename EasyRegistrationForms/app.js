@@ -136,17 +136,20 @@ function logout() {
         });
 }
 
-// Generate unique ID function
+// FIXED: Consistent unique ID generation (same as auth.js)
 function generateUniqueId(firstName, email) {
-    // Get last 3 letters of email (before @)
+    // Clean the first name - remove spaces and special characters
+    const cleanFirstName = firstName.toLowerCase().replace(/[^a-z0-9]/g, '');
+    
+    // Get first 6 characters of email (before @)
     const emailPart = email.split('@')[0];
-    const emailSuffix = emailPart.substring(emailPart.length - 3);
+    const emailPrefix = emailPart.substring(0, 6);
     
     // Generate a random 4-digit number
     const randomDigits = Math.floor(1000 + Math.random() * 9000);
     
-    // Combine first name (lowercase) + random digits + email suffix
-    return `${firstName.toLowerCase()}${randomDigits}${emailSuffix}`;
+    // Combine clean first name + email prefix + random digits
+    return `${cleanFirstName}${emailPrefix}${randomDigits}`;
 }
 
 // Real-time Firestore listener with improved error handling

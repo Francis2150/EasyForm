@@ -809,6 +809,8 @@
       const params = new URLSearchParams(window.location.search);
       ownerID = params.get("owner");
       
+      console.log('Owner ID from URL:', ownerID);
+      
       if (ownerID) {
         // Fetch owner data
         fetchOwnerData(ownerID);
@@ -818,15 +820,34 @@
       }
     });
 
+    // FIXED: Improved fetchOwnerData function with better error handling
     function fetchOwnerData(ownerId) {
       console.log('Fetching owner data for ID:', ownerId);
+      showNotification('Validating your link...', 'info');
       
       // Try to find the owner by uniqueId
       db.collection('users').where('uniqueId', '==', ownerId).get()
         .then((querySnapshot) => {
           if (querySnapshot.empty) {
             console.log('No owner found with uniqueId:', ownerId);
-            showError('The owner ID in your link is not valid. Please contact the person who shared this link with you.');
+            
+            // Try to find by email (in case the link contains email)
+            db.collection('users').where('email', '==', ownerId).get()
+              .then((emailQuery) => {
+                if (emailQuery.empty) {
+                  console.log('No owner found with email either:', ownerId);
+                  showError('The owner ID in your link is not valid. Please contact the person who shared this link with you.');
+                } else {
+                  console.log('Owner found by email:', emailQuery.docs[0].data());
+                  const doc = emailQuery.docs[0];
+                  ownerData = doc.data();
+                  displayOwnerInfo();
+                }
+              })
+              .catch((emailError) => {
+                console.error("Error checking email:", emailError);
+                showError('Error loading owner information. Please try again later or contact support.');
+              });
             return;
           }
           
@@ -835,21 +856,27 @@
           ownerData = doc.data();
           
           console.log('Owner data found:', ownerData);
-          
-          // Display owner information
-          document.getElementById('ownerInfo').style.display = 'flex';
-          document.getElementById('ownerName').textContent = ownerData.firstName || 'Unknown';
-          document.getElementById('ownerId').textContent = ownerId;
-          document.getElementById('mainTitle').textContent = `Company Data Collection Form - ${ownerData.firstName || 'Unknown'}`;
-          
-          // Show the form
-          document.getElementById('formView').style.display = 'block';
-          document.getElementById('errorContainer').style.display = 'none';
+          displayOwnerInfo();
         })
         .catch((error) => {
           console.error("Error getting owner data:", error);
           showError('Error loading owner information. Please try again later or contact support.');
         });
+    }
+
+    // FIXED: New function to display owner info
+    function displayOwnerInfo() {
+      // Display owner information
+      document.getElementById('ownerInfo').style.display = 'flex';
+      document.getElementById('ownerName').textContent = ownerData.firstName || 'Unknown';
+      document.getElementById('ownerId').textContent = ownerID;
+      document.getElementById('mainTitle').textContent = `Company Data Collection Form - ${ownerData.firstName || 'Unknown'}`;
+      
+      // Show the form
+      document.getElementById('formView').style.display = 'block';
+      document.getElementById('errorContainer').style.display = 'none';
+      
+      showNotification('Link validated successfully! You can now submit your data.', 'success');
     }
 
     function showError(message) {
@@ -1288,6 +1315,6 @@
         notification.classList.remove('show');
       }, 3000);
     }
-  </script>
+</script>
 </body>
 </html>
