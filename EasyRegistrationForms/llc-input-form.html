@@ -954,42 +954,51 @@
     }
 
    function saveClientToFirestore(clientData) {
-  // 1️⃣ Check if owner doc exists
+  showNotification('Submitting your data...', 'info');
+  console.log('Attempting to save client data:', clientData);
+
+  // 1️⃣ Check if the owner document exists
   db.collection('owners').doc(ownerID).get()
     .then((doc) => {
       if (!doc.exists) {
-        return db.collection('owners').doc(ownerID).set({...});
+        console.log('Owner document does not exist, creating it');
+        return db.collection('owners').doc(ownerID).set({
+          ownerId: ownerID,
+          ownerName: ownerData ? ownerData.firstName : 'Unknown',
+          createdAt: new Date().toISOString()
+        });
       } else {
+        console.log('Owner document exists');
         return Promise.resolve();
       }
     })
-    // 2️⃣ Create client under that owner
+    // 2️⃣ Save the client data under the owner's "clients" subcollection
     .then(() => {
-      return db.collection('owners').doc(ownerID)
-               .collection('clients').doc(clientData.id)
+      console.log('Saving client data to:', `owners/${ownerID}/clients/${clientData.id}`);
+      return db.collection('owners')
+               .doc(ownerID)
+               .collection('clients')
+               .doc(clientData.id)
                .set(clientData);
     })
-    // 3️⃣ Update the owner's usage count
+    // 3️⃣ Skip usage count update (public form — no Firestore permission)
     .then(() => {
-      return db.collection('users').where('uniqueId', '==', ownerID).get();
+      console.log('Skipping usage count update for public form submissions.');
     })
-    // 🔹 The part you asked about
-    .then((querySnapshot) => {
-      if (!querySnapshot.empty) {
-        const ownerDoc = querySnapshot.docs[0];
-        console.log('Updating usage count for owner:', ownerDoc.id);
-        return ownerDoc.ref.update({
-          usage_count: firebase.firestore.FieldValue.increment(1)
-        });
-      } else {
-        console.log('No owner found in users collection with uniqueId:', ownerID);
-      }
-    })
+    // 4️⃣ Notify success
     .then(() => {
-      // done!
+      console.log('Client data saved successfully');
+      showNotification('Your data has been submitted successfully! Thank you.', 'success');
+
+      // Reset form after success
+      setTimeout(() => {
+        resetForm();
+      }, 2000);
     })
+    // 5️⃣ Catch any errors
     .catch((error) => {
       console.error("Error submitting form:", error);
+      showNotification('Error submitting your data. Please try again.', 'error');
     });
 }
 
