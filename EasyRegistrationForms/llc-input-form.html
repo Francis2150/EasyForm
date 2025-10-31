@@ -980,63 +980,72 @@
       return 'client_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
     }
 
-    function saveClientToFirestore(clientData) {
-      showNotification('Submitting your data...', 'info');
-      
-      console.log('Attempting to save client data:', clientData);
-      
-      // First, check if the owner document exists
-      db.collection('owners').doc(ownerID).get()
-        .then((doc) => {
-          if (!doc.exists) {
-            // Create the owner document if it doesn't exist
-            console.log('Owner document does not exist, creating it');
-            return db.collection('owners').doc(ownerID).set({
-              ownerId: ownerID,
-              ownerName: ownerData ? ownerData.firstName : 'Unknown',
-              createdAt: new Date().toISOString()
-            });
-          } else {
-            console.log('Owner document exists');
-            return Promise.resolve();
-          }
-        })
-        .then(() => {
-          // Now save the client data
-          console.log('Saving client data to:', `owners/${ownerID}/clients/${clientData.id}`);
-          return db.collection('owners').doc(ownerID).collection('clients').doc(clientData.id).set(clientData);
-        })
-        .then(() => {
-          console.log('Client data saved successfully');
-          
-          // Also update the owner's usage count
-          return db.collection('users').where('uniqueId', '==', ownerID).get();
-        })
-        .then((querySnapshot) => {
-          if (!querySnapshot.empty) {
-            const ownerDoc = querySnapshot.docs[0];
-            console.log('Updating usage count for owner:', ownerDoc.id);
-            return ownerDoc.ref.update({
-              usage_count: firebase.firestore.FieldValue.increment(1)
-            });
-          } else {
-            console.log('No owner found in users collection with uniqueId:', ownerID);
-          }
-        })
-        .then(() => {
-          console.log('Usage count updated successfully');
-          showNotification('Your data has been submitted successfully! Thank you.', 'success');
-          
-          // Reset form after successful submission
-          setTimeout(() => {
-            resetForm();
-          }, 2000);
-        })
-        .catch((error) => {
-          console.error("Error submitting form:", error);
-          showNotification('Error submitting your data. Please try again.', 'error');
+    // Replace the saveClientToFirestore function in llc-input-form.html with this improved version
+function saveClientToFirestore(clientData) {
+  showNotification('Submitting your data...', 'info');
+  
+  console.log('Attempting to save client data:', clientData);
+  
+  // First, check if the owner document exists
+  db.collection('owners').doc(ownerID).get()
+    .then((doc) => {
+      if (!doc.exists) {
+        // Create the owner document if it doesn't exist
+        console.log('Owner document does not exist, creating it');
+        return db.collection('owners').doc(ownerID).set({
+          ownerId: ownerID,
+          ownerName: ownerData ? ownerData.firstName : 'Unknown',
+          createdAt: new Date().toISOString()
         });
-    }
+      } else {
+        console.log('Owner document exists');
+        return Promise.resolve();
+      }
+    })
+    .then(() => {
+      // Now save the client data
+      console.log('Saving client data to:', `owners/${ownerID}/clients/${clientData.id}`);
+      return db.collection('owners').doc(ownerID).collection('clients').doc(clientData.id).set(clientData);
+    })
+    .then(() => {
+      console.log('Client data saved successfully');
+      
+      // Also update the owner's usage count
+      return db.collection('users').where('uniqueId', '==', ownerID).get();
+    })
+    .then((querySnapshot) => {
+      if (!querySnapshot.empty) {
+        const ownerDoc = querySnapshot.docs[0];
+        console.log('Updating usage count for owner:', ownerDoc.id);
+        return ownerDoc.ref.update({
+          usage_count: firebase.firestore.FieldValue.increment(1)
+        });
+      } else {
+        console.log('No owner found in users collection with uniqueId:', ownerID);
+      }
+    })
+    .then(() => {
+      console.log('Usage count updated successfully');
+      showNotification('Your data has been submitted successfully! Thank you.', 'success');
+      
+      // Reset form after successful submission
+      setTimeout(() => {
+        resetForm();
+      }, 2000);
+    })
+    .catch((error) => {
+      console.error("Error submitting form:", error);
+      
+      // Provide more specific error messages based on the error code
+      if (error.code === 'permission-denied') {
+        showNotification('Permission denied. This might be due to security settings. Please contact support.', 'error');
+      } else if (error.code === 'unavailable') {
+        showNotification('Service temporarily unavailable. Please try again in a few moments.', 'error');
+      } else {
+        showNotification('Error submitting your data: ' + error.message + '. Please try again.', 'error');
+      }
+    });
+}
     
     // Toggle Share Percentage input based on Subscriber checkbox
     function toggleSharePercent(checkbox, directorIndex) {
