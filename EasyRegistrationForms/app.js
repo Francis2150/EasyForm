@@ -149,7 +149,7 @@ function generateUniqueId(firstName, email) {
     return `${firstName.toLowerCase()}${randomDigits}${emailSuffix}`;
 }
 
-// Real-time Firestore listener with improved error handling// Real-time Firestore listener with improved error handling
+// Real-time Firestore listener with improved error handling
 function loadUserData() {
     console.log('Setting up real-time listener for user:', currentUser.uid);
     showLoading(true);
