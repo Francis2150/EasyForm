@@ -149,7 +149,7 @@ function generateUniqueId(firstName, email) {
     return `${firstName.toLowerCase()}${randomDigits}${emailSuffix}`;
 }
 
-// Real-time Firestore listener
+// Real-time Firestore listener with improved error handling
 function loadUserData() {
     console.log('Setting up real-time listener for user:', currentUser.uid);
     showLoading(true);
@@ -190,23 +190,79 @@ function loadUserData() {
                 
                 console.log('Creating new user with data:', userData);
                 
-                userDocRef.set(userData)
+                // Use set with merge to handle potential permission issues
+                userDocRef.set(userData, { merge: true })
                     .then(() => {
                         console.log('New user document created.');
                         updateDashboard(userData);
                     })
                     .catch((error) => {
                         console.error('Error creating user document:', error);
-                        showNotification(error.message, 'error');
+                        showNotification('Error creating user profile: ' + error.message, 'error');
+                        
+                        // Fallback: Try to create user document with a different approach
+                        createUserWithFallback(userData);
                     });
             }
         },
         (error) => {
             showLoading(false);
             console.error('Real-time listener error:', error);
-            showNotification('Error loading user data: ' + error.message, 'error');
+            
+            // Handle permission errors specifically
+            if (error.code === 'permission-denied') {
+                showNotification('Permission denied. Please try logging out and logging back in.', 'error');
+                
+                // Try to set up a one-time listener instead of real-time
+                loadUserDataOnce();
+            } else {
+                showNotification('Error loading user data: ' + error.message, 'error');
+            }
         }
     );
+}
+
+// Fallback function to load user data once instead of using a real-time listener
+function loadUserDataOnce() {
+    console.log('Attempting to load user data with one-time query');
+    showLoading(true);
+    
+    db.collection('users').doc(currentUser.uid).get()
+        .then((doc) => {
+            showLoading(false);
+            if (doc.exists) {
+                console.log('User data loaded with one-time query:', doc.data());
+                updateDashboard(doc.data());
+            } else {
+                console.log('User document not found even with one-time query');
+                showNotification('User profile not found. Please contact support.', 'error');
+            }
+        })
+        .catch((error) => {
+            showLoading(false);
+            console.error('Error with one-time user data query:', error);
+            showNotification('Error loading user data. Please try refreshing the page.', 'error');
+        });
+}
+
+// Fallback function to create user document with a different approach
+function createUserWithFallback(userData) {
+    console.log('Attempting to create user document with fallback method');
+    
+    // Try using a batched write
+    const batch = db.batch();
+    const userDocRef = db.collection('users').doc(currentUser.uid);
+    batch.set(userDocRef, userData);
+    
+    batch.commit()
+        .then(() => {
+            console.log('User document created with batch write');
+            updateDashboard(userData);
+        })
+        .catch((error) => {
+            console.error('Error with batch write:', error);
+            showNotification('Unable to create user profile. Please try again later.', 'error');
+        });
 }
 
 function updateDashboard(userData) {
