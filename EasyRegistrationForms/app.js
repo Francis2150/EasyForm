@@ -149,7 +149,7 @@ function generateUniqueId(firstName, email) {
     return `${firstName.toLowerCase()}${randomDigits}${emailSuffix}`;
 }
 
-// Real-time Firestore listener with improved error handling
+// Real-time Firestore listener with improved error handling// Real-time Firestore listener with improved error handling
 function loadUserData() {
     console.log('Setting up real-time listener for user:', currentUser.uid);
     showLoading(true);
@@ -175,13 +175,12 @@ function loadUserData() {
                 const email = currentUser.email;
                 const firstName = email.split('@')[0]; // Use email prefix as default first name
                 const uniqueId = generateUniqueId(firstName, email);
-                const shareableLink = `https://francis2150.github.io/EasyForm/EasyRegistrationForms/llc-input-form.html?owner=${uniqueId}`;
                 
                 const userData = {
                     email: email,
                     firstName: firstName,
                     uniqueId: uniqueId,
-                    shareableLink: shareableLink,
+                    shareableLink: 'Generating link...', // IMPORTANT: Placeholder first
                     credit_balance: 0,
                     usage_count: 0,
                     transactions: [],
@@ -190,18 +189,22 @@ function loadUserData() {
                 
                 console.log('Creating new user with data:', userData);
                 
-                // Use set with merge to handle potential permission issues
-                userDocRef.set(userData, { merge: true })
+                // Update the UI with the placeholder first
+                updateDashboard(userData);
+                
+                // Now, create the shareable link and save everything to Firestore
+                const shareableLink = `https://francis2150.github.io/EasyForm/EasyRegistrationForms/llc-input-form.html?owner=${uniqueId}`;
+                userData.shareableLink = shareableLink; // Update the object with the real link
+
+                userDocRef.set(userData)
                     .then(() => {
-                        console.log('New user document created.');
+                        console.log('New user document created with link.');
+                        // Update the dashboard AGAIN now that the link is real and saved
                         updateDashboard(userData);
                     })
                     .catch((error) => {
                         console.error('Error creating user document:', error);
                         showNotification('Error creating user profile: ' + error.message, 'error');
-                        
-                        // Fallback: Try to create user document with a different approach
-                        createUserWithFallback(userData);
                     });
             }
         },
@@ -212,8 +215,6 @@ function loadUserData() {
             // Handle permission errors specifically
             if (error.code === 'permission-denied') {
                 showNotification('Permission denied. Please try logging out and logging back in.', 'error');
-                
-                // Try to set up a one-time listener instead of real-time
                 loadUserDataOnce();
             } else {
                 showNotification('Error loading user data: ' + error.message, 'error');
