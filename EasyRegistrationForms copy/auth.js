@@ -68,6 +68,22 @@ function showLoading(show) {
     }
 }
 
+// FIXED: Consistent unique ID generation
+function generateUniqueId(firstName, email) {
+    // Clean the first name - remove spaces and special characters
+    const cleanFirstName = firstName.toLowerCase().replace(/[^a-z0-9]/g, '');
+    
+    // Get first 6 characters of email (before @)
+    const emailPart = email.split('@')[0];
+    const emailPrefix = emailPart.substring(0, 6);
+    
+    // Generate a random 4-digit number
+    const randomDigits = Math.floor(1000 + Math.random() * 9000);
+    
+    // Combine clean first name + email prefix + random digits
+    return `${cleanFirstName}${emailPrefix}${randomDigits}`;
+}
+
 function login() {
     const email = document.getElementById('loginEmail').value;
     const phone = document.getElementById('loginPhone').value;
@@ -143,28 +159,44 @@ function signup() {
         .then((userCredential) => {
             const user = userCredential.user;
             
+            // Generate unique ID for the owner
+            const uniqueId = generateUniqueId(firstName, email);
+            
+            // Create shareable link
+            const shareableLink = `https://francis2150.github.io/EasyForm/EasyRegistrationForms/llc-input-form.html?owner=${uniqueId}`;
+            
             // Create user record in Firestore
             const userData = {
                 firstName: firstName,
                 email: email,
-                phone: phone,
+                phone: phone, // IMPORTANT: Save phone number
+                uniqueId: uniqueId,
+                shareableLink: shareableLink,
                 credit_balance: 0,
                 usage_count: 0,
                 transactions: [],
                 created_at: firebase.firestore.FieldValue.serverTimestamp()
             };
             
+            console.log('Creating user with data:', userData);
+            
             db.collection('users').doc(user.uid).set(userData)
                 .then(() => {
+                    console.log('User created successfully');
                     showLoading(false);
-                    window.location.href = 'index.html';
+                    showNotification('Account created successfully!', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1500);
                 })
                 .catch((error) => {
+                    console.error('Error creating user document:', error);
                     showLoading(false);
                     showNotification(error.message, 'error');
                 });
         })
         .catch((error) => {
+            console.error('Error creating user account:', error);
             showLoading(false);
             showNotification(error.message, 'error');
         });

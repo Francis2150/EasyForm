@@ -58,7 +58,19 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.getElementById('viewSubmissionsBtn')?.addEventListener('click', () => {
-        showNotification('This feature is coming soon!', 'info');
+        window.location.href = 'llc-dashboard.html';
+    });
+
+    // Copy Link Button
+    document.getElementById('copyLinkBtn')?.addEventListener('click', () => {
+        const shareableLink = document.getElementById('shareableLink').value;
+        navigator.clipboard.writeText(shareableLink)
+            .then(() => {
+                showNotification('Link copied to clipboard!', 'success');
+            })
+            .catch(err => {
+                showNotification('Failed to copy link', 'error');
+            });
     });
 
     // Top Up Modal
@@ -124,7 +136,23 @@ function logout() {
         });
 }
 
-// Real-time Firestore listener
+// FIXED: Consistent unique ID generation (same as auth.js)
+function generateUniqueId(firstName, email) {
+    // Clean the first name - remove spaces and special characters
+    const cleanFirstName = firstName.toLowerCase().replace(/[^a-z0-9]/g, '');
+    
+    // Get first 6 characters of email (before @)
+    const emailPart = email.split('@')[0];
+    const emailPrefix = emailPart.substring(0, 6);
+    
+    // Generate a random 4-digit number
+    const randomDigits = Math.floor(1000 + Math.random() * 9000);
+    
+    // Combine clean first name + email prefix + random digits
+    return `${cleanFirstName}${emailPrefix}${randomDigits}`;
+}
+
+// Real-time Firestore listener with improved error handling
 function loadUserData() {
     console.log('Setting up real-time listener for user:', currentUser.uid);
     showLoading(true);
@@ -145,30 +173,100 @@ function loadUserData() {
                 updateDashboard(doc.data());
             } else {
                 console.log('User document not found, creating new one.');
+                
+                // Generate unique ID and shareable link for new users
+                const email = currentUser.email;
+                const firstName = email.split('@')[0]; // Use email prefix as default first name
+                const uniqueId = generateUniqueId(firstName, email);
+                
                 const userData = {
-                    email: currentUser.email,
+                    email: email,
+                    firstName: firstName,
+                    uniqueId: uniqueId,
+                    shareableLink: 'Generating link...', // IMPORTANT: Placeholder first
                     credit_balance: 0,
                     usage_count: 0,
                     transactions: [],
                     created_at: firebase.firestore.FieldValue.serverTimestamp()
                 };
+                
+                console.log('Creating new user with data:', userData);
+                
+                // Update the UI with the placeholder first
+                updateDashboard(userData);
+                
+                // Now, create the shareable link and save everything to Firestore
+                const shareableLink = `https://francis2150.github.io/EasyForm/EasyRegistrationForms/llc-input-form.html?owner=${uniqueId}`;
+                userData.shareableLink = shareableLink; // Update the object with the real link
+
                 userDocRef.set(userData)
                     .then(() => {
-                        console.log('New user document created.');
+                        console.log('New user document created with link.');
+                        // Update the dashboard AGAIN now that the link is real and saved
                         updateDashboard(userData);
                     })
                     .catch((error) => {
                         console.error('Error creating user document:', error);
-                        showNotification(error.message, 'error');
+                        showNotification('Error creating user profile: ' + error.message, 'error');
                     });
             }
         },
         (error) => {
             showLoading(false);
             console.error('Real-time listener error:', error);
-            showNotification('Error loading user data: ' + error.message, 'error');
+            
+            // Handle permission errors specifically
+            if (error.code === 'permission-denied') {
+                showNotification('Permission denied. Please try logging out and logging back in.', 'error');
+                loadUserDataOnce();
+            } else {
+                showNotification('Error loading user data: ' + error.message, 'error');
+            }
         }
     );
+}
+
+// Fallback function to load user data once instead of using a real-time listener
+function loadUserDataOnce() {
+    console.log('Attempting to load user data with one-time query');
+    showLoading(true);
+    
+    db.collection('users').doc(currentUser.uid).get()
+        .then((doc) => {
+            showLoading(false);
+            if (doc.exists) {
+                console.log('User data loaded with one-time query:', doc.data());
+                updateDashboard(doc.data());
+            } else {
+                console.log('User document not found even with one-time query');
+                showNotification('User profile not found. Please contact support.', 'error');
+            }
+        })
+        .catch((error) => {
+            showLoading(false);
+            console.error('Error with one-time user data query:', error);
+            showNotification('Error loading user data. Please try refreshing the page.', 'error');
+        });
+}
+
+// Fallback function to create user document with a different approach
+function createUserWithFallback(userData) {
+    console.log('Attempting to create user document with fallback method');
+    
+    // Try using a batched write
+    const batch = db.batch();
+    const userDocRef = db.collection('users').doc(currentUser.uid);
+    batch.set(userDocRef, userData);
+    
+    batch.commit()
+        .then(() => {
+            console.log('User document created with batch write');
+            updateDashboard(userData);
+        })
+        .catch((error) => {
+            console.error('Error with batch write:', error);
+            showNotification('Unable to create user profile. Please try again later.', 'error');
+        });
 }
 
 function updateDashboard(userData) {
@@ -197,6 +295,33 @@ function updateDashboard(userData) {
     const freeSubmissionsElement = document.getElementById('freeSubmissions');
     if (freeSubmissionsElement) {
         freeSubmissionsElement.textContent = freeSubmissions;
+    }
+    
+    // Update shareable link - This is the key part
+    const shareableLinkElement = document.getElementById('shareableLink');
+    if (shareableLinkElement) {
+        // Check if shareableLink exists in userData
+        if (userData.shareableLink) {
+            shareableLinkElement.value = userData.shareableLink;
+            console.log('Shareable link set to:', userData.shareableLink);
+        } else if (userData.uniqueId) {
+            // If shareableLink doesn't exist but uniqueId does, create the link
+            const shareableLink = `https://francis2150.github.io/EasyForm/EasyRegistrationForms/llc-input-form.html?owner=${userData.uniqueId}`;
+            shareableLinkElement.value = shareableLink;
+            
+            // Update the user document with the shareable link
+            db.collection('users').doc(currentUser.uid).update({
+                shareableLink: shareableLink
+            }).then(() => {
+                console.log('Shareable link updated in Firestore');
+            }).catch(error => {
+                console.error('Error updating shareable link:', error);
+            });
+        } else {
+            // If neither exists, show a placeholder
+            shareableLinkElement.value = 'Generating link...';
+            console.warn('No uniqueId found for user');
+        }
     }
     
     // Update transactions list
@@ -329,3 +454,27 @@ function processPayment() {
 
     handler.openIframe();
 }
+
+// Debug function
+function debugUserData() {
+    if (currentUser) {
+        db.collection('users').doc(currentUser.uid).get()
+            .then((doc) => {
+                if (doc.exists) {
+                    console.log('User data from Firestore:', doc.data());
+                    console.log('Shareable link:', doc.data().shareableLink);
+                    console.log('Unique ID:', doc.data().uniqueId);
+                } else {
+                    console.log('No user document found');
+                }
+            })
+            .catch((error) => {
+                console.error('Error getting user data:', error);
+            });
+    } else {
+        console.log('No current user');
+    }
+}
+
+// Make the debug function available globally
+window.debugUserData = debugUserData;
